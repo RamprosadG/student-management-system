@@ -50,6 +50,39 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // LocalStorage unavailable in SSR
     }
+
+    // Fetch students list for role switcher
+    const fetchStudents = async () => {
+      try {
+        const res = await fetch("/api/students");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          const list: StudentOption[] = json.data.map((s: any) => ({
+            id: s.id,
+            studentId: s.studentId,
+            fullName: s.fullName,
+            programmeName: s.programme?.name || "Programme",
+          }));
+          setStudentList(list);
+
+          // If no student currently selected, select first student
+          setSelectedStudentIdState((curr) => {
+            if (curr && list.some((item) => item.id === curr)) return curr;
+            const firstId = list[0]?.id || null;
+            if (firstId) {
+              try {
+                localStorage.setItem("sms_selected_student_id", firstId);
+              } catch {}
+            }
+            return firstId;
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch students for RoleContext:", err);
+      }
+    };
+
+    fetchStudents();
   }, []);
 
   const setRole = (newRole: Role) => {
