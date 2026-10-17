@@ -326,16 +326,14 @@ export default function StudentAssessmentsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             <Button
-              variant="secondary-outline"
-              size="sm"
+              variant="white"
+              size="md"
+              icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
               onClick={fetchStudentAssessments}
               disabled={isLoading}
             >
-              <HiRefresh
-                className={`w-4 h-4 mr-1.5 ${isLoading ? "animate-spin" : ""}`}
-              />
               Refresh
             </Button>
           </div>
@@ -347,32 +345,41 @@ export default function StudentAssessmentsPage() {
         <StatCard
           title="Total Assigned"
           value={totalAssessments}
-          icon={<HiOutlineClipboardList className="w-5 h-5 text-indigo-600" />}
           subtitle="In your enrolled programme"
+          icon={<HiOutlineClipboardList className="w-6 h-6" />}
+          iconBgColor="bg-indigo-50"
+          iconColor="text-indigo-600"
         />
         <StatCard
           title="Submitted"
           value={submittedCount}
-          icon={<HiOutlineCheckCircle className="w-5 h-5 text-emerald-600" />}
           subtitle="Assessments handed in"
+          icon={<HiOutlineCheckCircle className="w-6 h-6" />}
+          iconBgColor="bg-emerald-50"
+          iconColor="text-emerald-600"
         />
         <StatCard
           title="Pending Action"
           value={pendingCount}
-          icon={<HiOutlineClock className="w-5 h-5 text-amber-600" />}
           subtitle="Awaiting your submission"
+          icon={<HiOutlineClock className="w-6 h-6" />}
+          iconBgColor="bg-amber-50"
+          iconColor="text-amber-600"
         />
         <StatCard
           title="Overdue"
           value={overdueCount}
-          icon={<HiOutlineExclamationCircle className="w-5 h-5 text-red-600" />}
           subtitle="Past deadline & unsubmitted"
+          icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
+          iconBgColor="bg-rose-50"
+          iconColor="text-rose-600"
         />
       </div>
 
-      {/* Filters Toolbar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-4 rounded-xl border border-gray-200 shadow-2xs">
-        <div className="w-full sm:w-80">
+      {/* Filter and Search Bar Card */}
+      <div className="w-full bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center">
+        {/* Search Input takes all remaining space */}
+        <div className="flex-1 w-full min-w-0">
           <SearchInput
             value={search}
             onDebouncedChange={(val) => setSearch(val)}
@@ -380,14 +387,13 @@ export default function StudentAssessmentsPage() {
           />
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="w-48">
-            <Dropdown
-              options={statusDropdownOptions}
-              value={statusFilter}
-              onChange={(val) => setStatusFilter(val)}
-            />
-          </div>
+        <div className="w-full sm:w-60 shrink-0">
+          <Dropdown
+            options={statusDropdownOptions}
+            value={statusFilter}
+            onChange={(val) => setStatusFilter(val)}
+            placeholder="Filter Status"
+          />
         </div>
       </div>
 
