@@ -242,8 +242,9 @@ export default function StudentsPage() {
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center justify-between">
-        <div className="w-full md:w-80">
+      <div className="w-full bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center">
+        {/* Search Input takes all remaining space */}
+        <div className="flex-1 w-full min-w-0">
           <SearchInput
             value={search}
             onDebouncedChange={(val) => setSearch(val)}
@@ -251,8 +252,9 @@ export default function StudentsPage() {
           />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          <div className="w-full sm:w-60">
+        {/* Filter Dropdowns */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
+          <div className="w-full sm:w-64">
             <Dropdown
               options={programmeFilterOptions}
               value={selectedProgramme}
@@ -261,7 +263,7 @@ export default function StudentsPage() {
             />
           </div>
 
-          <div className="w-full sm:w-44">
+          <div className="w-full sm:w-48">
             <Dropdown
               options={statusFilterOptions}
               value={selectedStatus}
