@@ -60,15 +60,3 @@ export const showErrorAlert = (text: string): void => {
   });
 };
 
-export const showWarningAlert = (text: string): void => {
-  showAlert({
-    text,
-    icon: "warning",
-    iconColor: themeColors.warningIcon,
-    background: themeColors.warningBackground,
-    color: themeColors.warningText,
-    customClass: {
-      popup: "rounded-lg border shadow-lg border-amber-200 text-sm font-medium",
-    },
-  });
-};

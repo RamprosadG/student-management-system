@@ -158,12 +158,26 @@ Running `npx tsx prisma/seed.ts` loads a complete demo environment with diverse 
 
 ## 6. How AI Was Used During the Build
 
-AI tools were used deliberately throughout development with human architectural governance:
+This project was built using a disciplined, human-in-the-loop engineering methodology. AI tools were leveraged as an accelerator, sparring partner, and automated auditor, while core architectural decisions, requirement synthesis, and quality verification remained strictly human-owned.
 
-- **Data Modeling & Schema Refinement**: Prompted AI to structure a relational schema covering 1-to-many payment ledgers and submission versioning, while verifying foreign key constraints and cascade rules in Prisma.
-- **Enterprise UI Component Library**: Leveraged AI to accelerate building accessible, styled UI primitives (`DataTable`, `Modal`, `StatCard`, `Badge`, `SearchInput`, and `Button`) matching modern design tokens.
-- **Edge Case Identification**: Used AI as a sparring partner to identify overlooked registry nuances (e.g., handling duplicate payment receipt numbers, multi-installment payments, and elapsed time calculation for late assignments).
-- **TypeScript & Build Verification**: Automated recursive static type checking (`npm run build`) via AI shell integration to catch type mismatches before committing code.
+### 1. Independent Analysis & AI Cross-Evaluation
+- **Human-Led Baseline**: Conducted an initial, independent review of the technical assessment brief to deconstruct functional requirements, identify registry domain edge cases, sketch an initial relational database schema, and design the multi-tier application architecture.
+- **AI Comparative Analysis**: Tasked AI with performing an independent requirement analysis, database schema proposal, and architectural layout based on the same brief.
+- **Synthesis & Selection**: Systematically compared the human-designed baseline against the AI proposals. Evaluated architectural trade-offs (e.g., dedicated receipt ledgers vs. monolithic balance fields, single submission containers with version histories, and role-based zero-leak data boundaries) to select and refine the most robust, maintainable architecture.
+
+### 2. Implementation Planning & Inconsistency Auditing
+- **Iterative Roadmap Generation**: Formulated a structured, step-by-step implementation plan with AI to sequence database modeling, API route development, UI primitives, and domain feature slices.
+- **Critical Review & Refinement**: Rigorously audited the plan for potential oversights, architectural gaps, and state synchronization issues. Adjusted and corrected inconsistencies before writing code to ensure a seamless implementation trajectory.
+
+### 3. Step-by-Step Feature Implementation & Manual QA
+- **Incremental Development**: Implemented the project sequentially across discrete modules (Student Enrolment, Fees & Payments Ledger, Assessment Submissions & Versioning, Marksheets & Results, and Executive Dashboards).
+- **Per-Feature Manual Verification**: Following the completion of each feature, conducted thorough manual functional testing, validating edge cases, form error states, and responsive styling. Any bugs or regressions were resolved immediately before advancing to the next phase.
+
+### 4. Multi-Model Cross-Verification & Final Hardening
+- **Secondary Model Audit**: Upon completing the full-stack implementation, engaged an alternative AI model to review the complete codebase, audit requirement completeness, and verify query patterns and performance indexes.
+- **End-to-End Testing & Polish**: Addressed all identified findings, performed comprehensive cross-role manual testing (Staff vs. Student portals, role switching, file upload validations, overdue balance logic, and publication flags), and verified zero build or type errors.
+
+> **Takeaway**: AI expedited boilerplate generation, edge-case discovery, and code auditing, but full ownership of the architecture, code quality, and user experience was maintained through rigorous hands-on validation.
 
 ---
 

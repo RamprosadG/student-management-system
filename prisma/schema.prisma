@@ -99,6 +99,7 @@ model Module {
   assessments Assessment[]
 
   @@unique([programmeId, code])
+  @@index([programmeId])
 }
 
 model Assessment {
@@ -113,6 +114,8 @@ model Assessment {
   submissions Submission[]
 
   @@index([moduleId, deadline])
+  @@index([deadline])
+  @@index([createdAt])
 }
 
 model Submission {
@@ -129,6 +132,8 @@ model Submission {
 
   @@unique([studentId, assessmentId])
   @@index([assessmentId, studentId])
+  @@index([studentId])
+  @@index([createdAt])
 }
 
 model SubmissionVersion {
@@ -156,4 +161,6 @@ model AssessmentResult {
   updatedAt    DateTime @updatedAt
 
   submission Submission @relation(fields: [submissionId], references: [id], onDelete: Restrict)
+
+  @@index([isPublished])
 }
