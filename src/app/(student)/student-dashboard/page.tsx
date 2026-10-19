@@ -7,6 +7,7 @@ import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import StatCard from "@/components/ui/stats/StatCard";
 import { useRole } from "@/components/shared/RoleContext";
+import { TableActionLink } from "@/components/ui/buttons/TableActionButton";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   HiOutlineAcademicCap,
@@ -169,9 +170,8 @@ export default function StudentDashboardPage() {
       render: (item) => (
         <div className="flex flex-col">
           <span
-            className={`text-xs font-bold ${
-              item.isPastDeadline ? "text-red-600" : "text-slate-800"
-            }`}
+            className={`text-xs font-bold ${item.isPastDeadline ? "text-red-600" : "text-slate-800"
+              }`}
           >
             {formatDate(item.deadline)}
           </span>
@@ -219,14 +219,9 @@ export default function StudentDashboardPage() {
       className: "text-right",
       headerClassName: "text-right",
       render: () => (
-        <Link href="/student-assessments">
-          <Button size="sm" variant="secondary-outline">
-            <span className="flex items-center gap-1">
-              <HiOutlineUpload className="w-3.5 h-3.5" />
-              Upload Work
-            </span>
-          </Button>
-        </Link>
+        <TableActionLink href="/student-assessments" tooltip="Upload work">
+          <HiOutlineUpload className="w-4 h-4" />
+        </TableActionLink>
       ),
     },
   ];
@@ -261,7 +256,7 @@ export default function StudentDashboardPage() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-6 w-full">
       {/* Student Welcome & Profile Hero Card */}
       <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/80 via-white to-blue-50/50 p-6 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -279,8 +274,8 @@ export default function StudentDashboardPage() {
                     student.status === "ENROLLED"
                       ? "success"
                       : student.status === "DEFERRED"
-                      ? "warning"
-                      : "neutral"
+                        ? "warning"
+                        : "neutral"
                   }
                   size="sm"
                 >
@@ -300,7 +295,7 @@ export default function StudentDashboardPage() {
 
           <div className="flex items-center gap-3 shrink-0">
             <Button
-              variant="white"
+              variant="secondary-outline"
               size="md"
               icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
               onClick={fetchStudentDashboard}
@@ -322,23 +317,37 @@ export default function StudentDashboardPage() {
             finance.status === "PAID"
               ? "All fees settled"
               : finance.status === "OVERDUE"
-              ? `${finance.daysOverdue} days past due`
-              : `Due: ${finance.dueDate ? formatDate(finance.dueDate) : "Scheduled"}`
+                ? `${finance.daysOverdue} days past due`
+                : `Due: ${finance.dueDate ? formatDate(finance.dueDate) : "Scheduled"}`
           }
           icon={<HiOutlineCreditCard className="w-6 h-6" />}
           iconBgColor={
             finance.status === "PAID"
-              ? "bg-emerald-50"
+              ? "bg-emerald-100"
               : finance.status === "OVERDUE"
-              ? "bg-rose-50"
-              : "bg-amber-50"
+                ? "bg-rose-100"
+                : "bg-amber-100"
           }
           iconColor={
             finance.status === "PAID"
               ? "text-emerald-600"
               : finance.status === "OVERDUE"
-              ? "text-rose-600"
-              : "text-amber-600"
+                ? "text-rose-600"
+                : "text-amber-600"
+          }
+          bgColor={
+            finance.status === "PAID"
+              ? "bg-emerald-50/50"
+              : finance.status === "OVERDUE"
+                ? "bg-rose-50/50"
+                : "bg-amber-50/50"
+          }
+          borderColor={
+            finance.status === "PAID"
+              ? "border-emerald-200"
+              : finance.status === "OVERDUE"
+                ? "border-rose-200"
+                : "border-amber-200"
           }
         />
 
@@ -348,18 +357,26 @@ export default function StudentDashboardPage() {
           value={`${academic.submittedCount} / ${academic.totalAssigned}`}
           subtitle={`${academic.pendingCount} pending submission`}
           icon={<HiOutlineClipboardList className="w-6 h-6" />}
-          iconBgColor="bg-indigo-50"
+          iconBgColor="bg-indigo-100"
           iconColor="text-indigo-600"
+          bgColor="bg-indigo-50/50"
+          borderColor="border-indigo-200"
         />
 
         {/* Certified Average Score */}
         <StatCard
           title="Published Grade Average"
-          value={academic.averageGrade !== null ? `${academic.averageGrade}%` : "Pending"}
+          value={
+            academic.averageGrade !== null
+              ? `${academic.averageGrade}%`
+              : "Pending"
+          }
           subtitle={`${academic.publishedCount} results released`}
           icon={<HiOutlineAcademicCap className="w-6 h-6" />}
-          iconBgColor="bg-blue-50"
+          iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
+          bgColor="bg-blue-50/50"
+          borderColor="border-blue-200"
         />
 
         {/* Current Classification */}
@@ -368,8 +385,10 @@ export default function StudentDashboardPage() {
           value={academic.overallClassification || "In Progress"}
           subtitle="Based on published marks"
           icon={<HiOutlineDocumentReport className="w-6 h-6" />}
-          iconBgColor="bg-purple-50"
+          iconBgColor="bg-purple-100"
           iconColor="text-purple-600"
+          bgColor="bg-purple-50/50"
+          borderColor="border-purple-200"
         />
       </div>
 
@@ -430,8 +449,8 @@ export default function StudentDashboardPage() {
                   finance.status === "PAID"
                     ? "success"
                     : finance.status === "OVERDUE"
-                    ? "danger"
-                    : "warning"
+                      ? "danger"
+                      : "warning"
                 }
                 size="sm"
               >

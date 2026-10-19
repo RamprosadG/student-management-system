@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Button from "@/components/ui/buttons/Button";
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
@@ -10,17 +10,17 @@ import Modal from "@/components/ui/modals/Modal";
 import StatCard from "@/components/ui/stats/StatCard";
 import { GradeEntryModal } from "@/features/results/GradeEntryModal";
 import { showSuccessAlert, showErrorAlert } from "@/components/ui/alerts/Alerts";
-import { formatDate } from "@/lib/utils";
+import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import {
   HiOutlineDocumentReport,
   HiOutlineCheckCircle,
   HiOutlineEyeOff,
   HiOutlineEye,
-  HiOutlineExclamationCircle,
   HiRefresh,
   HiOutlinePencilAlt,
   HiOutlineClock,
 } from "react-icons/hi";
+import { string } from "zod";
 
 interface StaffGradingItem {
   id: string; // alias for submissionId to satisfy DataTable
@@ -50,14 +50,21 @@ interface StaffGradingItem {
   gradedAt: string | null;
 }
 
+interface ModuleItem {
+  id: string;
+  code: string;
+  title: string;
+  programme?: { code: string; name: string };
+}
+
 export default function StaffResultsPage() {
   const [items, setItems] = useState<StaffGradingItem[]>([]);
-  const [modules, setModules] = useState<Array<{ id: string; code: string; title: string }>>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [modules, setModules] = useState<ModuleItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Filters
-  const [search, setSearch] = useState("");
-  const [selectedModule, setSelectedModule] = useState("ALL");
+  const [search, setSearch] = useState<string>("");
+  const [selectedModule, setSelectedModule] = useState<string>("ALL");
   const [publishFilter, setPublishFilter] = useState<"ALL" | "PUBLISHED" | "WITHHELD" | "UNGRADED">("ALL");
 
   // Selected for grade entry modal
@@ -66,7 +73,7 @@ export default function StaffResultsPage() {
 
   const fetchModules = useCallback(async () => {
     try {
-      const res = await fetch("/api/assessments?meta=modules");
+      const res = await fetch("/api/modules");
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
         setModules(json.data);
@@ -165,7 +172,9 @@ export default function StaffResultsPage() {
     { value: "ALL", label: "All Modules" },
     ...modules.map((m) => ({
       value: m.id,
-      label: `${m.code} - ${m.title}`,
+      label: m.programme?.code
+        ? `${m.code} - ${m.title} (${m.programme.code})`
+        : `${m.code} - ${m.title}`,
     })),
   ];
 
@@ -239,10 +248,10 @@ export default function StaffResultsPage() {
           item.classification === "Distinction"
             ? "info"
             : item.classification === "Merit"
-            ? "success"
-            : item.classification === "Pass"
-            ? "warning"
-            : "danger";
+              ? "success"
+              : item.classification === "Pass"
+                ? "warning"
+                : "danger";
 
         return (
           <div className="flex items-center gap-2">
@@ -288,48 +297,33 @@ export default function StaffResultsPage() {
     {
       key: "actions",
       header: "Actions",
+      headerClassName: "text-right",
       className: "text-right",
       render: (item) => {
         const isTogglingThis = togglingId === item.submissionId;
 
         return (
-          <div className="flex items-center justify-end gap-2">
-            {/* Grade / Edit Grade Button */}
-            <Button
-              size="sm"
-              variant={item.grade !== null ? "secondary-outline" : "primary"}
+          <div className="flex items-center justify-end gap-1.5">
+            <TableActionButton
+              tooltip={item.grade !== null ? "Edit grade" : "Enter grade"}
               onClick={() => setGradingSubmission(item)}
             >
-              <span className="flex items-center gap-1">
-                <HiOutlinePencilAlt className="w-3.5 h-3.5" />
-                {item.grade !== null ? "Edit Grade" : "Enter Grade"}
-              </span>
-            </Button>
+              <HiOutlinePencilAlt className="w-4 h-4" />
+            </TableActionButton>
 
-            {/* Quick Publish / Withhold Toggle */}
             {item.grade !== null && (
-              <Button
-                size="sm"
-                variant={item.isPublished ? "secondary-outline" : "primary"}
+              <TableActionButton
+                tooltip={item.isPublished ? "Withhold result" : "Publish result"}
                 onClick={() => handleTogglePublish(item)}
                 disabled={isTogglingThis}
                 isLoading={isTogglingThis}
-                className={item.isPublished ? "!text-amber-700 hover:!bg-amber-50" : ""}
               >
-                <span className="flex items-center gap-1">
-                  {item.isPublished ? (
-                    <>
-                      <HiOutlineEyeOff className="w-3.5 h-3.5" />
-                      Withhold
-                    </>
-                  ) : (
-                    <>
-                      <HiOutlineEye className="w-3.5 h-3.5" />
-                      Publish
-                    </>
-                  )}
-                </span>
-              </Button>
+                {item.isPublished ? (
+                  <HiOutlineEyeOff className="w-4 h-4" />
+                ) : (
+                  <HiOutlineEye className="w-4 h-4" />
+                )}
+              </TableActionButton>
             )}
           </div>
         );
@@ -338,7 +332,7 @@ export default function StaffResultsPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 w-full">
       {/* Header Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
@@ -352,7 +346,7 @@ export default function StaffResultsPage() {
 
         <div className="flex items-center gap-3">
           <Button
-            variant="white"
+            variant="secondary-outline"
             size="md"
             icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
             onClick={fetchGradingList}
@@ -370,37 +364,48 @@ export default function StaffResultsPage() {
           value={totalSubmissions}
           subtitle="Work submitted by students"
           icon={<HiOutlineDocumentReport className="w-6 h-6" />}
-          iconBgColor="bg-indigo-50"
+          iconBgColor="bg-indigo-100"
           iconColor="text-indigo-600"
+          bgColor="bg-indigo-50/50"
+          borderColor="border-indigo-200"
         />
+
         <StatCard
           title="Evaluated / Graded"
           value={gradedCount}
           subtitle={`${totalSubmissions - gradedCount} awaiting score`}
           icon={<HiOutlineCheckCircle className="w-6 h-6" />}
-          iconBgColor="bg-emerald-50"
+          iconBgColor="bg-emerald-100"
           iconColor="text-emerald-600"
+          bgColor="bg-emerald-50/50"
+          borderColor="border-emerald-200"
         />
+
         <StatCard
           title="Published to Students"
           value={publishedCount}
           subtitle="Live on student marksheet"
           icon={<HiOutlineEye className="w-6 h-6" />}
-          iconBgColor="bg-blue-50"
+          iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
+          bgColor="bg-blue-50/50"
+          borderColor="border-blue-200"
         />
+
         <StatCard
           title="Withheld / Draft"
           value={withheldCount}
           subtitle="Internal review only"
           icon={<HiOutlineEyeOff className="w-6 h-6" />}
-          iconBgColor="bg-amber-50"
+          iconBgColor="bg-amber-100"
           iconColor="text-amber-600"
+          bgColor="bg-amber-50/50"
+          borderColor="border-amber-200"
         />
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="w-full bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center">
+      <div className="w-full flex flex-col md:flex-row mt-3 gap-4 items-center">
         {/* Search Input takes all remaining space */}
         <div className="flex-1 w-full min-w-0">
           <SearchInput
@@ -430,7 +435,7 @@ export default function StaffResultsPage() {
       </div>
 
       {/* Grading Ledger Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-visible">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />

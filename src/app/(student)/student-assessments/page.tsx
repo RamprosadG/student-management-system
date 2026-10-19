@@ -14,6 +14,7 @@ import {
   SubmissionHistoryModal,
   SubmissionVersionItem,
 } from "@/features/assessments/SubmissionHistoryModal";
+import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { formatDate } from "@/lib/utils";
 import {
   HiOutlineClipboardList,
@@ -199,9 +200,8 @@ export default function StudentAssessmentsPage() {
         return (
           <div className="flex flex-col">
             <span
-              className={`text-xs font-semibold ${
-                item.isPastDeadline ? "text-red-600" : "text-slate-800"
-              }`}
+              className={`text-xs font-semibold ${item.isPastDeadline ? "text-red-600" : "text-slate-800"
+                }`}
             >
               {formatDateTime(item.deadline)}
             </span>
@@ -273,37 +273,32 @@ export default function StudentAssessmentsPage() {
     {
       key: "actions",
       header: "Actions",
+      headerClassName: "text-right",
       className: "text-right",
       render: (item) => (
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-1.5">
           {item.submission && item.submission.versions.length > 0 && (
-            <button
+            <TableActionButton
+              tooltip={`Version history (${item.submission.totalVersions})`}
               onClick={() => setHistoryAssessment(item)}
-              className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-indigo-600 bg-white border border-gray-200 hover:border-indigo-300 rounded-lg px-2.5 py-1.5 transition-all shadow-2xs cursor-pointer"
-              title="View Version History"
             >
-              <FiClock className="w-3.5 h-3.5 text-slate-400" />
-              <span>History ({item.submission.totalVersions})</span>
-            </button>
+              <FiClock className="w-4 h-4" />
+            </TableActionButton>
           )}
 
-          <Button
-            size="sm"
-            variant={item.submission ? "secondary-outline" : "primary"}
+          <TableActionButton
+            tooltip={item.submission ? "Resubmit work" : "Submit work"}
             onClick={() => setSelectedAssessmentToSubmit(item)}
           >
-            <span className="flex items-center gap-1.5">
-              <HiOutlineUpload className="w-3.5 h-3.5" />
-              {item.submission ? "Resubmit" : "Submit Work"}
-            </span>
-          </Button>
+            <HiOutlineUpload className="w-4 h-4" />
+          </TableActionButton>
         </div>
       ),
     },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 w-full">
       {/* Top Banner / Student Information Header */}
       <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/70 via-white to-blue-50/40 p-6 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -328,13 +323,13 @@ export default function StudentAssessmentsPage() {
 
           <div className="flex items-center gap-3 shrink-0">
             <Button
-              variant="white"
+              variant="secondary-outline"
               size="md"
               icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
               onClick={fetchStudentAssessments}
               disabled={isLoading}
             >
-              Refresh
+              Refresh Assessment
             </Button>
           </div>
         </div>
@@ -347,37 +342,48 @@ export default function StudentAssessmentsPage() {
           value={totalAssessments}
           subtitle="In your enrolled programme"
           icon={<HiOutlineClipboardList className="w-6 h-6" />}
-          iconBgColor="bg-indigo-50"
+          iconBgColor="bg-indigo-100"
           iconColor="text-indigo-600"
+          bgColor="bg-indigo-50/50"
+          borderColor="border-indigo-200"
         />
+
         <StatCard
           title="Submitted"
           value={submittedCount}
           subtitle="Assessments handed in"
           icon={<HiOutlineCheckCircle className="w-6 h-6" />}
-          iconBgColor="bg-emerald-50"
+          iconBgColor="bg-emerald-100"
           iconColor="text-emerald-600"
+          bgColor="bg-emerald-50/50"
+          borderColor="border-emerald-200"
         />
+
         <StatCard
           title="Pending Action"
           value={pendingCount}
           subtitle="Awaiting your submission"
           icon={<HiOutlineClock className="w-6 h-6" />}
-          iconBgColor="bg-amber-50"
+          iconBgColor="bg-amber-100"
           iconColor="text-amber-600"
+          bgColor="bg-amber-50/50"
+          borderColor="border-amber-200"
         />
+
         <StatCard
           title="Overdue"
           value={overdueCount}
           subtitle="Past deadline & unsubmitted"
           icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
-          iconBgColor="bg-rose-50"
+          iconBgColor="bg-rose-100"
           iconColor="text-rose-600"
+          bgColor="bg-rose-50/50"
+          borderColor="border-rose-200"
         />
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="w-full bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center">
+      <div className="w-full flex flex-col md:flex-row mt-3 gap-4 items-center">
         {/* Search Input takes all remaining space */}
         <div className="flex-1 w-full min-w-0">
           <SearchInput
@@ -398,7 +404,7 @@ export default function StudentAssessmentsPage() {
       </div>
 
       {/* Assessment Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-2xs overflow-visible">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />

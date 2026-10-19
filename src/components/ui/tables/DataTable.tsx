@@ -1,3 +1,4 @@
+
 import React from "react";
 
 export interface Column<T> {
@@ -29,10 +30,14 @@ function DataTable<T extends { id?: string }>({
 }: DataTableProps<T>) {
   if (isLoading) {
     return (
-      <div className={`bg-white rounded-xl border border-gray-200 shadow-xs ${className}`}>
+      <div
+        className={`overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ${className}`}
+      >
         <div className="p-12 text-center">
-          <div className="inline-block w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-          <p className="mt-3 text-sm text-gray-500">Loading records...</p>
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-[3px] border-indigo-600 border-t-transparent" />
+          <p className="mt-3 text-sm text-slate-500">
+            Loading records...
+          </p>
         </div>
       </div>
     );
@@ -40,9 +45,11 @@ function DataTable<T extends { id?: string }>({
 
   if (data.length === 0) {
     return (
-      <div className={`bg-white rounded-xl border border-gray-200 shadow-xs ${className}`}>
+      <div
+        className={`overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ${className}`}
+      >
         <div className="p-12 text-center">
-          <p className="text-sm text-gray-500">{emptyMessage}</p>
+          <p className="text-sm text-slate-500">{emptyMessage}</p>
         </div>
       </div>
     );
@@ -50,25 +57,25 @@ function DataTable<T extends { id?: string }>({
 
   return (
     <div
-      className={`bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden ${className}`}
+      className={`w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ${className}`}
     >
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-full divide-y divide-gray-200 text-left">
+      <div className="w-full overflow-x-auto">
+        <table className="w-full min-w-full divide-y divide-slate-200 text-left">
           <thead>
-            <tr className="bg-gray-50/80">
+            <tr className="bg-slate-100">
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-5 py-3 text-xs font-semibold uppercase tracking-wider text-gray-600 ${
-                    column.headerClassName || ""
-                  }`}
+                  scope="col"
+                  className={`whitespace-nowrap px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-600 ${column.headerClassName || ""}`}
                 >
                   {column.header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+
+          <tbody className="divide-y divide-slate-200">
             {data.map((item, index) => {
               const computedRowClassName =
                 typeof rowClassName === "function"
@@ -77,18 +84,20 @@ function DataTable<T extends { id?: string }>({
 
               return (
                 <tr
-                  key={item.id || index}
-                  className={`hover:bg-slate-50/80 transition-colors ${
-                    onRowClick ? "cursor-pointer" : ""
-                  } ${computedRowClassName}`}
+                  key={item.id ?? index}
+                  className={`
+                    transition-colors duration-150
+                    ${index % 2 === 0 ? "bg-white" : "bg-slate-100"}
+                    hover:bg-gray-100
+                    ${onRowClick ? "cursor-pointer" : ""}
+                    ${computedRowClassName}
+                  `}
                   onClick={() => onRowClick?.(item)}
                 >
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className={`px-5 py-3.5 text-sm text-gray-700 whitespace-nowrap ${
-                        column.className || ""
-                      }`}
+                      className={`whitespace-nowrap px-5 py-3.5 text-sm text-slate-700 ${column.className || ""}`}
                     >
                       {column.render
                         ? column.render(item, index)

@@ -1,8 +1,18 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export type Role = "staff" | "student";
+
+export const staffRoutes = ["/dashboard", "/students", "/fees", "/assessments", "/results"];
+export const studentRoutes = ["/student-dashboard", "/student-assessments", "/marksheet"];
+
+export function roleFromPathname(pathname: string): Role | null {
+  if (studentRoutes.some((route) => pathname.startsWith(route))) return "student";
+  if (staffRoutes.some((route) => pathname.startsWith(route))) return "staff";
+  return null;
+}
 
 export interface StudentOption {
   id: string;
@@ -27,6 +37,7 @@ interface RoleContextType {
 const RoleContext = createContext<RoleContextType | undefined>(undefined);
 
 export function RoleProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [role, setRoleState] = useState<Role>("staff");
   const [selectedStudentId, setSelectedStudentIdState] = useState<string | null>(null);
   const [studentList, setStudentList] = useState<StudentOption[]>([]);
@@ -35,9 +46,15 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     try {
-      const savedRole = localStorage.getItem("sms_role") as Role;
-      if (savedRole === "staff" || savedRole === "student") {
-        setRoleState(savedRole);
+      const pathRole = roleFromPathname(pathname);
+      if (pathRole) {
+        setRoleState(pathRole);
+        localStorage.setItem("sms_role", pathRole);
+      } else {
+        const savedRole = localStorage.getItem("sms_role") as Role;
+        if (savedRole === "staff" || savedRole === "student") {
+          setRoleState(savedRole);
+        }
       }
       const savedStudentId = localStorage.getItem("sms_selected_student_id");
       if (savedStudentId) {
@@ -84,6 +101,20 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
 
     fetchStudents();
   }, []);
+
+  useEffect(() => {
+    const pathRole = roleFromPathname(pathname);
+    if (!pathRole) return;
+    setRoleState((current) => {
+      if (current === pathRole) return current;
+      try {
+        localStorage.setItem("sms_role", pathRole);
+      } catch {
+        // ignore
+      }
+      return pathRole;
+    });
+  }, [pathname]);
 
   const setRole = (newRole: Role) => {
     setRoleState(newRole);

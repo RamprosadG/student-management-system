@@ -4,8 +4,8 @@ import React from "react";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import Badge from "@/components/ui/badges/Badge";
 import Button from "@/components/ui/buttons/Button";
-import { formatDate } from "@/lib/utils";
-import { HiOutlineClock, HiOutlineDocumentText, HiOutlineCheckCircle, HiOutlineExclamation } from "react-icons/hi";
+import { TableActionLink } from "@/components/ui/buttons/TableActionButton";
+import { HiOutlineClock, HiOutlineDocumentText, HiOutlineCheckCircle, HiOutlineExclamation, HiOutlinePencilAlt } from "react-icons/hi";
 
 export interface SubmissionItem {
   id: string;
@@ -166,6 +166,20 @@ export function SubmissionInspectorModal({
         ) : (
           <span className="text-xs text-gray-400 italic">Ungraded</span>
         ),
+    },
+    {
+      key: "actions",
+      header: "Actions",
+      headerClassName: "text-right",
+      className: "text-right",
+      render: (item) => (
+        <TableActionLink
+          href="/results"
+          tooltip={item.result ? "Review grade" : "Enter grade"}
+        >
+          <HiOutlinePencilAlt className="w-4 h-4" />
+        </TableActionLink>
+      ),
     },
   ];
 

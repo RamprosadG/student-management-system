@@ -1,11 +1,9 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useRole } from "./RoleContext";
+import { staffRoutes, studentRoutes, useRole } from "./RoleContext";
 import { FiMenu } from "react-icons/fi";
-
-const staffRoutes = ["/dashboard", "/students", "/fees", "/assessments", "/results"];
-const studentRoutes = ["/student-dashboard", "/student-assessments", "/marksheet"];
+import Dropdown from "../ui/dropdowns/Dropdown";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -55,20 +53,30 @@ export function Navbar() {
           <div className="flex items-center gap-3 ml-auto">
             {!isStaff && (
               <div className="flex items-center gap-2 text-xs">
-                <span className="hidden sm:inline text-gray-500 font-medium">Student:</span>
-                <select
-                  aria-label="Select student"
-                  value={selectedStudentId || ""}
-                  onChange={(e) => setSelectedStudentId(e.target.value || null)}
-                  className="rounded-lg border border-gray-200 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-800 shadow-xs focus:border-indigo-500 focus:outline-hidden max-w-[140px] sm:max-w-none"
-                >
-                  <option value="">Default Student</option>
-                  {studentList.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.fullName} ({s.studentId})
-                    </option>
-                  ))}
-                </select>
+                <span className="hidden sm:inline text-gray-500 font-medium shrink-0">
+                  Student:
+                </span>
+
+                <div className="w-[180px] sm:w-[220px]">
+                  <Dropdown
+                    aria-label="Select student"
+                    value={selectedStudentId || ""}
+                    onChange={(value) => setSelectedStudentId(value || null)}
+                    options={[
+                      {
+                        value: "",
+                        label: "Default Student",
+                      },
+                      ...studentList.map((s) => ({
+                        value: s.id,
+                        label: `${s.fullName} (${s.studentId})`,
+                      })),
+                    ]}
+                    placeholder="Select student"
+                    hideOptionalText
+                    className="!rounded-lg !border-gray-200 !px-2.5 !py-1.5 !text-xs !shadow-xs"
+                  />
+                </div>
               </div>
             )}
 
@@ -77,22 +85,20 @@ export function Navbar() {
               <button
                 type="button"
                 onClick={() => handleRoleSwitch("staff")}
-                className={`rounded-md px-3 py-1.5 transition-all cursor-pointer ${
-                  isStaff
-                    ? "bg-white text-indigo-700 shadow-xs font-semibold"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
+                className={`rounded-md px-3 py-1.5 transition-all cursor-pointer ${isStaff
+                  ? "bg-white text-indigo-700 shadow-xs font-semibold"
+                  : "text-gray-600 hover:text-gray-900"
+                  }`}
               >
                 Staff View
               </button>
               <button
                 type="button"
                 onClick={() => handleRoleSwitch("student")}
-                className={`rounded-md px-3 py-1.5 transition-all cursor-pointer ${
-                  !isStaff
-                    ? "bg-white text-indigo-700 shadow-xs font-semibold"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
+                className={`rounded-md px-3 py-1.5 transition-all cursor-pointer ${!isStaff
+                  ? "bg-white text-indigo-700 shadow-xs font-semibold"
+                  : "text-gray-600 hover:text-gray-900"
+                  }`}
               >
                 Student View
               </button>

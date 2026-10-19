@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Button from "@/components/ui/buttons/Button";
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
@@ -12,6 +12,7 @@ import {
   UpdateStudentForm,
   StudentToEdit,
 } from "@/features/students/UpdateStudentForm";
+import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { HiPlus, HiRefresh } from "react-icons/hi";
 import { FiEdit } from "react-icons/fi";
 import { formatDate, formatCurrency } from "@/lib/utils";
@@ -49,13 +50,13 @@ interface ReferenceMeta {
 export default function StudentsPage() {
   const [students, setStudents] = useState<StudentRecord[]>([]);
   const [meta, setMeta] = useState<ReferenceMeta>({ programmes: [], academicYears: [] });
-  const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Filters
-  const [search, setSearch] = useState("");
-  const [selectedProgramme, setSelectedProgramme] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [search, setSearch] = useState<string>("");
+  const [selectedProgramme, setSelectedProgramme] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
 
   const fetchReferenceData = async () => {
     try {
@@ -177,32 +178,22 @@ export default function StudentsPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (item) => (
-        <div className="relative inline-block group">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditingStudent({
-                id: item.id,
-                studentId: item.studentId,
-                fullName: item.fullName,
-                email: item.email,
-                dateOfBirth: item.dateOfBirth,
-                status: item.status,
-              });
-            }}
-            className="p-2 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 transition-all duration-200 cursor-pointer"
-            aria-label="Edit student"
-          >
-            <FiEdit className="w-4 h-4" />
-          </button>
-          {/* Tooltip */}
-          <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
-            <div className="rounded-md bg-slate-900 text-white text-[11px] font-medium px-2 py-1 shadow-md whitespace-nowrap">
-              Edit
-            </div>
-          </div>
-        </div>
+        <TableActionButton
+          tooltip="Edit student"
+          onClick={(e) => {
+            e.stopPropagation();
+            setEditingStudent({
+              id: item.id,
+              studentId: item.studentId,
+              fullName: item.fullName,
+              email: item.email,
+              dateOfBirth: item.dateOfBirth,
+              status: item.status,
+            });
+          }}
+        >
+          <FiEdit className="w-4 h-4" />
+        </TableActionButton>
       ),
     },
   ];
@@ -223,7 +214,7 @@ export default function StudentsPage() {
         </div>
         <div className="flex items-center gap-3">
           <Button
-            variant="white"
+            variant="secondary"
             size="md"
             icon={<HiRefresh className="w-4 h-4" />}
             onClick={() => fetchStudents()}
@@ -242,7 +233,7 @@ export default function StudentsPage() {
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="w-full bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center">
+      <div className="w-full flex flex-col md:flex-row mt-3 gap-4 items-center">
         {/* Search Input takes all remaining space */}
         <div className="flex-1 w-full min-w-0">
           <SearchInput

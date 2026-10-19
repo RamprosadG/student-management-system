@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Button from "@/components/ui/buttons/Button";
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
@@ -13,11 +13,11 @@ import {
   SubmissionInspectorModal,
   SubmissionItem,
 } from "@/features/assessments/SubmissionInspectorModal";
-import { formatDate } from "@/lib/utils";
+import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
+import { formatDate, formatDateTime } from "@/lib/utils";
 import {
   HiOutlineClipboardList,
   HiOutlineDocumentText,
-  HiOutlineClock,
   HiOutlineExclamationCircle,
   HiRefresh,
   HiPlus,
@@ -64,20 +64,20 @@ export default function StaffAssessmentsPage() {
     totalSubmissions: 0,
     totalLateSubmissions: 0,
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Filters
   const [search, setSearch] = useState("");
-  const [selectedModuleId, setSelectedModuleId] = useState("");
+  const [selectedModuleId, setSelectedModuleId] = useState<string>("ALL");
 
   // Modals
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [inspectedAssessment, setInspectedAssessment] = useState<AssessmentItem | null>(null);
 
   // Fetch Module Reference Options
   const fetchModules = useCallback(async () => {
     try {
-      const res = await fetch("/api/assessments?modules=true");
+      const res = await fetch("/api/modules");
       const data = await res.json();
       if (data.success) {
         setModules(data.data);
@@ -118,18 +118,6 @@ export default function StaffAssessmentsPage() {
   useEffect(() => {
     fetchAssessments();
   }, [fetchAssessments]);
-
-  // Format date and time
-  const formatDateTime = (dateStr: string) => {
-    const d = new Date(dateStr);
-    return d.toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
 
   // Module filter dropdown options
   const moduleFilterOptions = [
@@ -237,25 +225,15 @@ export default function StaffAssessmentsPage() {
       headerClassName: "text-right",
       className: "text-right",
       render: (item) => (
-        <div className="relative inline-block group">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setInspectedAssessment(item);
-            }}
-            className="p-2 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 transition-all duration-200 cursor-pointer"
-            aria-label="Inspect submissions"
-          >
-            <HiOutlineEye className="w-4 h-4" />
-          </button>
-          {/* Tooltip */}
-          <div className="pointer-events-none absolute bottom-full right-0 mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
-            <div className="rounded-md bg-slate-900 text-white text-[11px] font-medium px-2 py-1 shadow-md whitespace-nowrap">
-              Inspect Submissions
-            </div>
-          </div>
-        </div>
+        <TableActionButton
+          tooltip="Inspect submissions"
+          onClick={(e) => {
+            e.stopPropagation();
+            setInspectedAssessment(item);
+          }}
+        >
+          <HiOutlineEye className="w-4 h-4" />
+        </TableActionButton>
       ),
     },
   ];
@@ -274,7 +252,7 @@ export default function StaffAssessmentsPage() {
         </div>
         <div className="flex items-center gap-3">
           <Button
-            variant="white"
+            variant="secondary"
             size="md"
             icon={<HiRefresh className="w-4 h-4" />}
             onClick={() => fetchAssessments()}
@@ -299,29 +277,37 @@ export default function StaffAssessmentsPage() {
           value={summary.totalAssessments}
           subtitle="Across all curriculum modules"
           icon={<HiOutlineClipboardList className="w-6 h-6" />}
-          iconBgColor="bg-indigo-50"
+          iconBgColor="bg-indigo-100"
           iconColor="text-indigo-600"
+          bgColor="bg-indigo-50/50"
+          borderColor="border-indigo-200"
         />
+
         <StatCard
           title="Total Submissions"
           value={summary.totalSubmissions}
           subtitle="Student uploads received"
           icon={<HiOutlineDocumentText className="w-6 h-6" />}
-          iconBgColor="bg-emerald-50"
+          iconBgColor="bg-emerald-100"
           iconColor="text-emerald-600"
+          bgColor="bg-emerald-50/50"
+          borderColor="border-emerald-200"
         />
+
         <StatCard
           title="Late Submissions"
           value={summary.totalLateSubmissions}
           subtitle="Past assessment deadline"
           icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
-          iconBgColor="bg-rose-50"
+          iconBgColor="bg-rose-100"
           iconColor="text-rose-600"
+          bgColor="bg-rose-50/50"
+          borderColor="border-rose-200"
         />
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="w-full bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center">
+      <div className="w-full flex flex-col md:flex-row mt-3 gap-4 items-center">
         {/* Search Input takes all remaining space */}
         <div className="flex-1 w-full min-w-0">
           <SearchInput
@@ -336,7 +322,6 @@ export default function StaffAssessmentsPage() {
             options={moduleFilterOptions}
             value={selectedModuleId}
             onChange={(val) => setSelectedModuleId(val)}
-            placeholder="Filter by Module"
           />
         </div>
       </div>

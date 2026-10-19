@@ -10,7 +10,6 @@ import {
   HiOutlineClock,
   HiOutlineCheckCircle,
   HiOutlineExclamation,
-  HiOutlineDownload,
 } from "react-icons/hi";
 
 export interface SubmissionVersionItem {

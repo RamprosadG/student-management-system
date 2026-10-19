@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Button from "@/components/ui/buttons/Button";
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
@@ -13,6 +13,7 @@ import {
   FeeAccountItem,
 } from "@/features/fees/RecordPaymentForm";
 import { PaymentHistoryModal } from "@/features/fees/PaymentHistoryModal";
+import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   HiOutlineCreditCard,
@@ -21,6 +22,7 @@ import {
   HiOutlineExclamationCircle,
   HiRefresh,
   HiOutlineReceiptTax,
+  HiOutlineCheckCircle,
 } from "react-icons/hi";
 import { MdPayment } from "react-icons/md";
 
@@ -64,8 +66,8 @@ export default function FeesPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Filters
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [search, setSearch] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
 
   // Modals state
   const [selectedFeeForPayment, setSelectedFeeForPayment] =
@@ -148,24 +150,9 @@ export default function FeesPage() {
       key: "totalPaid",
       header: "Total Paid",
       render: (item) => (
-        <div className="flex items-center gap-1.5">
-          <span className="font-semibold text-emerald-600">
-            {formatCurrency(item.totalPaid)}
-          </span>
-          {item.payments.length > 0 && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setSelectedFeeForHistory(item);
-              }}
-              className="text-xs text-indigo-600 hover:text-indigo-800 underline font-medium cursor-pointer"
-              title="View payment transactions"
-            >
-              ({item.payments.length})
-            </button>
-          )}
-        </div>
+        <span className="font-semibold text-emerald-600">
+          {formatCurrency(item.totalPaid)}
+        </span>
       ),
     },
     {
@@ -173,13 +160,12 @@ export default function FeesPage() {
       header: "Outstanding Balance",
       render: (item) => (
         <span
-          className={`font-bold font-mono ${
-            item.balance === 0
-              ? "text-gray-400"
-              : item.status === "OVERDUE"
+          className={`font-bold font-mono ${item.balance === 0
+            ? "text-gray-400"
+            : item.status === "OVERDUE"
               ? "text-red-600"
               : "text-amber-600"
-          }`}
+            }`}
         >
           {formatCurrency(item.balance)}
         </span>
@@ -218,55 +204,35 @@ export default function FeesPage() {
       render: (item) => (
         <div className="flex items-center justify-end gap-1.5">
           {item.payments.length > 0 && (
-            <div className="relative inline-block group">
-              <button
-                type="button"
-                onClick={() => setSelectedFeeForHistory(item)}
-                className="p-2 rounded-lg text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 border border-transparent hover:border-indigo-100 transition-all duration-200 cursor-pointer"
-                aria-label="View Receipts"
-              >
-                <HiOutlineReceiptTax className="w-4 h-4" />
-              </button>
-              {/* Tooltip */}
-              <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
-                <div className="rounded-md bg-slate-900 text-white text-[11px] font-medium px-2 py-1 shadow-md whitespace-nowrap">
-                  Receipts ({item.payments.length})
-                </div>
-              </div>
-            </div>
+            <TableActionButton
+              tooltip="View receipts"
+              onClick={() => setSelectedFeeForHistory(item)}
+            >
+              <HiOutlineReceiptTax className="w-4 h-4" />
+            </TableActionButton>
           )}
 
           {item.balance > 0 ? (
-            <div className="relative inline-block group">
-              <button
-                type="button"
-                onClick={() =>
-                  setSelectedFeeForPayment({
-                    id: item.id,
-                    studentId: item.studentId,
-                    fullName: item.fullName,
-                    amountDue: item.amountDue,
-                    totalPaid: item.totalPaid,
-                    balance: item.balance,
-                    dueDate: item.dueDate,
-                  })
-                }
-                className="p-2 rounded-lg text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all duration-200 cursor-pointer"
-                aria-label="Record Payment"
-              >
-                <MdPayment className="w-4 h-4" />
-              </button>
-              {/* Tooltip */}
-              <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
-                <div className="rounded-md bg-slate-900 text-white text-[11px] font-medium px-2 py-1 shadow-md whitespace-nowrap">
-                  Record Payment
-                </div>
-              </div>
-            </div>
+            <TableActionButton
+              tooltip="Record payment"
+              onClick={() =>
+                setSelectedFeeForPayment({
+                  id: item.id,
+                  studentId: item.studentId,
+                  fullName: item.fullName,
+                  amountDue: item.amountDue,
+                  totalPaid: item.totalPaid,
+                  balance: item.balance,
+                  dueDate: item.dueDate,
+                })
+              }
+            >
+              <MdPayment className="w-4 h-4" />
+            </TableActionButton>
           ) : (
-            <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">
-              Settled
-            </span>
+            <TableActionButton tooltip="Fee settled" disabled>
+              <HiOutlineCheckCircle className="w-4 h-4" />
+            </TableActionButton>
           )}
         </div>
       ),
@@ -287,7 +253,7 @@ export default function FeesPage() {
         </div>
         <div>
           <Button
-            variant="white"
+            variant="secondary-outline"
             size="md"
             icon={<HiRefresh className="w-4 h-4" />}
             onClick={() => fetchFees()}
@@ -304,37 +270,48 @@ export default function FeesPage() {
           value={formatCurrency(summary.totalInvoiced)}
           subtitle="All assigned programme fees"
           icon={<HiOutlineCash className="w-6 h-6" />}
-          iconBgColor="bg-indigo-50"
+          iconBgColor="bg-indigo-100"
           iconColor="text-indigo-600"
+          bgColor="bg-indigo-50/50"
+          borderColor="border-indigo-200"
         />
+
         <StatCard
           title="Total Collected"
           value={formatCurrency(summary.totalCollected)}
           subtitle="Total verified payments"
           icon={<HiOutlineCreditCard className="w-6 h-6" />}
-          iconBgColor="bg-emerald-50"
+          iconBgColor="bg-emerald-100"
           iconColor="text-emerald-600"
+          bgColor="bg-emerald-50/50"
+          borderColor="border-emerald-200"
         />
+
         <StatCard
           title="Outstanding Balance"
           value={formatCurrency(summary.totalOutstanding)}
           subtitle="Pending student receivables"
           icon={<HiOutlineClock className="w-6 h-6" />}
-          iconBgColor="bg-amber-50"
+          iconBgColor="bg-amber-100"
           iconColor="text-amber-600"
+          bgColor="bg-amber-50/50"
+          borderColor="border-amber-200"
         />
+
         <StatCard
           title="Overdue Accounts"
           value={summary.overdueCount}
           subtitle="Past due date with balance"
           icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
-          iconBgColor="bg-rose-50"
+          iconBgColor="bg-rose-100"
           iconColor="text-rose-600"
+          bgColor="bg-rose-50/50"
+          borderColor="border-rose-200"
         />
       </div>
 
       {/* Filter and Search Bar Card */}
-      <div className="w-full bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex flex-col md:flex-row gap-4 items-center">
+      <div className="w-full flex flex-col md:flex-row mt-3 gap-4 items-center">
         {/* Search Input takes all remaining space */}
         <div className="flex-1 w-full min-w-0">
           <SearchInput

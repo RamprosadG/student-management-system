@@ -50,7 +50,7 @@ export function Sidebar() {
         {/* Brand / Title Header */}
         <div className="flex items-center h-16 border-b border-gray-100 shrink-0">
           <Link
-            href="/dashboard"
+            href="/"
             className="flex items-center hover:opacity-80 transition-opacity"
           >
             <div className="h-8 w-8 rounded-lg bg-indigo-600 text-white font-bold text-sm flex items-center justify-center mr-3 relative shadow-xs">
@@ -73,16 +73,14 @@ export function Sidebar() {
                 <li key={item.name}>
                   <Link
                     href={item.href}
-                    className={`flex items-center px-4 h-12 rounded-lg transition-all duration-200 ${
-                      isActive
+                    className={`flex items-center px-4 h-12 rounded-lg transition-all duration-200 ${isActive
                         ? "bg-indigo-50 text-indigo-700 font-semibold"
                         : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     <Icon
-                      className={`w-5 h-5 ${
-                        isActive ? "text-indigo-600" : "text-gray-600"
-                      }`}
+                      className={`w-5 h-5 ${isActive ? "text-indigo-600" : "text-gray-600"
+                        }`}
                     />
                     <span className="ml-3 font-medium text-sm text-nowrap">
                       {item.name}
@@ -118,9 +116,8 @@ export function Sidebar() {
 
       {/* Mobile Drawer Sidebar */}
       <aside
-        className={`lg:hidden fixed inset-y-0 left-0 z-40 w-64 px-4 bg-white border-r border-gray-200 drop-shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`lg:hidden fixed inset-y-0 left-0 z-40 w-64 px-4 bg-white border-r border-gray-200 drop-shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between h-16 border-b border-gray-100 shrink-0">
           <Link
@@ -153,16 +150,14 @@ export function Sidebar() {
                   <Link
                     href={item.href}
                     onClick={onClose}
-                    className={`flex items-center px-4 h-12 rounded-lg transition-all duration-200 ${
-                      isActive
+                    className={`flex items-center px-4 h-12 rounded-lg transition-all duration-200 ${isActive
                         ? "bg-indigo-50 text-indigo-700 font-semibold"
                         : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     <Icon
-                      className={`w-5 h-5 ${
-                        isActive ? "text-indigo-600" : "text-gray-600"
-                      }`}
+                      className={`w-5 h-5 ${isActive ? "text-indigo-600" : "text-gray-600"
+                        }`}
                     />
                     <span className="ml-3 font-medium text-sm">{item.name}</span>
                   </Link>

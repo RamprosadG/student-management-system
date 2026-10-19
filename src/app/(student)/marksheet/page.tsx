@@ -190,10 +190,10 @@ export default function MarksheetPage() {
             item.result.classification === "Distinction"
               ? "info"
               : item.result.classification === "Merit"
-              ? "success"
-              : item.result.classification === "Pass"
-              ? "warning"
-              : "danger";
+                ? "success"
+                : item.result.classification === "Pass"
+                  ? "warning"
+                  : "danger";
 
           return (
             <Badge variant={badgeVariant} size="sm">
@@ -235,7 +235,7 @@ export default function MarksheetPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6 w-full">
       {/* Official Marksheet Header Card */}
       <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/70 via-white to-blue-50/40 p-6 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -260,7 +260,7 @@ export default function MarksheetPage() {
 
           <div className="flex items-center gap-3 shrink-0">
             <Button
-              variant="white"
+              variant="secondary-outline"
               size="md"
               icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
               onClick={fetchMarksheet}
@@ -279,24 +279,43 @@ export default function MarksheetPage() {
           value={stats.publishedResultsCount}
           icon={<HiOutlineCheckCircle className="w-5 h-5 text-emerald-600" />}
           subtitle={`Out of ${stats.totalAssessments} assessments`}
+          iconBgColor="bg-emerald-100"
+          iconColor="text-emerald-600"
+          bgColor="bg-emerald-50/50"
+          borderColor="border-emerald-200"
         />
+
         <StatCard
           title="Average Score"
           value={stats.averageGrade !== null ? `${stats.averageGrade}%` : "N/A"}
           icon={<HiOutlineAcademicCap className="w-5 h-5 text-indigo-600" />}
           subtitle="Across published modules"
+          iconBgColor="bg-indigo-100"
+          iconColor="text-indigo-600"
+          bgColor="bg-indigo-50/50"
+          borderColor="border-indigo-200"
         />
+
         <StatCard
           title="Current Classification"
           value={stats.overallClassification || "Pending"}
           icon={<HiOutlineDocumentReport className="w-5 h-5 text-blue-600" />}
           subtitle="Based on published grades"
+          iconBgColor="bg-blue-100"
+          iconColor="text-blue-600"
+          bgColor="bg-blue-50/50"
+          borderColor="border-blue-200"
         />
+
         <StatCard
           title="Withheld / Pending"
           value={stats.withheldOrPendingCount}
           icon={<HiOutlineLockClosed className="w-5 h-5 text-amber-600" />}
           subtitle="Not yet certified for release"
+          iconBgColor="bg-amber-100"
+          iconColor="text-amber-600"
+          bgColor="bg-amber-50/50"
+          borderColor="border-amber-200"
         />
       </div>
 

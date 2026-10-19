@@ -5,13 +5,13 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   className?: string;
   variant?:
-    | "primary"
-    | "secondary"
-    | "primary-outline"
-    | "secondary-outline"
-    | "white"
-    | "ghost"
-    | "danger";
+  | "primary"
+  | "secondary"
+  | "primary-outline"
+  | "secondary-outline"
+  | "white"
+  | "ghost"
+  | "danger";
   icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   size?: "sm" | "md" | "lg";
@@ -68,15 +68,19 @@ const Button: React.FC<ButtonProps> = ({
     "primary-outline": `
       bg-transparent text-indigo-600
       border border-indigo-600
-      hover:bg-indigo-50
-      active:bg-indigo-100
+      hover:bg-indigo-700
+      active:bg-indigo-800
+      hover:text-white
+      active:text-white
       focus-visible:ring-indigo-500
     `,
     "secondary-outline": `
       bg-transparent text-slate-600
       border border-slate-300
-      hover:bg-slate-50
-      active:bg-slate-100
+      hover:bg-slate-800
+      active:bg-slate-900
+      hover:text-white
+      active:text-white
       focus-visible:ring-slate-400
     `,
     danger: `

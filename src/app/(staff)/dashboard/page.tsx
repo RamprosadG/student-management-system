@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Button from "@/components/ui/buttons/Button";
 import Badge from "@/components/ui/badges/Badge";
@@ -8,6 +8,7 @@ import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import Modal from "@/components/ui/modals/Modal";
 import StatCard from "@/components/ui/stats/StatCard";
 import { RecordPaymentForm, FeeAccountItem } from "@/features/fees/RecordPaymentForm";
+import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import {
   HiOutlineAcademicCap,
@@ -18,7 +19,6 @@ import {
   HiRefresh,
   HiOutlineArrowRight,
   HiOutlineClock,
-  HiOutlineCheckCircle,
 } from "react-icons/hi";
 import { MdPayment } from "react-icons/md";
 
@@ -80,7 +80,7 @@ interface DashboardData {
 
 export default function StaffDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Quick Payment Modal
   const [selectedFeeForPayment, setSelectedFeeForPayment] =
@@ -177,9 +177,8 @@ export default function StaffDashboardPage() {
       className: "text-right",
       headerClassName: "text-right",
       render: (item) => (
-        <Button
-          size="sm"
-          variant="primary"
+        <TableActionButton
+          tooltip="Record payment"
           onClick={() =>
             setSelectedFeeForPayment({
               id: item.studentFeeId,
@@ -192,17 +191,14 @@ export default function StaffDashboardPage() {
             })
           }
         >
-          <span className="flex items-center gap-1">
-            <MdPayment className="w-3.5 h-3.5" />
-            Record Payment
-          </span>
-        </Button>
+          <MdPayment className="w-4 h-4" />
+        </TableActionButton>
       ),
     },
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-6 w-full">
       {/* Top Banner Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
         <div>
@@ -221,7 +217,7 @@ export default function StaffDashboardPage() {
 
         <div className="flex items-center gap-3">
           <Button
-            variant="white"
+            variant="secondary-outline"
             size="md"
             icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
             onClick={fetchDashboardData}
@@ -233,43 +229,56 @@ export default function StaffDashboardPage() {
       </div>
 
       {/* Primary KPI Overview Cards */}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Enrolled Students"
           value={kpis.enrolledStudents}
           subtitle={`Total records: ${kpis.totalStudents}`}
           icon={<HiOutlineAcademicCap className="w-6 h-6" />}
-          iconBgColor="bg-indigo-50"
+          iconBgColor="bg-indigo-100"
           iconColor="text-indigo-600"
+          bgColor="bg-indigo-50/50"
+          borderColor="border-indigo-200"
         />
+
         <StatCard
           title="Outstanding Fees"
           value={formatCurrency(kpis.totalOutstandingBalance)}
           subtitle="Real-time uncollected tuition"
           icon={<HiOutlineCreditCard className="w-6 h-6" />}
-          iconBgColor="bg-amber-50"
+          iconBgColor="bg-amber-100"
           iconColor="text-amber-600"
+          bgColor="bg-amber-50/50"
+          borderColor="border-amber-200"
         />
+
         <StatCard
           title="Overdue Accounts"
           value={kpis.overdueAccountsCount}
           subtitle="Past due date & unpaid"
           icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
-          iconBgColor="bg-rose-50"
+          iconBgColor="bg-rose-100"
           iconColor="text-rose-600"
+          bgColor="bg-rose-50/50"
+          borderColor="border-rose-200"
         />
+
         <StatCard
           title="Pending Evaluations"
           value={kpis.pendingGradingCount}
           subtitle={`Across ${kpis.totalAssessments} assessments`}
           icon={<HiOutlineDocumentReport className="w-6 h-6" />}
-          iconBgColor="bg-emerald-50"
+          iconBgColor="bg-emerald-100"
           iconColor="text-emerald-600"
+          bgColor="bg-emerald-50/50"
+          borderColor="border-emerald-200"
         />
       </div>
 
+
       {/* Priority Section: Overdue Fees Action Panel */}
-      <div className="rounded-xl border border-rose-200 bg-white shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-rose-200 bg-white shadow-xs overflow-visible">
         <div className="flex items-center justify-between p-4 sm:px-6 border-b border-rose-100 bg-rose-50/40">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-lg bg-rose-100 text-rose-700">
@@ -304,141 +313,209 @@ export default function StaffDashboardPage() {
       {/* Two Column Grid: Recent Submissions + Upcoming Deadlines */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Student Submissions */}
-        <div className="rounded-xl border border-gray-200 bg-white shadow-xs p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-            <div className="flex items-center gap-2">
-              <HiOutlineClipboardList className="w-5 h-5 text-indigo-600" />
+        <div className="rounded-xl border border-gray-200 bg-white shadow-xs overflow-hidden">
+          <div className="flex items-center justify-between gap-3 p-5 border-b border-gray-200">
+            <div className="flex items-center gap-2 min-w-0">
+              <HiOutlineClipboardList className="w-5 h-5 text-indigo-600 shrink-0" />
               <h2 className="text-base font-bold text-slate-900">
                 Recent Submissions
               </h2>
             </div>
+
             <Link
               href="/results"
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 shrink-0"
             >
               <span>Grade Submissions</span>
               <HiOutlineArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
-          <div className="space-y-3">
-            {(!data?.recentSubmissions || data.recentSubmissions.length === 0) ? (
-              <p className="text-xs text-slate-500 py-6 text-center">
-                No recent student submissions recorded.
-              </p>
-            ) : (
-              data.recentSubmissions.map((sub) => (
-                <div
-                  key={sub.submissionId}
-                  className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-slate-50/60 hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex flex-col min-w-0 pr-2">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-semibold uppercase text-indigo-700">
-                        {sub.moduleCode}
-                      </span>
-                      <span className="text-xs font-bold text-slate-800 truncate">
-                        &bull; {sub.studentName}
-                      </span>
-                    </div>
-                    <span className="text-xs text-slate-600 truncate mt-0.5" title={sub.assessmentTitle}>
-                      {sub.assessmentTitle}
-                    </span>
-                    <span className="text-[11px] text-slate-400 mt-0.5">
-                      {formatDate(sub.submittedAt)} (v{sub.versionNumber})
-                    </span>
-                  </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm divide-y divide-slate-200">
+              <thead className="bg-slate-100 text-xs uppercase tracking-wide text-slate-600">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Student / Module</th>
+                  <th className="px-4 py-3 font-semibold">Submitted</th>
+                  <th className="px-4 py-3 font-semibold text-center">Status</th>
+                  <th className="px-4 py-3 font-semibold text-right">Grade</th>
+                </tr>
+              </thead>
 
-                  <div className="shrink-0 flex flex-col items-end gap-1">
-                    {sub.isLate ? (
-                      <Badge variant="danger" size="sm">
-                        Late
-                      </Badge>
-                    ) : (
-                      <Badge variant="success" size="sm">
-                        On-time
-                      </Badge>
-                    )}
-                    {sub.grade !== null ? (
-                      <span className="text-xs font-bold text-slate-800 font-mono">
-                        {sub.grade}%
-                      </span>
-                    ) : (
-                      <span className="text-[11px] text-amber-600 font-medium">
-                        Ungraded
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))
-            )}
+              <tbody className="divide-y divide-slate-200">
+                {!data?.recentSubmissions ||
+                  data.recentSubmissions.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-4 py-10 text-center text-sm text-slate-500"
+                    >
+                      No recent student submissions recorded.
+                    </td>
+                  </tr>
+                ) : (
+                  data.recentSubmissions.map((sub, index) => (
+                    <tr
+                      key={sub.submissionId}
+                      className={`transition-colors hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-slate-100"
+                        }`}
+                    >
+                      <td className="px-4 py-3">
+                        <div className="min-w-0 max-w-[220px]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold uppercase text-indigo-700">
+                              {sub.moduleCode}
+                            </span>
+                            <span className="text-xs font-semibold text-slate-800 truncate">
+                              {sub.studentName}
+                            </span>
+                          </div>
+                          <p
+                            className="mt-1 text-xs text-slate-500 truncate"
+                            title={sub.assessmentTitle}
+                          >
+                            {sub.assessmentTitle}
+                          </p>
+                          <p className="mt-1 text-[11px] text-slate-400">
+                            Version {sub.versionNumber}
+                          </p>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3 whitespace-nowrap text-xs text-slate-600">
+                        {formatDate(sub.submittedAt)}
+                      </td>
+
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
+                        {sub.isLate ? (
+                          <Badge variant="danger" size="sm">
+                            Late
+                          </Badge>
+                        ) : (
+                          <Badge variant="success" size="sm">
+                            On-time
+                          </Badge>
+                        )}
+                      </td>
+
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        {sub.grade !== null ? (
+                          <span className="text-sm font-bold font-mono text-slate-800">
+                            {sub.grade}%
+                          </span>
+                        ) : (
+                          <span className="text-xs font-medium text-amber-600">
+                            Ungraded
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
 
         {/* Upcoming Assessment Deadlines */}
-        <div className="rounded-xl border border-gray-200 bg-white shadow-xs p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-            <div className="flex items-center gap-2">
-              <HiOutlineClock className="w-5 h-5 text-indigo-600" />
+        <div className="rounded-xl border border-gray-200 bg-white shadow-xs overflow-hidden">
+          <div className="flex items-center justify-between gap-3 p-5 border-b border-gray-200">
+            <div className="flex items-center gap-2 min-w-0">
+              <HiOutlineClock className="w-5 h-5 text-indigo-600 shrink-0" />
               <h2 className="text-base font-bold text-slate-900">
-                Assessment Timetable & Deadlines
+                Assessment Deadlines
               </h2>
             </div>
+
             <Link
               href="/assessments"
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 shrink-0"
             >
               <span>Manage Assessments</span>
               <HiOutlineArrowRight className="w-3 h-3" />
             </Link>
           </div>
 
-          <div className="space-y-3">
-            {(!data?.upcomingDeadlines || data.upcomingDeadlines.length === 0) ? (
-              <p className="text-xs text-slate-500 py-6 text-center">
-                No active assessment deadlines scheduled.
-              </p>
-            ) : (
-              data.upcomingDeadlines.map((item) => (
-                <div
-                  key={item.assessmentId}
-                  className="flex items-center justify-between p-3 rounded-lg border border-gray-100 bg-slate-50/60 hover:bg-slate-50 transition-colors"
-                >
-                  <div className="flex flex-col min-w-0 pr-2">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-semibold uppercase text-indigo-700">
-                        {item.moduleCode}
-                      </span>
-                      <span className="text-xs text-slate-500 font-mono">
-                        ({item.programmeCode})
-                      </span>
-                    </div>
-                    <span className="text-sm font-semibold text-slate-900 truncate mt-0.5">
-                      {item.title}
-                    </span>
-                    <span className="text-xs text-slate-500 mt-0.5">
-                      {item.submissionCount} submissions received
-                    </span>
-                  </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm divide-y divide-slate-200">
+              <thead className="bg-slate-100 text-xs uppercase tracking-wide text-slate-600">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Assessment</th>
+                  <th className="px-4 py-3 font-semibold">Deadline</th>
+                  <th className="px-4 py-3 font-semibold text-center">
+                    Submissions
+                  </th>
+                  <th className="px-4 py-3 font-semibold text-center">Status</th>
+                </tr>
+              </thead>
 
-                  <div className="shrink-0 flex flex-col items-end gap-1">
-                    <span
-                      className={`text-xs font-bold ${
-                        item.isPastDeadline ? "text-red-600" : "text-slate-800"
-                      }`}
+              <tbody className="divide-y divide-slate-200">
+                {!data?.upcomingDeadlines ||
+                  data.upcomingDeadlines.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-4 py-10 text-center text-sm text-slate-500"
                     >
-                      {formatDate(item.deadline)}
-                    </span>
-                    <Badge
-                      variant={item.isPastDeadline ? "neutral" : "info"}
-                      size="sm"
+                      No active assessment deadlines scheduled.
+                    </td>
+                  </tr>
+                ) : (
+                  data.upcomingDeadlines.map((item, index) => (
+                    <tr
+                      key={item.assessmentId}
+                      className={`transition-colors hover:bg-gray-100 ${index % 2 === 0 ? "bg-white" : "bg-slate-100"
+                        }`}
                     >
-                      {item.isPastDeadline ? "Closed" : "Active"}
-                    </Badge>
-                  </div>
-                </div>
-              ))
-            )}
+                      <td className="px-4 py-3">
+                        <div className="min-w-0 max-w-[220px]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold uppercase text-indigo-700">
+                              {item.moduleCode}
+                            </span>
+                            <span className="text-[11px] text-slate-500 font-mono">
+                              ({item.programmeCode})
+                            </span>
+                          </div>
+                          <p
+                            className="mt-1 text-sm font-semibold text-slate-900 truncate"
+                            title={item.title}
+                          >
+                            {item.title}
+                          </p>
+                        </div>
+                      </td>
+
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span
+                          className={`text-xs font-semibold ${item.isPastDeadline
+                            ? "text-rose-600"
+                            : "text-slate-700"
+                            }`}
+                        >
+                          {formatDate(item.deadline)}
+                        </span>
+                      </td>
+
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
+                        <span className="text-sm font-semibold text-slate-700">
+                          {item.submissionCount}
+                        </span>
+                      </td>
+
+                      <td className="px-4 py-3 text-center">
+                        <Badge
+                          variant={item.isPastDeadline ? "neutral" : "info"}
+                          size="sm"
+                        >
+                          {item.isPastDeadline ? "Closed" : "Active"}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

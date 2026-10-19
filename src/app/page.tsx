@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { PortalLink } from "@/components/shared/PortalLink";
 
 export default function Home() {
   return (
@@ -30,8 +30,9 @@ export default function Home() {
           </div>
 
           <div className="mt-5 space-y-2.5">
-            <Link
+            <PortalLink
               href="/dashboard"
+              portal="staff"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -43,10 +44,11 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
 
-            <Link
+            <PortalLink
               href="/students"
+              portal="staff"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -58,10 +60,11 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
 
-            <Link
+            <PortalLink
               href="/fees"
+              portal="staff"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -73,10 +76,11 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
 
-            <Link
+            <PortalLink
               href="/assessments"
+              portal="staff"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -88,10 +92,11 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
 
-            <Link
+            <PortalLink
               href="/results"
+              portal="staff"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -103,7 +108,7 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
           </div>
         </div>
 
@@ -124,8 +129,9 @@ export default function Home() {
           </div>
 
           <div className="mt-5 space-y-2.5">
-            <Link
+            <PortalLink
               href="/student-dashboard"
+              portal="student"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -137,10 +143,11 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
 
-            <Link
+            <PortalLink
               href="/student-assessments"
+              portal="student"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -152,10 +159,11 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
 
-            <Link
+            <PortalLink
               href="/marksheet"
+              portal="student"
               className="flex items-center justify-between rounded-lg p-3.5 text-sm hover:bg-zinc-50 border border-zinc-100 dark:border-zinc-800/80 dark:hover:bg-zinc-800/50 transition-colors"
             >
               <div>
@@ -167,7 +175,7 @@ export default function Home() {
                 </div>
               </div>
               <span className="text-zinc-400 text-xs font-semibold">&rarr;</span>
-            </Link>
+            </PortalLink>
           </div>
         </div>
       </div>
