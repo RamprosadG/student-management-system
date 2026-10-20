@@ -1,11 +1,6 @@
 import prisma from "@/lib/prisma";
 import { EnrolmentStatus } from "@/generated/prisma/client";
-
-export interface StudentFilterParams {
-  search?: string;
-  programmeId?: string;
-  status?: EnrolmentStatus;
-}
+import { StudentFilterParams } from "@/server/types/student";
 
 export async function findStudents(filters: StudentFilterParams) {
   const where: any = {};

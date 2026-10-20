@@ -3,8 +3,8 @@ import {
   createStudentWithFee,
   updateStudentById,
   getReferenceData,
-  StudentFilterParams,
 } from "@/server/repositories/student.repository";
+import { StudentFilterParams } from "@/server/types/student";
 import {
   CreateStudentInput,
   UpdateStudentInput,

@@ -1,8 +1,8 @@
 import {
   findFeesWithStudents,
   recordPaymentTransaction,
-  FeeFilterParams,
 } from "@/server/repositories/fee.repository";
+import { FeeFilterParams } from "@/server/types/fee";
 import { RecordPaymentInput } from "@/lib/validations/fee";
 
 export async function listFees(filters: FeeFilterParams) {

@@ -2,8 +2,8 @@ import {
   findAssessmentsWithStats,
   createAssessmentRecord,
   getAssessmentModules,
-  AssessmentFilterParams,
 } from "@/server/repositories/assessment.repository";
+import { AssessmentFilterParams } from "@/server/types/assessment";
 import { CreateAssessmentInput } from "@/lib/validations/assessment";
 
 export async function listAssessments(filters: AssessmentFilterParams) {

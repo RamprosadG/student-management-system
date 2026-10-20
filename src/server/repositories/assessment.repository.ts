@@ -1,11 +1,6 @@
 import prisma from "@/lib/prisma";
 import { CreateAssessmentInput } from "@/lib/validations/assessment";
-
-export interface AssessmentFilterParams {
-  search?: string;
-  moduleId?: string;
-  programmeId?: string;
-}
+import { AssessmentFilterParams } from "@/server/types/assessment";
 
 export async function findAssessmentsWithStats(filters: AssessmentFilterParams) {
   const where: any = {};

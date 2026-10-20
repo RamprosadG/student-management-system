@@ -3,7 +3,6 @@ import {
   findStudentMarksheet,
   saveOrUpdateGrade,
   setPublishStatus,
-  StaffGradingItem,
 } from "@/server/repositories/result.repository";
 import { SaveGradeInput, TogglePublishInput } from "@/lib/validations/result";
 

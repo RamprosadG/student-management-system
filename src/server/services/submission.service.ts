@@ -1,7 +1,6 @@
 import {
   findAssessmentsForStudent,
   saveStudentSubmission,
-  StudentAssessmentItem,
 } from "@/server/repositories/submission.repository";
 import { CreateSubmissionInput } from "@/lib/validations/submission";
 

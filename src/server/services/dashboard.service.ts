@@ -1,9 +1,11 @@
 import {
   findStaffDashboardData,
   findStudentDashboardData,
+} from "@/server/repositories/dashboard.repository";
+import {
   DashboardMetrics,
   StudentDashboardMetrics,
-} from "@/server/repositories/dashboard.repository";
+} from "@/server/types/dashboard";
 
 export async function getStaffDashboardMetrics(): Promise<DashboardMetrics> {
   return await findStaffDashboardData();

@@ -1,9 +1,5 @@
 import prisma from "@/lib/prisma";
-
-export interface FeeFilterParams {
-  search?: string;
-  status?: "ALL" | "PAID" | "PARTIAL" | "OVERDUE";
-}
+import { FeeFilterParams } from "@/server/types/fee";
 
 export async function findFeesWithStudents(filters: FeeFilterParams) {
   const where: any = {};

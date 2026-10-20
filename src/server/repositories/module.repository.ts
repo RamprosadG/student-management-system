@@ -1,8 +1,5 @@
 import prisma from "@/lib/prisma";
-
-export interface ModuleFilterParams {
-  programmeId?: string;
-}
+import { ModuleFilterParams } from "@/server/types/module";
 
 export async function findModules(filters: ModuleFilterParams = {}) {
   return prisma.module.findMany({
