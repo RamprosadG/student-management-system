@@ -1,62 +1,26 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import Button from "@/components/ui/buttons/Button";
-import SearchInput from "@/components/ui/inputs/SearchInput";
-import Dropdown from "@/components/ui/dropdowns/Dropdown";
-import Badge from "@/components/ui/badges/Badge";
-import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import Modal from "@/components/ui/modals/Modal";
 import { CreateStudentForm } from "@/features/students/CreateStudentForm";
 import {
   UpdateStudentForm,
   StudentToEdit,
 } from "@/features/students/UpdateStudentForm";
-import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
-import { HiPlus, HiRefresh } from "react-icons/hi";
-import { FiEdit } from "react-icons/fi";
-import { formatDate, formatCurrency } from "@/lib/utils";
-
-interface StudentRecord {
-  id: string;
-  studentId: string;
-  fullName: string;
-  email: string;
-  dateOfBirth: string;
-  status: "ENROLLED" | "DEFERRED" | "WITHDRAWN" | "COMPLETED";
-  createdAt: string;
-  programme: {
-    id: string;
-    code: string;
-    name: string;
-    standardFee: number;
-  };
-  academicYear: {
-    id: string;
-    name: string;
-  };
-  studentFee?: {
-    id: string;
-    amountDue: number;
-    dueDate: string;
-  } | null;
-}
-
-interface ReferenceMeta {
-  programmes: Array<{ id: string; name: string; code: string }>;
-  academicYears: Array<{ id: string; name: string }>;
-}
+import { StudentsHeader } from "@/components/features/students/StudentsHeader";
+import { StudentsFilters } from "@/components/features/students/StudentsFilters";
+import { StudentsTable } from "@/components/features/students/StudentsTable";
+import type { StudentRecord, ReferenceMeta } from "@/types/students";
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<StudentRecord[]>([]);
   const [meta, setMeta] = useState<ReferenceMeta>({ programmes: [], academicYears: [] });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
-  // Filters
   const [search, setSearch] = useState<string>("");
   const [selectedProgramme, setSelectedProgramme] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [editingStudent, setEditingStudent] = useState<StudentToEdit | null>(null);
 
   const fetchReferenceData = async () => {
     try {
@@ -98,182 +62,27 @@ export default function StudentsPage() {
     fetchStudents();
   }, [fetchStudents]);
 
-  const statusVariantMap = {
-    ENROLLED: "success",
-    DEFERRED: "warning",
-    WITHDRAWN: "danger",
-    COMPLETED: "info",
-  } as const;
-
-  const programmeFilterOptions = [
-    { value: "", label: "All Programmes" },
-    ...meta.programmes.map((p) => ({
-      value: p.id,
-      label: `${p.name} (${p.code})`,
-    })),
-  ];
-
-  const statusFilterOptions = [
-    { value: "", label: "All Statuses" },
-    { value: "ENROLLED", label: "Enrolled" },
-    { value: "DEFERRED", label: "Deferred" },
-    { value: "WITHDRAWN", label: "Withdrawn" },
-    { value: "COMPLETED", label: "Completed" },
-  ];
-
-  const columns: Column<StudentRecord>[] = [
-    {
-      key: "studentId",
-      header: "Student ID",
-      render: (item) => (
-        <span className="font-mono font-semibold text-indigo-700 bg-indigo-50/80 px-2 py-0.5 rounded-md text-xs border border-indigo-100">
-          {item.studentId}
-        </span>
-      ),
-    },
-    {
-      key: "fullName",
-      header: "Student Details",
-      render: (item) => (
-        <div>
-          <div className="font-semibold text-slate-900">{item.fullName}</div>
-          <div className="text-xs text-gray-500">{item.email}</div>
-        </div>
-      ),
-    },
-    {
-      key: "programme",
-      header: "Programme",
-      render: (item) => (
-        <div>
-          <div className="font-medium text-slate-800">{item.programme?.name}</div>
-          <div className="text-xs text-gray-500">
-            Year: {item.academicYear?.name} &middot; Standard Fee:{" "}
-            {item.programme ? formatCurrency(Number(item.programme.standardFee)) : "-"}
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "dateOfBirth",
-      header: "Date of Birth",
-      render: (item) => (
-        <span className="text-gray-600 text-xs">
-          {formatDate(item.dateOfBirth)}
-        </span>
-      ),
-    },
-    {
-      key: "status",
-      header: "Enrolment Status",
-      render: (item) => (
-        <Badge variant={statusVariantMap[item.status]} size="md">
-          {item.status.toLowerCase()}
-        </Badge>
-      ),
-    },
-    {
-      key: "actions",
-      header: "Actions",
-      headerClassName: "text-right",
-      className: "text-right",
-      render: (item) => (
-        <TableActionButton
-          tooltip="Edit student"
-          onClick={(e) => {
-            e.stopPropagation();
-            setEditingStudent({
-              id: item.id,
-              studentId: item.studentId,
-              fullName: item.fullName,
-              email: item.email,
-              dateOfBirth: item.dateOfBirth,
-              status: item.status,
-            });
-          }}
-        >
-          <FiEdit className="w-4 h-4" />
-        </TableActionButton>
-      ),
-    },
-  ];
-
-  const [editingStudent, setEditingStudent] = useState<StudentToEdit | null>(null);
-
   return (
     <div className="flex flex-col gap-6 w-full">
-      {/* Top Header & Enrol Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Student Enrolment
-          </h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Add and manage student registry records, filter cohorts, and track statuses.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="secondary"
-            size="md"
-            icon={<HiRefresh className="w-4 h-4" />}
-            onClick={() => fetchStudents()}
-          >
-            Refresh
-          </Button>
-          <Button
-            variant="primary"
-            size="md"
-            icon={<HiPlus className="w-4 h-4" />}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Enrol Student
-          </Button>
-        </div>
-      </div>
-
-      {/* Filter and Search Bar Card */}
-      <div className="w-full flex flex-col md:flex-row mt-3 gap-4 items-center">
-        {/* Search Input takes all remaining space */}
-        <div className="flex-1 w-full min-w-0">
-          <SearchInput
-            value={search}
-            onDebouncedChange={(val) => setSearch(val)}
-            placeholder="Search by name, ID or email..."
-          />
-        </div>
-
-        {/* Filter Dropdowns */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
-          <div className="w-full sm:w-64">
-            <Dropdown
-              options={programmeFilterOptions}
-              value={selectedProgramme}
-              onChange={(val) => setSelectedProgramme(val)}
-              placeholder="Filter by Programme"
-            />
-          </div>
-
-          <div className="w-full sm:w-48">
-            <Dropdown
-              options={statusFilterOptions}
-              value={selectedStatus}
-              onChange={(val) => setSelectedStatus(val)}
-              placeholder="Filter Status"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Student Records Data Table */}
-      <DataTable
-        data={students}
-        columns={columns}
+      <StudentsHeader
+        onRefresh={() => fetchStudents()}
+        onEnrol={() => setIsModalOpen(true)}
+      />
+      <StudentsFilters
+        search={search}
+        onSearchChange={setSearch}
+        selectedProgramme={selectedProgramme}
+        onProgrammeChange={setSelectedProgramme}
+        selectedStatus={selectedStatus}
+        onStatusChange={setSelectedStatus}
+        meta={meta}
+      />
+      <StudentsTable
+        students={students}
         isLoading={isLoading}
-        emptyMessage="No students found matching your filters."
+        onEdit={setEditingStudent}
       />
 
-      {/* Enrol Student Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -290,7 +99,6 @@ export default function StudentsPage() {
         />
       </Modal>
 
-      {/* Update Student Status/Details Modal */}
       <Modal
         isOpen={Boolean(editingStudent)}
         onClose={() => setEditingStudent(null)}
@@ -310,5 +118,3 @@ export default function StudentsPage() {
     </div>
   );
 }
-
-

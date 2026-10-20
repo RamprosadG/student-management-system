@@ -2,10 +2,11 @@
 
 import { Sidebar } from "@/components/shared/Sidebar";
 import { Navbar } from "@/components/shared/Navbar";
+import Footer from "./Footer";
 
 export function AppLayoutShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w-full min-h-screen flex relative bg-slate-50">
+    <div className="w-full min-h-screen flex relative bg-white">
       {/* 1. Left Sidebar (Fixed width w-64 on desktop) */}
       <Sidebar />
 
@@ -17,6 +18,7 @@ export function AppLayoutShell({ children }: { children: React.ReactNode }) {
         {/* Scrollable Main Viewport (pt-16 offsets fixed h-16 header) */}
         <main className="flex-1 flex flex-col pt-16">
           <div className="flex-1 p-6 md:p-8 w-full">{children}</div>
+          <Footer />
         </main>
       </div>
     </div>

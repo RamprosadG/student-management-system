@@ -88,7 +88,7 @@ function DataTable<T extends { id?: string }>({
                   className={`
                     transition-colors duration-150
                     ${index % 2 === 0 ? "bg-white" : "bg-slate-100"}
-                    hover:bg-gray-100
+                    hover:bg-blue-50
                     ${onRowClick ? "cursor-pointer" : ""}
                     ${computedRowClassName}
                   `}
