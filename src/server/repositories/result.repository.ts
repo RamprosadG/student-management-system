@@ -21,6 +21,7 @@ export interface StaffGradingItem {
   programmeName: string;
   fileName: string;
   fileSize: number;
+  fileUrl: string | null;
   submittedAt: string;
   versionCount: number;
   latestVersionNumber: number;
@@ -167,6 +168,7 @@ export async function findStaffGradingList(params: {
       programmeName: s.assessment.module.programme.name,
       fileName: latestVer?.fileName || "submission",
       fileSize: latestVer?.fileSize || 0,
+      fileUrl: latestVer?.storageKey || null,
       submittedAt: submittedAt.toISOString(),
       versionCount: s.versions.length,
       latestVersionNumber: latestVer?.versionNumber || 1,

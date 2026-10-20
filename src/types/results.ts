@@ -17,6 +17,7 @@ export interface StaffGradingItem {
   programmeName: string;
   fileName: string;
   fileSize: number;
+  fileUrl: string | null;
   submittedAt: string;
   versionCount: number;
   latestVersionNumber: number;

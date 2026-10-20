@@ -114,6 +114,7 @@ export async function findAssessmentsWithStats(filters: AssessmentFilterParams) 
         latestVersionNumber: latestVersion ? latestVersion.versionNumber : 1,
         fileName: latestVersion?.fileName || "submission",
         fileSize: latestVersion?.fileSize || 0,
+        fileUrl: latestVersion?.storageKey || null,
         submittedAt: submittedAt.toISOString(),
         isLate,
         lateDurationText,

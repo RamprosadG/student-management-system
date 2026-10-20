@@ -3,6 +3,7 @@
 import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
+import { SubmissionFileActions } from "@/components/shared/SubmissionFileActions";
 import type { StaffGradingItem } from "@/types/results";
 import {
   HiOutlineEyeOff,
@@ -146,7 +147,9 @@ export function ResultsTable({
         const isTogglingThis = togglingId === item.submissionId;
 
         return (
-          <div className="flex items-center justify-end gap-1.5">
+          <div className="flex items-center justify-end gap-2.5">
+            <SubmissionFileActions fileUrl={item.fileUrl} fileName={item.fileName} />
+
             <TableActionButton
               tooltip={item.grade !== null ? "Edit grade" : "Enter grade"}
               onClick={() => onGrade(item)}

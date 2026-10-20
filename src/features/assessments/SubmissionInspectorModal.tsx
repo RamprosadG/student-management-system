@@ -5,6 +5,7 @@ import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import Badge from "@/components/ui/badges/Badge";
 import Button from "@/components/ui/buttons/Button";
 import { TableActionLink } from "@/components/ui/buttons/TableActionButton";
+import { SubmissionFileActions } from "@/components/shared/SubmissionFileActions";
 import { HiOutlineClock, HiOutlineDocumentText, HiOutlineCheckCircle, HiOutlineExclamation, HiOutlinePencilAlt } from "react-icons/hi";
 
 export interface SubmissionItem {
@@ -16,6 +17,7 @@ export interface SubmissionItem {
   latestVersionNumber: number;
   fileName: string;
   fileSize: number;
+  fileUrl: string | null;
   submittedAt: string;
   isLate: boolean;
   lateDurationText: string | null;
@@ -173,12 +175,15 @@ export function SubmissionInspectorModal({
       headerClassName: "text-right",
       className: "text-right",
       render: (item) => (
-        <TableActionLink
-          href="/results"
-          tooltip={item.result ? "Review grade" : "Enter grade"}
-        >
-          <HiOutlinePencilAlt className="w-4 h-4" />
-        </TableActionLink>
+        <div className="flex items-center justify-end gap-2.5">
+          <SubmissionFileActions fileUrl={item.fileUrl} fileName={item.fileName} />
+          <TableActionLink
+            href="/results"
+            tooltip={item.result ? "Review grade" : "Enter grade"}
+          >
+            <HiOutlinePencilAlt className="w-4 h-4" />
+          </TableActionLink>
+        </div>
       ),
     },
   ];
