@@ -6,6 +6,7 @@ import {
 } from "@/server/services/student.service";
 import { CreateStudentSchema } from "@/lib/validations/student";
 import { EnrolmentStatus } from "@/generated/prisma/client";
+import { parsePagination } from "@/server/types/pagination";
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,11 +22,12 @@ export async function GET(request: NextRequest) {
     }
 
     const status = statusParam ? (statusParam as EnrolmentStatus) : undefined;
-    const students = await listStudents({ search, programmeId, status });
+    const pagination = parsePagination(searchParams);
+    const result = await listStudents({ search, programmeId, status, ...pagination });
 
     return NextResponse.json({
       success: true,
-      data: students,
+      data: result,
     });
   } catch (error: any) {
     return NextResponse.json(

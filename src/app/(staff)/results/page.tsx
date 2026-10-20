@@ -2,23 +2,40 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Modal from "@/components/ui/modals/Modal";
+import Pagination from "@/components/ui/pagination/Pagination";
 import { GradeEntryModal } from "@/features/results/GradeEntryModal";
 import { showSuccessAlert, showErrorAlert } from "@/components/ui/alerts/Alerts";
 import { ResultsHeader } from "@/components/features/results/ResultsHeader";
 import { ResultsSummary } from "@/components/features/results/ResultsSummary";
 import { ResultsFilters } from "@/components/features/results/ResultsFilters";
 import { ResultsTable } from "@/components/features/results/ResultsTable";
-import type { StaffGradingItem, ModuleItem, PublishFilter } from "@/types/results";
+import type {
+  StaffGradingItem,
+  ModuleItem,
+  PublishFilter,
+  StaffGradingSummary,
+} from "@/types/results";
+import type { PaginationMeta } from "@/types/pagination";
+
+const PAGE_SIZE = 5;
 
 export default function StaffResultsPage() {
   const [items, setItems] = useState<StaffGradingItem[]>([]);
   const [modules, setModules] = useState<ModuleItem[]>([]);
+  const [summary, setSummary] = useState<StaffGradingSummary>({
+    totalSubmissions: 0,
+    gradedCount: 0,
+    publishedCount: 0,
+    withheldCount: 0,
+  });
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
   const [selectedModule, setSelectedModule] = useState<string>("ALL");
   const [publishFilter, setPublishFilter] = useState<PublishFilter>("ALL");
   const [gradingSubmission, setGradingSubmission] = useState<StaffGradingItem | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
 
   const fetchModules = useCallback(async () => {
     try {
@@ -39,24 +56,31 @@ export default function StaffResultsPage() {
       if (search.trim()) params.append("search", search.trim());
       if (selectedModule !== "ALL") params.append("moduleId", selectedModule);
       if (publishFilter !== "ALL") params.append("publishStatus", publishFilter);
+      params.append("page", String(page));
+      params.append("pageSize", String(PAGE_SIZE));
 
       const res = await fetch(`/api/results?${params.toString()}`);
       const json = await res.json();
 
-      if (json.success && Array.isArray(json.data)) {
+      if (json.success && json.data) {
+        const list = Array.isArray(json.data.items) ? json.data.items : [];
         setItems(
-          json.data.map((item: StaffGradingItem) => ({
+          list.map((item: StaffGradingItem) => ({
             ...item,
             id: item.submissionId,
           }))
         );
+        if (json.data.summary) {
+          setSummary(json.data.summary);
+        }
+        setPagination(json.data.pagination || null);
       }
     } catch (err) {
       console.error("Failed to fetch grading items:", err);
     } finally {
       setIsLoading(false);
     }
-  }, [search, selectedModule, publishFilter]);
+  }, [search, selectedModule, publishFilter, page]);
 
   useEffect(() => {
     fetchModules();
@@ -102,6 +126,11 @@ export default function StaffResultsPage() {
             : i
         )
       );
+      setSummary((prev) => ({
+        ...prev,
+        publishedCount: prev.publishedCount + (nextState ? 1 : -1),
+        withheldCount: prev.withheldCount + (nextState ? -1 : 1),
+      }));
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Failed to update status";
       showErrorAlert(message);
@@ -110,27 +139,31 @@ export default function StaffResultsPage() {
     }
   };
 
-  const totalSubmissions = items.length;
-  const gradedCount = items.filter((i) => i.grade !== null).length;
-  const publishedCount = items.filter((i) => i.isPublished).length;
-  const withheldCount = gradedCount - publishedCount;
-
   return (
     <div className="flex flex-col gap-6 w-full">
       <ResultsHeader isLoading={isLoading} onRefresh={fetchGradingList} />
       <ResultsSummary
-        totalSubmissions={totalSubmissions}
-        gradedCount={gradedCount}
-        publishedCount={publishedCount}
-        withheldCount={withheldCount}
+        totalSubmissions={summary.totalSubmissions}
+        gradedCount={summary.gradedCount}
+        publishedCount={summary.publishedCount}
+        withheldCount={summary.withheldCount}
       />
       <ResultsFilters
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
         selectedModule={selectedModule}
-        onModuleChange={setSelectedModule}
+        onModuleChange={(value) => {
+          setSelectedModule(value);
+          setPage(1);
+        }}
         publishFilter={publishFilter}
-        onPublishFilterChange={setPublishFilter}
+        onPublishFilterChange={(value) => {
+          setPublishFilter(value);
+          setPage(1);
+        }}
         modules={modules}
       />
       <ResultsTable
@@ -145,6 +178,16 @@ export default function StaffResultsPage() {
         onGrade={setGradingSubmission}
         onTogglePublish={handleTogglePublish}
       />
+
+      {pagination && pagination.total > 0 && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+          total={pagination.total}
+          limit={pagination.pageSize}
+        />
+      )}
 
       <Modal
         isOpen={Boolean(gradingSubmission)}

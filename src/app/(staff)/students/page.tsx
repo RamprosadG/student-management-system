@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Modal from "@/components/ui/modals/Modal";
+import Pagination from "@/components/ui/pagination/Pagination";
 import { CreateStudentForm } from "@/features/students/CreateStudentForm";
 import {
   UpdateStudentForm,
@@ -11,6 +12,9 @@ import { StudentsHeader } from "@/components/features/students/StudentsHeader";
 import { StudentsFilters } from "@/components/features/students/StudentsFilters";
 import { StudentsTable } from "@/components/features/students/StudentsTable";
 import type { StudentRecord, ReferenceMeta } from "@/types/students";
+import type { PaginationMeta } from "@/types/pagination";
+
+const PAGE_SIZE = 5;
 
 export default function StudentsPage() {
   const [students, setStudents] = useState<StudentRecord[]>([]);
@@ -21,6 +25,8 @@ export default function StudentsPage() {
   const [selectedProgramme, setSelectedProgramme] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [editingStudent, setEditingStudent] = useState<StudentToEdit | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
 
   const fetchReferenceData = async () => {
     try {
@@ -41,18 +47,21 @@ export default function StudentsPage() {
       if (search.trim()) params.set("search", search.trim());
       if (selectedProgramme) params.set("programmeId", selectedProgramme);
       if (selectedStatus) params.set("status", selectedStatus);
+      params.set("page", String(page));
+      params.set("pageSize", String(PAGE_SIZE));
 
       const res = await fetch(`/api/students?${params.toString()}`);
       const result = await res.json();
-      if (result.success && Array.isArray(result.data)) {
-        setStudents(result.data);
+      if (result.success && result.data) {
+        setStudents(result.data.items || []);
+        setPagination(result.data.pagination || null);
       }
     } catch (e) {
       console.error("Failed to load students", e);
     } finally {
       setIsLoading(false);
     }
-  }, [search, selectedProgramme, selectedStatus]);
+  }, [search, selectedProgramme, selectedStatus, page]);
 
   useEffect(() => {
     fetchReferenceData();
@@ -70,11 +79,20 @@ export default function StudentsPage() {
       />
       <StudentsFilters
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
         selectedProgramme={selectedProgramme}
-        onProgrammeChange={setSelectedProgramme}
+        onProgrammeChange={(value) => {
+          setSelectedProgramme(value);
+          setPage(1);
+        }}
         selectedStatus={selectedStatus}
-        onStatusChange={setSelectedStatus}
+        onStatusChange={(value) => {
+          setSelectedStatus(value);
+          setPage(1);
+        }}
         meta={meta}
       />
       <StudentsTable
@@ -82,6 +100,16 @@ export default function StudentsPage() {
         isLoading={isLoading}
         onEdit={setEditingStudent}
       />
+
+      {pagination && pagination.total > 0 && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+          total={pagination.total}
+          limit={pagination.pageSize}
+        />
+      )}
 
       <Modal
         isOpen={isModalOpen}

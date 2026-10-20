@@ -36,3 +36,10 @@ export interface ModuleItem {
   title: string;
   programme?: { code: string; name: string };
 }
+
+export interface StaffGradingSummary {
+  totalSubmissions: number;
+  gradedCount: number;
+  publishedCount: number;
+  withheldCount: number;
+}

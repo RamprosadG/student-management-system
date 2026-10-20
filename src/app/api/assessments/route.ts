@@ -5,6 +5,7 @@ import {
   listAssessmentReferenceModules,
 } from "@/server/services/assessment.service";
 import { CreateAssessmentSchema } from "@/lib/validations/assessment";
+import { parsePagination } from "@/server/types/pagination";
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,7 +20,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ success: true, data: modules });
     }
 
-    const data = await listAssessments({ search, moduleId, programmeId });
+    const pagination = parsePagination(searchParams);
+    const data = await listAssessments({ search, moduleId, programmeId, ...pagination });
 
     return NextResponse.json({
       success: true,

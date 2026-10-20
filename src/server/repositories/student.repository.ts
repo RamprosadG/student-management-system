@@ -1,6 +1,10 @@
 import prisma from "@/lib/prisma";
 import { EnrolmentStatus } from "@/generated/prisma/client";
 import { StudentFilterParams } from "@/server/types/student";
+import {
+  DEFAULT_PAGE_SIZE,
+  buildPaginationMeta,
+} from "@/server/types/pagination";
 
 export async function findStudents(filters: StudentFilterParams) {
   const where: any = {};
@@ -21,7 +25,13 @@ export async function findStudents(filters: StudentFilterParams) {
     where.status = filters.status;
   }
 
-  return prisma.student.findMany({
+  const pageSize =
+    filters.pageSize && filters.pageSize > 0 ? filters.pageSize : DEFAULT_PAGE_SIZE;
+  const total = await prisma.student.count({ where });
+  const pagination = buildPaginationMeta(filters.page ?? 1, pageSize, total);
+  const skip = (pagination.page - 1) * pageSize;
+
+  const items = await prisma.student.findMany({
     where,
     include: {
       programme: {
@@ -49,7 +59,11 @@ export async function findStudents(filters: StudentFilterParams) {
     orderBy: {
       createdAt: "desc",
     },
+    skip,
+    take: pageSize,
   });
+
+  return { items, pagination };
 }
 
 export async function getNextStudentSequence(year: number): Promise<string> {

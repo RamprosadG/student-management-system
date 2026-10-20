@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Modal from "@/components/ui/modals/Modal";
+import Pagination from "@/components/ui/pagination/Pagination";
 import {
   RecordPaymentForm,
   FeeAccountItem,
@@ -12,6 +13,9 @@ import { FeesSummary } from "@/components/features/fees/FeesSummary";
 import { FeesFilters } from "@/components/features/fees/FeesFilters";
 import { FeesTable } from "@/components/features/fees/FeesTable";
 import type { FeeItem, FinancialSummary } from "@/types/fees";
+import type { PaginationMeta } from "@/types/pagination";
+
+const PAGE_SIZE = 5;
 
 export default function FeesPage() {
   const [ledger, setLedger] = useState<FeeItem[]>([]);
@@ -28,6 +32,8 @@ export default function FeesPage() {
     useState<FeeAccountItem | null>(null);
   const [selectedFeeForHistory, setSelectedFeeForHistory] =
     useState<FeeItem | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
 
   const fetchFees = useCallback(async () => {
     setIsLoading(true);
@@ -37,6 +43,8 @@ export default function FeesPage() {
       if (statusFilter && statusFilter !== "ALL") {
         params.set("status", statusFilter);
       }
+      params.set("page", String(page));
+      params.set("pageSize", String(PAGE_SIZE));
 
       const res = await fetch(`/api/fees?${params.toString()}`);
       const result = await res.json();
@@ -50,13 +58,14 @@ export default function FeesPage() {
             overdueCount: 0,
           }
         );
+        setPagination(result.data.pagination || null);
       }
     } catch (e) {
       console.error("Failed to load fee ledger", e);
     } finally {
       setIsLoading(false);
     }
-  }, [search, statusFilter]);
+  }, [search, statusFilter, page]);
 
   useEffect(() => {
     fetchFees();
@@ -68,9 +77,15 @@ export default function FeesPage() {
       <FeesSummary summary={summary} />
       <FeesFilters
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
         statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
+        onStatusChange={(value) => {
+          setStatusFilter(value);
+          setPage(1);
+        }}
       />
       <FeesTable
         ledger={ledger}
@@ -78,6 +93,16 @@ export default function FeesPage() {
         onRecordPayment={setSelectedFeeForPayment}
         onViewHistory={setSelectedFeeForHistory}
       />
+
+      {pagination && pagination.total > 0 && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+          total={pagination.total}
+          limit={pagination.pageSize}
+        />
+      )}
 
       <Modal
         isOpen={Boolean(selectedFeeForPayment)}

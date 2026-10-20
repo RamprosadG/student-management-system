@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { listFees } from "@/server/services/fee.service";
+import { parsePagination } from "@/server/types/pagination";
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,7 +13,8 @@ export async function GET(request: NextRequest) {
         ? (statusParam as "PAID" | "PARTIAL" | "OVERDUE" | "ALL")
         : undefined;
 
-    const result = await listFees({ search, status });
+    const pagination = parsePagination(searchParams);
+    const result = await listFees({ search, status, ...pagination });
 
     return NextResponse.json({
       success: true,

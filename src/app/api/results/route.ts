@@ -9,6 +9,7 @@ import {
   SaveGradeSchema,
   TogglePublishSchema,
 } from "@/lib/validations/result";
+import { parsePagination } from "@/server/types/pagination";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
@@ -53,16 +54,18 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search") || undefined;
     const moduleId = searchParams.get("moduleId") || undefined;
     const publishStatus = (searchParams.get("publishStatus") || "ALL") as any;
+    const pagination = parsePagination(searchParams);
 
-    const gradingList = await getStaffGradingSheet({
+    const gradingData = await getStaffGradingSheet({
       search,
       moduleId,
       publishStatus,
+      ...pagination,
     });
 
     return NextResponse.json({
       success: true,
-      data: gradingList,
+      data: gradingData,
     });
   } catch (error: any) {
     return NextResponse.json(

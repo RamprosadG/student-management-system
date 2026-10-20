@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Modal from "@/components/ui/modals/Modal";
+import Pagination from "@/components/ui/pagination/Pagination";
 import { CreateAssessmentForm } from "@/features/assessments/CreateAssessmentForm";
 import { SubmissionInspectorModal } from "@/features/assessments/SubmissionInspectorModal";
 import { AssessmentsHeader } from "@/components/features/assessments/AssessmentsHeader";
@@ -9,6 +10,9 @@ import { AssessmentsSummary } from "@/components/features/assessments/Assessment
 import { AssessmentsFilters } from "@/components/features/assessments/AssessmentsFilters";
 import { AssessmentsTable } from "@/components/features/assessments/AssessmentsTable";
 import type { AssessmentItem, AssessmentSummary, ModuleData } from "@/types/assessments";
+import type { PaginationMeta } from "@/types/pagination";
+
+const PAGE_SIZE = 5;
 
 export default function StaffAssessmentsPage() {
   const [assessments, setAssessments] = useState<AssessmentItem[]>([]);
@@ -23,6 +27,8 @@ export default function StaffAssessmentsPage() {
   const [selectedModuleId, setSelectedModuleId] = useState<string>("ALL");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
   const [inspectedAssessment, setInspectedAssessment] = useState<AssessmentItem | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
 
   const fetchModules = useCallback(async () => {
     try {
@@ -44,6 +50,8 @@ export default function StaffAssessmentsPage() {
       if (selectedModuleId && selectedModuleId !== "ALL") {
         params.set("moduleId", selectedModuleId);
       }
+      params.set("page", String(page));
+      params.set("pageSize", String(PAGE_SIZE));
 
       const res = await fetch(`/api/assessments?${params.toString()}`);
       const data = await res.json();
@@ -51,13 +59,14 @@ export default function StaffAssessmentsPage() {
       if (data.success) {
         setAssessments(data.data.assessments);
         setSummary(data.data.summary);
+        setPagination(data.data.pagination || null);
       }
     } catch (err) {
       console.error("Failed to load assessments", err);
     } finally {
       setIsLoading(false);
     }
-  }, [search, selectedModuleId]);
+  }, [search, selectedModuleId, page]);
 
   useEffect(() => {
     fetchModules();
@@ -76,9 +85,15 @@ export default function StaffAssessmentsPage() {
       <AssessmentsSummary summary={summary} />
       <AssessmentsFilters
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
         selectedModuleId={selectedModuleId}
-        onModuleChange={setSelectedModuleId}
+        onModuleChange={(value) => {
+          setSelectedModuleId(value);
+          setPage(1);
+        }}
         modules={modules}
       />
       <AssessmentsTable
@@ -86,6 +101,16 @@ export default function StaffAssessmentsPage() {
         isLoading={isLoading}
         onInspect={setInspectedAssessment}
       />
+
+      {pagination && pagination.total > 0 && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+          total={pagination.total}
+          limit={pagination.pageSize}
+        />
+      )}
 
       <Modal
         isOpen={isCreateModalOpen}
