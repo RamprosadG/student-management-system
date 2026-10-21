@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import {
   StudentMarksheetContent,
   StudentMarksheetLoading,
-} from "@/components/features/student-marksheet/StudentMarksheetContent";
+} from "@/components/features/student/marksheet/StudentMarksheetContent";
 
 export default function MarksheetPage() {
   return (

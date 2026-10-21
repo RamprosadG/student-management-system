@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import {
   StaffStudentsContent,
   StaffStudentsLoading,
-} from "@/components/features/students/StaffStudentsContent";
+} from "@/components/features/staff/students/StaffStudentsContent";
 
 export default function StudentsPage({
   searchParams,

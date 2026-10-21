@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import {
   StaffFeesContent,
   StaffFeesLoading,
-} from "@/components/features/fees/StaffFeesContent";
+} from "@/components/features/staff/fees/StaffFeesContent";
 
 export default function StaffFeesPage({
   searchParams,

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import {
   StaffResultsContent,
   StaffResultsLoading,
-} from "@/components/features/results/StaffResultsContent";
+} from "@/components/features/staff/results/StaffResultsContent";
 
 export default function StaffResultsPage({
   searchParams,

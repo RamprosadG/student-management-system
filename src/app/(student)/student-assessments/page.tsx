@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import {
   StudentAssessmentsContent,
   StudentAssessmentsLoading,
-} from "@/components/features/student-assessments/StudentAssessmentsContent";
+} from "@/components/features/student/assessments/StudentAssessmentsContent";
 
 export default function StudentAssessmentsPage({
   searchParams,

@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import {
   StaffDashboardContent,
   StaffDashboardLoading,
-} from "@/components/features/dashboard/StaffDashboardContent";
+} from "@/components/features/staff/dashboard/StaffDashboardContent";
 
 export default function StaffDashboardPage() {
   return (

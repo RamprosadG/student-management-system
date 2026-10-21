@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import {
   StaffAssessmentsContent,
   StaffAssessmentsLoading,
-} from "@/components/features/assessments/StaffAssessmentsContent";
+} from "@/components/features/staff/assessments/StaffAssessmentsContent";
 
 export default function StaffAssessmentsPage({
   searchParams,
