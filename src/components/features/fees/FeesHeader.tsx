@@ -1,13 +1,6 @@
-"use client";
+import { FeesRefreshButton } from "./FeesRefreshButton";
 
-import Button from "@/components/ui/buttons/Button";
-import { HiRefresh } from "react-icons/hi";
-
-interface FeesHeaderProps {
-  onRefresh: () => void;
-}
-
-export function FeesHeader({ onRefresh }: FeesHeaderProps) {
+export function FeesHeader() {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
       <div>
@@ -19,14 +12,7 @@ export function FeesHeader({ onRefresh }: FeesHeaderProps) {
         </p>
       </div>
       <div>
-        <Button
-          variant="secondary-outline"
-          size="md"
-          icon={<HiRefresh className="w-4 h-4" />}
-          onClick={onRefresh}
-        >
-          Refresh Ledger
-        </Button>
+        <FeesRefreshButton />
       </div>
     </div>
   );

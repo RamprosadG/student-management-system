@@ -1,43 +1,54 @@
 import {
-  findFeesWithStudents,
+  findStaffFeePage,
+  findStaffFeeSummary,
   recordPaymentTransaction,
 } from "@/server/repositories/fee.repository";
-import { FeeFilterParams } from "@/server/types/fee";
+import { connection } from "next/server";
 import { RecordPaymentInput } from "@/lib/validations/fee";
 import {
-  DEFAULT_PAGE_SIZE,
-  buildPaginationMeta,
-} from "@/lib/utils";
+  StaffFeeFilterParams,
+  StaffFeeListQuery,
+  StaffFeeListResult,
+  StaffFeeStatusFilter,
+  StaffFeeSummary,
+} from "@/server/types/fee";
 
-export async function listFees(filters: FeeFilterParams) {
-  const fullLedger = await findFeesWithStudents(filters);
+const FEE_STATUSES: StaffFeeStatusFilter[] = [
+  "ALL",
+  "PAID",
+  "PARTIAL",
+  "OVERDUE",
+];
 
-  // Compute aggregate totals for KPI cards over the entire filtered set
-  const totalInvoiced = fullLedger.reduce((acc, item) => acc + item.amountDue, 0);
-  const totalCollected = fullLedger.reduce((acc, item) => acc + item.totalPaid, 0);
-  const totalOutstanding = fullLedger.reduce((acc, item) => acc + item.balance, 0);
-  const overdueCount = fullLedger.filter((item) => item.status === "OVERDUE").length;
+function normalizeStatus(status?: string): StaffFeeStatusFilter {
+  if (!status) return "ALL";
 
-  const pageSize =
-    filters.pageSize && filters.pageSize > 0 ? filters.pageSize : DEFAULT_PAGE_SIZE;
-  const pagination = buildPaginationMeta(
-    filters.page ?? 1,
-    pageSize,
-    fullLedger.length
+  return (
+    FEE_STATUSES.find((option) => option === status.toUpperCase()) || "ALL"
   );
-  const start = (pagination.page - 1) * pageSize;
-  const ledger = fullLedger.slice(start, start + pageSize);
+}
 
-  return {
-    ledger,
-    summary: {
-      totalInvoiced,
-      totalCollected,
-      totalOutstanding,
-      overdueCount,
-    },
-    pagination,
+export async function getStaffFees(
+  query: StaffFeeListQuery
+): Promise<StaffFeeListResult> {
+  // Balances move whenever a payment is recorded, so never prerender this.
+  await connection();
+
+  const filters: StaffFeeFilterParams = {
+    search: query.search,
+    status: normalizeStatus(query.status),
+    page: query.page,
+    pageSize: query.pageSize,
   };
+
+  return await findStaffFeePage(filters);
+}
+
+export async function getStaffFeeSummary(): Promise<StaffFeeSummary> {
+  // The ledger counters describe every fee account, not the current filter.
+  await connection();
+
+  return await findStaffFeeSummary();
 }
 
 export async function createPayment(input: RecordPaymentInput) {

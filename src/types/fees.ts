@@ -1,4 +1,7 @@
+import type { PaginationMeta } from "@/types/pagination";
+
 export type FeeStatus = "PAID" | "PARTIAL" | "OVERDUE";
+export type FeeStatusFilter = "ALL" | FeeStatus;
 
 export interface FeePayment {
   id: string;
@@ -29,4 +32,17 @@ export interface FinancialSummary {
   totalCollected: number;
   totalOutstanding: number;
   overdueCount: number;
+}
+
+export interface StaffFeesFilters {
+  search: string;
+  statusFilter: FeeStatusFilter;
+  page: number;
+}
+
+export interface StaffFeesData {
+  ledger: FeeItem[];
+  summary: FinancialSummary;
+  pagination: PaginationMeta | null;
+  filters: StaffFeesFilters;
 }

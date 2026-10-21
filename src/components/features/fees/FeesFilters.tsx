@@ -2,12 +2,13 @@
 
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
+import type { FeeStatusFilter } from "@/types/fees";
 
 interface FeesFiltersProps {
   search: string;
   onSearchChange: (value: string) => void;
-  statusFilter: string;
-  onStatusChange: (value: string) => void;
+  statusFilter: FeeStatusFilter;
+  onStatusChange: (value: FeeStatusFilter) => void;
 }
 
 const statusFilterOptions = [
@@ -37,7 +38,7 @@ export function FeesFilters({
         <Dropdown
           options={statusFilterOptions}
           value={statusFilter}
-          onChange={onStatusChange}
+          onChange={(val) => onStatusChange(val as FeeStatusFilter)}
           placeholder="Filter Payment Status"
         />
       </div>
