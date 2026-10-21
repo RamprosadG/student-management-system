@@ -1,5 +1,3 @@
-"use client";
-
 import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { TableActionButton } from "@/components/ui/buttons/TableActionButton";

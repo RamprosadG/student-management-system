@@ -1,16 +1,14 @@
-"use client";
-
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
-import type { ReferenceMeta } from "@/types/students";
+import type { ReferenceMeta, StudentStatusFilter } from "@/types/students";
 
 interface StudentsFiltersProps {
   search: string;
   onSearchChange: (value: string) => void;
   selectedProgramme: string;
   onProgrammeChange: (value: string) => void;
-  selectedStatus: string;
-  onStatusChange: (value: string) => void;
+  selectedStatus: StudentStatusFilter;
+  onStatusChange: (value: StudentStatusFilter) => void;
   meta: ReferenceMeta;
 }
 
@@ -63,7 +61,7 @@ export function StudentsFilters({
           <Dropdown
             options={statusFilterOptions}
             value={selectedStatus}
-            onChange={onStatusChange}
+            onChange={(value) => onStatusChange(value as StudentStatusFilter)}
             placeholder="Filter Status"
           />
         </div>

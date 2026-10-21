@@ -1,13 +1,25 @@
 import prisma from "@/lib/prisma";
-import { EnrolmentStatus } from "@/generated/prisma/client";
-import { StudentFilterParams } from "@/server/types/student";
+import { EnrolmentStatus, Prisma } from "@/generated/prisma/client";
+import {
+  StaffStudentFilterParams,
+  StaffStudentListResult,
+  StaffStudentReferenceData,
+  StaffStudentRow,
+  StaffStudentSummary,
+} from "@/server/types/student";
 import {
   DEFAULT_PAGE_SIZE,
   buildPaginationMeta,
 } from "@/lib/utils";
 
-export async function findStudents(filters: StudentFilterParams) {
-  const where: any = {};
+/**
+ * Search, programme and status predicates run in PostgreSQL and only the
+ * requested page of rows is fetched.
+ */
+export async function findStaffStudentPage(
+  filters: StaffStudentFilterParams
+): Promise<StaffStudentListResult> {
+  const where: Prisma.StudentWhereInput = {};
 
   if (filters.search) {
     where.OR = [
@@ -26,12 +38,12 @@ export async function findStudents(filters: StudentFilterParams) {
   }
 
   const pageSize =
-    filters.pageSize && filters.pageSize > 0 ? filters.pageSize : DEFAULT_PAGE_SIZE;
+    filters.pageSize > 0 ? filters.pageSize : DEFAULT_PAGE_SIZE;
   const total = await prisma.student.count({ where });
-  const pagination = buildPaginationMeta(filters.page ?? 1, pageSize, total);
+  const pagination = buildPaginationMeta(filters.page, pageSize, total);
   const skip = (pagination.page - 1) * pageSize;
 
-  const items = await prisma.student.findMany({
+  const students = await prisma.student.findMany({
     where,
     include: {
       programme: {
@@ -63,7 +75,54 @@ export async function findStudents(filters: StudentFilterParams) {
     take: pageSize,
   });
 
+  const items = students.map<StaffStudentRow>((student) => ({
+    id: student.id,
+    studentId: student.studentId,
+    fullName: student.fullName,
+    email: student.email,
+    dateOfBirth: student.dateOfBirth.toISOString(),
+    status: student.status,
+    createdAt: student.createdAt.toISOString(),
+    programme: {
+      id: student.programme.id,
+      code: student.programme.code,
+      name: student.programme.name,
+      standardFee: Number(student.programme.standardFee),
+    },
+    academicYear: {
+      id: student.academicYear.id,
+      name: student.academicYear.name,
+    },
+    studentFee: student.studentFee
+      ? {
+          id: student.studentFee.id,
+          amountDue: Number(student.studentFee.amountDue),
+          dueDate: student.studentFee.dueDate.toISOString(),
+        }
+      : null,
+  }));
+
   return { items, pagination };
+}
+
+/**
+ * KPI counters for the whole registry, deliberately ignoring every list filter.
+ */
+export async function findStaffStudentSummary(): Promise<StaffStudentSummary> {
+  const grouped = await prisma.student.groupBy({
+    by: ["status"],
+    _count: { _all: true },
+  });
+
+  const countByStatus = (status: EnrolmentStatus) =>
+    grouped.find((row) => row.status === status)?._count._all ?? 0;
+
+  return {
+    enrolled: countByStatus("ENROLLED"),
+    deferred: countByStatus("DEFERRED"),
+    withdrawn: countByStatus("WITHDRAWN"),
+    completed: countByStatus("COMPLETED"),
+  };
 }
 
 /**
@@ -181,12 +240,7 @@ export async function createStudentWithFee(data: {
 
 export async function updateStudentById(
   id: string,
-  data: {
-    fullName?: string;
-    email?: string;
-    dateOfBirth?: Date;
-    status?: EnrolmentStatus;
-  }
+  data: Prisma.StudentUpdateInput
 ) {
   return prisma.student.update({
     where: { id },
@@ -199,14 +253,23 @@ export async function updateStudentById(
   });
 }
 
-export async function getReferenceData() {
+export async function findStudentReferenceData(): Promise<StaffStudentReferenceData> {
   const [programmes, academicYears] = await Promise.all([
     prisma.programme.findMany({
       where: { isActive: true },
       orderBy: { name: "asc" },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+      },
     }),
     prisma.academicYear.findMany({
       orderBy: { startDate: "desc" },
+      select: {
+        id: true,
+        name: true,
+      },
     }),
   ]);
 

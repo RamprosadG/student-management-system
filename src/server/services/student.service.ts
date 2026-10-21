@@ -1,20 +1,70 @@
 import {
-  findStudents,
+  findStaffStudentPage,
+  findStaffStudentSummary,
+  findStudentReferenceData,
   createStudentWithFee,
   updateStudentById,
-  getReferenceData,
   findStudentOptions,
   findFirstEnrolledStudentId,
 } from "@/server/repositories/student.repository";
-import { StudentFilterParams } from "@/server/types/student";
+import { connection } from "next/server";
+import {
+  StaffStudentFilterParams,
+  StaffStudentListQuery,
+  StaffStudentListResult,
+  StaffStudentReferenceData,
+  StaffStudentSummary,
+} from "@/server/types/student";
+import { Prisma } from "@/generated/prisma/client";
 import {
   CreateStudentInput,
   UpdateStudentInput,
 } from "@/lib/validations/student";
 import prisma from "@/lib/prisma";
 
-export async function listStudents(filters: StudentFilterParams) {
-  return findStudents(filters);
+const ENROLMENT_STATUSES = ["ENROLLED", "DEFERRED", "WITHDRAWN", "COMPLETED"];
+
+function normalizeStatus(
+  status?: string
+): StaffStudentFilterParams["status"] | undefined {
+  if (!status) return undefined;
+
+  const match = ENROLMENT_STATUSES.find(
+    (option) => option === status.toUpperCase()
+  );
+
+  return match ? (match as StaffStudentFilterParams["status"]) : undefined;
+}
+
+export async function getStaffStudents(
+  query: StaffStudentListQuery
+): Promise<StaffStudentListResult> {
+  // Enrolment changes with every saved record, so never prerender this.
+  await connection();
+
+  const filters: StaffStudentFilterParams = {
+    search: query.search,
+    programmeId: query.programmeId,
+    status: normalizeStatus(query.status),
+    page: query.page,
+    pageSize: query.pageSize,
+  };
+
+  return await findStaffStudentPage(filters);
+}
+
+export async function getStaffStudentSummary(): Promise<StaffStudentSummary> {
+  // The KPI counters describe every student, not the current filter.
+  await connection();
+
+  return await findStaffStudentSummary();
+}
+
+export async function getStudentReferenceData(): Promise<StaffStudentReferenceData> {
+  // Programmes and academic years are editable elsewhere, so read them live.
+  await connection();
+
+  return await findStudentReferenceData();
 }
 
 export async function listStudentOptions() {
@@ -73,7 +123,7 @@ export async function updateStudent(id: string, input: UpdateStudentInput) {
     }
   }
 
-  const updateData: any = {};
+  const updateData: Prisma.StudentUpdateInput = {};
   if (input.fullName !== undefined) updateData.fullName = input.fullName.trim();
   if (input.email !== undefined) updateData.email = input.email.trim().toLowerCase();
   if (input.dateOfBirth !== undefined) updateData.dateOfBirth = new Date(input.dateOfBirth);
@@ -81,8 +131,3 @@ export async function updateStudent(id: string, input: UpdateStudentInput) {
 
   return updateStudentById(id, updateData);
 }
-
-export async function getEnrolmentReferenceData() {
-  return getReferenceData();
-}
-

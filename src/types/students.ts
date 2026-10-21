@@ -1,4 +1,8 @@
+import type { PaginationMeta } from "@/types/pagination";
+
 export type EnrolmentStatus = "ENROLLED" | "DEFERRED" | "WITHDRAWN" | "COMPLETED";
+
+export type StudentStatusFilter = EnrolmentStatus | "";
 
 export interface StudentRecord {
   id: string;
@@ -28,4 +32,26 @@ export interface StudentRecord {
 export interface ReferenceMeta {
   programmes: Array<{ id: string; name: string; code: string }>;
   academicYears: Array<{ id: string; name: string }>;
+}
+
+export interface StudentStatusSummary {
+  enrolled: number;
+  deferred: number;
+  withdrawn: number;
+  completed: number;
+}
+
+export interface StaffStudentsFilters {
+  search: string;
+  programmeId: string;
+  statusFilter: StudentStatusFilter;
+  page: number;
+}
+
+export interface StaffStudentsData {
+  students: StudentRecord[];
+  summary: StudentStatusSummary;
+  meta: ReferenceMeta;
+  pagination: PaginationMeta | null;
+  filters: StaffStudentsFilters;
 }

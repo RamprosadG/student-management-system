@@ -1,41 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  listStudents,
   enrolStudent,
-  getEnrolmentReferenceData,
+  updateStudent,
 } from "@/server/services/student.service";
-import { CreateStudentSchema } from "@/lib/validations/student";
-import { EnrolmentStatus } from "@/generated/prisma/client";
-import { parsePagination } from "@/lib/utils";
-
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get("search") || undefined;
-    const programmeId = searchParams.get("programmeId") || undefined;
-    const statusParam = searchParams.get("status") || undefined;
-
-    // Check if reference metadata requested
-    if (searchParams.get("meta") === "true") {
-      const meta = await getEnrolmentReferenceData();
-      return NextResponse.json({ success: true, data: meta });
-    }
-
-    const status = statusParam ? (statusParam as EnrolmentStatus) : undefined;
-    const pagination = parsePagination(searchParams);
-    const result = await listStudents({ search, programmeId, status, ...pagination });
-
-    return NextResponse.json({
-      success: true,
-      data: result,
-    });
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, message: error.message || "Failed to fetch students" },
-      { status: 500 }
-    );
-  }
-}
+import {
+  CreateStudentSchema,
+  UpdateStudentSchema,
+} from "@/lib/validations/student";
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,9 +51,6 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const { UpdateStudentSchema } = await import("@/lib/validations/student");
-    const { updateStudent } = await import("@/server/services/student.service");
-
     const validatedData = UpdateStudentSchema.parse(updatePayload);
     const updated = await updateStudent(id, validatedData);
 
@@ -101,9 +69,11 @@ export async function PATCH(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to update student" },
+      {
+        success: false,
+        message: error.message || "Failed to update student",
+      },
       { status: 400 }
     );
   }
 }
-
