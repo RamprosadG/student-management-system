@@ -5,7 +5,7 @@ import {
   listAssessmentReferenceModules,
 } from "@/server/services/assessment.service";
 import { CreateAssessmentSchema } from "@/lib/validations/assessment";
-import { parsePagination } from "@/server/types/pagination";
+import { parsePagination } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   try {

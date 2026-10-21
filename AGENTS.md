@@ -37,9 +37,9 @@ src/
 │   ├── assessments/
 │   └── results/
 ├── server/                  # Backend business logic & data access layer
-│   ├── services/            # Business logic and cross-entity workflows
+│   ├── services/            # Business logic, cross-entity workflows, and pagination/KPI aggregation
 │   ├── repositories/        # Database interaction and Prisma query wrappers
-│   └── policies/            # Authorization rules and role-based access checks
+│   └── types/               # Per-domain payload and filter interfaces (mirrors src/types)
 ├── components/
 │   ├── ui/                  # Generic, reusable UI primitives (buttons, inputs, dialogs, etc.)
 │   └── shared/              # Shared composite components (navbar, sidebar, tables, status badges)
@@ -64,6 +64,7 @@ src/
 - **Route Groups**: Place staff routes in `src/app/(staff)/` and student routes in `src/app/(student)/`. Do not expose internal roles in the URL path.
 - **Server Actions & Route Handlers**: Validate all inputs using schemas from `src/lib/validations/` before querying or mutating data.
 - **Layered Backend**: Route handlers (`src/app/api/...`) should delegate business logic to `src/server/services/` and database operations to `src/server/repositories/`.
+- **Result Visibility**: There is no `src/server/policies/` layer and no authentication — the app simulates roles client-side via `RoleContext`. The staff/student data boundary is enforced where the query is built: student-facing repositories filter unpublished grades (`AssessmentResult.isPublished === false`) out of their results, as in `findStudentMarksheet()`. Keep new visibility rules in the repository that serves the role, not in the UI.
 
 ### 3. Code Quality & Verification
 - **Preserve Existing Structures**: Do not delete existing directories or unrelated files when adding new features.

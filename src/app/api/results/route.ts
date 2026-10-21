@@ -9,7 +9,7 @@ import {
   SaveGradeSchema,
   TogglePublishSchema,
 } from "@/lib/validations/result";
-import { parsePagination } from "@/server/types/pagination";
+import { parsePagination } from "@/lib/utils";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {

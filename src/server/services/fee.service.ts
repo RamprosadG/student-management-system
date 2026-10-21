@@ -7,7 +7,7 @@ import { RecordPaymentInput } from "@/lib/validations/fee";
 import {
   DEFAULT_PAGE_SIZE,
   buildPaginationMeta,
-} from "@/server/types/pagination";
+} from "@/lib/utils";
 
 export async function listFees(filters: FeeFilterParams) {
   const fullLedger = await findFeesWithStudents(filters);

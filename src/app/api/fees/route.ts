@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { listFees } from "@/server/services/fee.service";
-import { parsePagination } from "@/server/types/pagination";
+import { parsePagination } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   try {

@@ -8,7 +8,7 @@ import { SaveGradeInput, TogglePublishInput } from "@/lib/validations/result";
 import {
   DEFAULT_PAGE_SIZE,
   buildPaginationMeta,
-} from "@/server/types/pagination";
+} from "@/lib/utils";
 
 export async function getStaffGradingSheet(params: {
   search?: string;

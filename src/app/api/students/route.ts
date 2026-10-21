@@ -6,7 +6,7 @@ import {
 } from "@/server/services/student.service";
 import { CreateStudentSchema } from "@/lib/validations/student";
 import { EnrolmentStatus } from "@/generated/prisma/client";
-import { parsePagination } from "@/server/types/pagination";
+import { parsePagination } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   try {

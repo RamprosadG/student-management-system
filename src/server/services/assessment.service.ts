@@ -8,7 +8,7 @@ import { CreateAssessmentInput } from "@/lib/validations/assessment";
 import {
   DEFAULT_PAGE_SIZE,
   buildPaginationMeta,
-} from "@/server/types/pagination";
+} from "@/lib/utils";
 
 export async function listAssessments(filters: AssessmentFilterParams) {
   const allAssessments = await findAssessmentsWithStats(filters);
