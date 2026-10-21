@@ -1,9 +1,7 @@
-"use client";
-
 import Link from "next/link";
 import Badge from "@/components/ui/badges/Badge";
 import { formatDate } from "@/lib/utils";
-import type { RecentSubmission } from "@/types/dashboard";
+import type { RecentSubmission } from "@/types/staff-dashboard";
 import { HiOutlineClipboardList, HiOutlineArrowRight } from "react-icons/hi";
 
 interface RecentSubmissionsPanelProps {

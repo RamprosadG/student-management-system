@@ -1,5 +1,13 @@
-export interface PriorityOverdueStudent {
-  id: string;
+export interface StaffDashboardKpis {
+  totalStudents: number;
+  enrolledStudents: number;
+  totalOutstandingBalance: number;
+  overdueAccountsCount: number;
+  totalAssessments: number;
+  pendingGradingCount: number;
+}
+
+export interface StaffPriorityOverdueStudent {
   studentFeeId: string;
   studentId: string;
   studentName: string;
@@ -12,8 +20,7 @@ export interface PriorityOverdueStudent {
   daysOverdue: number;
 }
 
-export interface RecentSubmission {
-  id: string;
+export interface StaffRecentSubmission {
   submissionId: string;
   studentName: string;
   studentId: string;
@@ -28,8 +35,7 @@ export interface RecentSubmission {
   isPublished: boolean;
 }
 
-export interface UpcomingDeadline {
-  id: string;
+export interface StaffUpcomingDeadline {
   assessmentId: string;
   title: string;
   moduleCode: string;
@@ -40,18 +46,9 @@ export interface UpcomingDeadline {
   submissionCount: number;
 }
 
-export interface DashboardKpis {
-  totalStudents: number;
-  enrolledStudents: number;
-  totalOutstandingBalance: number;
-  overdueAccountsCount: number;
-  totalAssessments: number;
-  pendingGradingCount: number;
-}
-
-export interface DashboardData {
-  kpis: DashboardKpis;
-  priorityOverdueStudents: PriorityOverdueStudent[];
-  recentSubmissions: RecentSubmission[];
-  upcomingDeadlines: UpcomingDeadline[];
+export interface StaffDashboardMetrics {
+  kpis: StaffDashboardKpis;
+  priorityOverdueStudents: StaffPriorityOverdueStudent[];
+  recentSubmissions: StaffRecentSubmission[];
+  upcomingDeadlines: StaffUpcomingDeadline[];
 }

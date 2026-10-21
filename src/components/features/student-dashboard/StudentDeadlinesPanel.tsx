@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";

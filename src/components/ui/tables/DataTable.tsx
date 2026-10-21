@@ -92,7 +92,7 @@ function DataTable<T extends { id?: string }>({
                     ${onRowClick ? "cursor-pointer" : ""}
                     ${computedRowClassName}
                   `}
-                  onClick={() => onRowClick?.(item)}
+                  onClick={onRowClick ? () => onRowClick(item) : undefined}
                 >
                   {columns.map((column) => (
                     <td

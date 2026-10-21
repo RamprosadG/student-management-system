@@ -1,5 +1,3 @@
-"use client";
-
 import StatCard from "@/components/ui/stats/StatCard";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type {

@@ -1,20 +1,15 @@
-"use client";
-
-import Button from "@/components/ui/buttons/Button";
+import RefreshDashboardButton from "@/components/shared/RefreshDashboardButton";
 import Badge from "@/components/ui/badges/Badge";
 import type { StudentDashboardStudent } from "@/types/student-dashboard";
-import { HiRefresh } from "react-icons/hi";
 
 interface StudentDashboardHeroProps {
   student: StudentDashboardStudent | null;
-  isLoading: boolean;
-  onRefresh: () => void;
+  isLoading?: boolean;
 }
 
 export function StudentDashboardHero({
   student,
-  isLoading,
-  onRefresh,
+  isLoading = false,
 }: StudentDashboardHeroProps) {
   return (
     <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/80 via-white to-blue-50/50 p-6 shadow-xs">
@@ -53,15 +48,7 @@ export function StudentDashboardHero({
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <Button
-            variant="secondary-outline"
-            size="md"
-            icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
-            onClick={onRefresh}
-            disabled={isLoading}
-          >
-            Refresh Dashboard
-          </Button>
+          <RefreshDashboardButton isLoading={isLoading} />
         </div>
       </div>
     </div>

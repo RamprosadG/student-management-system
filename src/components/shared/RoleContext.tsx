@@ -2,6 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import {
+  readSelectedStudentId,
+  writeSelectedStudentId,
+} from "@/lib/student-selection";
 
 export type Role = "staff" | "student";
 
@@ -56,9 +60,11 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
           setRoleState(savedRole);
         }
       }
-      const savedStudentId = localStorage.getItem("sms_selected_student_id");
+      const savedStudentId =
+        readSelectedStudentId() || localStorage.getItem("sms_selected_student_id");
       if (savedStudentId) {
         setSelectedStudentIdState(savedStudentId);
+        writeSelectedStudentId(savedStudentId);
       }
       const savedCollapsed = localStorage.getItem("sms_sidebar_collapsed");
       if (savedCollapsed !== null) {
@@ -90,6 +96,7 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
               try {
                 localStorage.setItem("sms_selected_student_id", firstId);
               } catch {}
+              writeSelectedStudentId(firstId);
             }
             return firstId;
           });
@@ -127,6 +134,7 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
 
   const setSelectedStudentId = (id: string | null) => {
     setSelectedStudentIdState(id);
+    writeSelectedStudentId(id);
     try {
       if (id) {
         localStorage.setItem("sms_selected_student_id", id);

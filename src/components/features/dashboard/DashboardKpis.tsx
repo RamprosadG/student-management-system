@@ -1,8 +1,6 @@
-"use client";
-
 import StatCard from "@/components/ui/stats/StatCard";
 import { formatCurrency } from "@/lib/utils";
-import type { DashboardKpis as DashboardKpisData } from "@/types/dashboard";
+import type { StaffDashboardKpis as StaffDashboardKpisData } from "@/types/staff-dashboard";
 import {
   HiOutlineAcademicCap,
   HiOutlineCreditCard,
@@ -11,7 +9,7 @@ import {
 } from "react-icons/hi";
 
 interface DashboardKpisProps {
-  kpis: DashboardKpisData;
+  kpis: StaffDashboardKpisData;
 }
 
 export function DashboardKpis({ kpis }: DashboardKpisProps) {

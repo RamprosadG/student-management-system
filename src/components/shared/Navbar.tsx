@@ -61,7 +61,10 @@ export function Navbar() {
                   <Dropdown
                     aria-label="Select student"
                     value={selectedStudentId || ""}
-                    onChange={(value) => setSelectedStudentId(value || null)}
+                    onChange={(value) => {
+                      setSelectedStudentId(value || null);
+                      router.refresh();
+                    }}
                     options={[
                       {
                         value: "",

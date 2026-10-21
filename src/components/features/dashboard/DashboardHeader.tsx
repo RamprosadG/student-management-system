@@ -1,14 +1,10 @@
-"use client";
-
-import Button from "@/components/ui/buttons/Button";
-import { HiRefresh } from "react-icons/hi";
+import RefreshDashboardButton from "@/components/shared/RefreshDashboardButton";
 
 interface DashboardHeaderProps {
-  isLoading: boolean;
-  onRefresh: () => void;
+  isLoading?: boolean;
 }
 
-export function DashboardHeader({ isLoading, onRefresh }: DashboardHeaderProps) {
+export function DashboardHeader({ isLoading = false }: DashboardHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
       <div>
@@ -26,15 +22,7 @@ export function DashboardHeader({ isLoading, onRefresh }: DashboardHeaderProps) 
       </div>
 
       <div className="flex items-center gap-3">
-        <Button
-          variant="secondary-outline"
-          size="md"
-          icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
-          onClick={onRefresh}
-          disabled={isLoading}
-        >
-          Refresh Dashboard
-        </Button>
+        <RefreshDashboardButton isLoading={isLoading} />
       </div>
     </div>
   );
