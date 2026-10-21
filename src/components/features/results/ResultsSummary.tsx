@@ -1,5 +1,3 @@
-"use client";
-
 import StatCard from "@/components/ui/stats/StatCard";
 import {
   HiOutlineDocumentReport,

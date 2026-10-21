@@ -46,7 +46,7 @@ export interface StudentMarksheetItem {
   statusText: string;
 }
 
-export interface MarksheetResponse {
+export interface StudentMarksheetData {
   student: StudentMarksheetStudent | null;
   marksheet: StudentMarksheetItem[];
   stats: StudentMarksheetStats;

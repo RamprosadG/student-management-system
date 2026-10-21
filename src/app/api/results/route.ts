@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getStaffGradingSheet,
-  getStudentOfficialMarksheet,
   recordAssessmentGrade,
   toggleResultPublication,
 } from "@/server/services/result.service";
@@ -9,71 +7,6 @@ import {
   SaveGradeSchema,
   TogglePublishSchema,
 } from "@/lib/validations/result";
-import { parsePagination } from "@/lib/utils";
-import prisma from "@/lib/prisma";
-
-export async function GET(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const view = searchParams.get("view"); // "student" or "staff" (default)
-
-    if (view === "student") {
-      let studentId = searchParams.get("studentId");
-
-      // Fallback: If no studentId passed, find first student
-      if (!studentId) {
-        const firstStudent = await prisma.student.findFirst({
-          where: { status: "ENROLLED" },
-          orderBy: { createdAt: "asc" },
-        });
-        if (firstStudent) studentId = firstStudent.id;
-      }
-
-      if (!studentId) {
-        return NextResponse.json({
-          success: true,
-          data: {
-            student: null,
-            marksheet: [],
-            stats: {
-              totalAssessments: 0,
-              publishedResultsCount: 0,
-              withheldOrPendingCount: 0,
-              averageGrade: null,
-              overallClassification: null,
-            },
-          },
-        });
-      }
-
-      const marksheetData = await getStudentOfficialMarksheet(studentId);
-      return NextResponse.json({ success: true, data: marksheetData });
-    }
-
-    // Default: Staff Grading View
-    const search = searchParams.get("search") || undefined;
-    const moduleId = searchParams.get("moduleId") || undefined;
-    const publishStatus = (searchParams.get("publishStatus") || "ALL") as any;
-    const pagination = parsePagination(searchParams);
-
-    const gradingData = await getStaffGradingSheet({
-      search,
-      moduleId,
-      publishStatus,
-      ...pagination,
-    });
-
-    return NextResponse.json({
-      success: true,
-      data: gradingData,
-    });
-  } catch (error: any) {
-    return NextResponse.json(
-      { success: false, message: error.message || "Failed to fetch results" },
-      { status: 500 }
-    );
-  }
-}
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,9 +1,7 @@
-"use client";
-
 import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { formatDate } from "@/lib/utils";
-import type { StudentMarksheetItem } from "@/types/marksheet";
+import type { StudentMarksheetItem } from "@/types/student-marksheet";
 import { HiOutlineLockClosed, HiOutlineClock } from "react-icons/hi";
 
 interface StudentMarksheetTableProps {

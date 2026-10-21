@@ -1,3 +1,5 @@
+import type { PaginationMeta } from "@/types/pagination";
+
 export type Classification = "Distinction" | "Merit" | "Pass" | "Fail";
 export type PublishFilter = "ALL" | "PUBLISHED" | "WITHHELD" | "UNGRADED";
 
@@ -42,4 +44,19 @@ export interface StaffGradingSummary {
   gradedCount: number;
   publishedCount: number;
   withheldCount: number;
+}
+
+export interface StaffResultsFilters {
+  search: string;
+  moduleId: string;
+  publishFilter: PublishFilter;
+  page: number;
+}
+
+export interface StaffResultsData {
+  items: StaffGradingItem[];
+  summary: StaffGradingSummary;
+  modules: ModuleItem[];
+  pagination: PaginationMeta | null;
+  filters: StaffResultsFilters;
 }

@@ -1,14 +1,6 @@
-"use client";
+import { ResultsRefreshButton } from "./ResultsRefreshButton";
 
-import Button from "@/components/ui/buttons/Button";
-import { HiRefresh } from "react-icons/hi";
-
-interface ResultsHeaderProps {
-  isLoading: boolean;
-  onRefresh: () => void;
-}
-
-export function ResultsHeader({ isLoading, onRefresh }: ResultsHeaderProps) {
+export function ResultsHeader() {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
       <div>
@@ -21,15 +13,7 @@ export function ResultsHeader({ isLoading, onRefresh }: ResultsHeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
-        <Button
-          variant="secondary-outline"
-          size="md"
-          icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
-          onClick={onRefresh}
-          disabled={isLoading}
-        >
-          Refresh Ledger
-        </Button>
+        <ResultsRefreshButton />
       </div>
     </div>
   );

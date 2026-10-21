@@ -4,7 +4,7 @@ import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { SubmissionFileActions } from "@/components/shared/SubmissionFileActions";
-import type { StaffGradingItem } from "@/types/results";
+import type { StaffGradingItem } from "@/types/staff-results";
 import {
   HiOutlineEyeOff,
   HiOutlineEye,
