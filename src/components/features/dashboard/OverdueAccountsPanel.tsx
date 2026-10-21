@@ -65,6 +65,7 @@ export function OverdueAccountsPanel({
       render: (item) => (
         <TableActionButton
           tooltip="Record payment"
+          color="emerald"
           onClick={() =>
             onRecordPayment({
               id: item.studentFeeId,

@@ -180,6 +180,7 @@ export function SubmissionInspectorModal({
           <TableActionLink
             href="/results"
             tooltip={item.result ? "Review grade" : "Enter grade"}
+            color="blue"
           >
             <HiOutlinePencilAlt className="w-4 h-4" />
           </TableActionLink>

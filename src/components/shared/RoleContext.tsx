@@ -71,7 +71,7 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
     // Fetch students list for role switcher
     const fetchStudents = async () => {
       try {
-        const res = await fetch("/api/students");
+        const res = await fetch("/api/students/options");
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           const list: StudentOption[] = json.data.map((s: any) => ({

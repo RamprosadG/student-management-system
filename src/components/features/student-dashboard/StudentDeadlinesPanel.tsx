@@ -96,7 +96,7 @@ export function StudentDeadlinesPanel({ deadlines }: StudentDeadlinesPanelProps)
       className: "text-right",
       headerClassName: "text-right",
       render: () => (
-        <TableActionLink href="/student-assessments" tooltip="Upload work">
+        <TableActionLink href="/student-assessments" tooltip="Upload work" color="indigo">
           <HiOutlineUpload className="w-4 h-4" />
         </TableActionLink>
       ),

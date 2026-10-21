@@ -152,6 +152,7 @@ export function ResultsTable({
 
             <TableActionButton
               tooltip={item.grade !== null ? "Edit grade" : "Enter grade"}
+              color="blue"
               onClick={() => onGrade(item)}
             >
               <HiOutlinePencilAlt className="w-4 h-4" />
@@ -160,6 +161,7 @@ export function ResultsTable({
             {item.grade !== null && (
               <TableActionButton
                 tooltip={item.isPublished ? "Withhold result" : "Publish result"}
+                color={item.isPublished ? "amber" : "emerald"}
                 onClick={() => onTogglePublish(item)}
                 disabled={isTogglingThis}
                 isLoading={isTogglingThis}

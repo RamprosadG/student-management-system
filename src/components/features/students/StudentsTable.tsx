@@ -81,6 +81,7 @@ export function StudentsTable({ students, isLoading, onEdit }: StudentsTableProp
       render: (item) => (
         <TableActionButton
           tooltip="Edit student"
+          color="blue"
           onClick={(e) => {
             e.stopPropagation();
             onEdit({

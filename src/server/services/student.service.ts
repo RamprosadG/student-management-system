@@ -3,6 +3,7 @@ import {
   createStudentWithFee,
   updateStudentById,
   getReferenceData,
+  findStudentOptions,
 } from "@/server/repositories/student.repository";
 import { StudentFilterParams } from "@/server/types/student";
 import {
@@ -13,6 +14,10 @@ import prisma from "@/lib/prisma";
 
 export async function listStudents(filters: StudentFilterParams) {
   return findStudents(filters);
+}
+
+export async function listStudentOptions() {
+  return findStudentOptions();
 }
 
 export async function enrolStudent(input: CreateStudentInput) {

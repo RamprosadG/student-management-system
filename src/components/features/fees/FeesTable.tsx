@@ -122,6 +122,7 @@ export function FeesTable({
           {item.balance > 0 ? (
             <TableActionButton
               tooltip="Record payment"
+              color="emerald"
               onClick={() =>
                 onRecordPayment({
                   id: item.id,
@@ -137,7 +138,7 @@ export function FeesTable({
               <MdPayment className="w-4 h-4" />
             </TableActionButton>
           ) : (
-            <TableActionButton tooltip="Fee settled" disabled>
+            <TableActionButton tooltip="Fee settled" color="emerald" disabled>
               <HiOutlineCheckCircle className="w-4 h-4" />
             </TableActionButton>
           )}

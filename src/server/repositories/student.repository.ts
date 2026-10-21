@@ -66,6 +66,24 @@ export async function findStudents(filters: StudentFilterParams) {
   return { items, pagination };
 }
 
+export async function findStudentOptions() {
+  return prisma.student.findMany({
+    select: {
+      id: true,
+      studentId: true,
+      fullName: true,
+      programme: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      studentId: "asc",
+    },
+  });
+}
+
 export async function getNextStudentSequence(year: number): Promise<string> {
   // Pattern: SMS-YYYY-XXXX (e.g. SMS-2025-0001)
   const prefix = `SMS-${year}-`;

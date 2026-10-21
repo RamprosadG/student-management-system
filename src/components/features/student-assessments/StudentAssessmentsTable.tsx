@@ -150,6 +150,7 @@ export function StudentAssessmentsTable({
 
           <TableActionButton
             tooltip={item.submission ? "Resubmit work" : "Submit work"}
+            color="indigo"
             onClick={() => onSubmit(item)}
           >
             <HiOutlineUpload className="w-4 h-4" />
