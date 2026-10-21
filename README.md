@@ -113,6 +113,7 @@ Create a `.env` file in the project root based on `.env.example`:
 | Variable | Description | Example |
 | :--- | :--- | :--- |
 | `DATABASE_URL` | PostgreSQL connection string used by Prisma ORM with `@prisma/adapter-pg` driver | `postgresql://postgres:password@localhost:5432/sms_db?schema=public` |
+| `NODE_ENV` | Application runtime environment (`development` for local work) | `development` |
 
 ---
 
