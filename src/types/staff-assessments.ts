@@ -1,4 +1,5 @@
 import type { SubmissionItem } from "@/features/assessments/SubmissionInspectorModal";
+import type { PaginationMeta } from "@/types/pagination";
 
 export interface ModuleData {
   id: string;
@@ -30,4 +31,18 @@ export interface AssessmentSummary {
   totalAssessments: number;
   totalSubmissions: number;
   totalLateSubmissions: number;
+}
+
+export interface StaffAssessmentsFilters {
+  search: string;
+  moduleId: string;
+  page: number;
+}
+
+export interface StaffAssessmentsData {
+  assessments: AssessmentItem[];
+  summary: AssessmentSummary;
+  modules: ModuleData[];
+  pagination: PaginationMeta | null;
+  filters: StaffAssessmentsFilters;
 }

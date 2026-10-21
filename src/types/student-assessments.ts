@@ -53,3 +53,22 @@ export interface StudentInfo {
     name: string;
   };
 }
+
+export interface StudentAssessmentsSummary {
+  totalAssessments: number;
+  submittedCount: number;
+  pendingCount: number;
+  overdueCount: number;
+}
+
+export interface StudentAssessmentsFilters {
+  search: string;
+  status: string;
+}
+
+export interface StudentAssessmentsData {
+  student: StudentInfo | null;
+  assessments: StudentAssessmentItem[];
+  summary: StudentAssessmentsSummary;
+  filters: StudentAssessmentsFilters;
+}

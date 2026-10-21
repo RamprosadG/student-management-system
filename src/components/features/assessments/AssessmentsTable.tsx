@@ -4,7 +4,7 @@ import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { formatDate, formatDateTime } from "@/lib/utils";
-import type { AssessmentItem } from "@/types/assessments";
+import type { AssessmentItem } from "@/types/staff-assessments";
 import { HiOutlineEye } from "react-icons/hi";
 
 interface AssessmentsTableProps {

@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getStudentDashboardMetrics,
-  resolveStudentDashboardId,
-} from "@/server/services/student-dashboard.service";
+import { getStudentDashboardMetrics } from "@/server/services/student-dashboard.service";
+import { resolveStudentId } from "@/server/services/student.service";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const studentId = await resolveStudentDashboardId(searchParams.get("studentId"));
+    const studentId = await resolveStudentId(searchParams.get("studentId"));
 
     if (!studentId) {
       return NextResponse.json({

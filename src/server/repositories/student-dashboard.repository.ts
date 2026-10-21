@@ -23,16 +23,6 @@ export const emptyStudentDashboardMetrics: StudentDashboardMetrics = {
   upcomingDeadlines: [],
 };
 
-export async function findFirstEnrolledStudentId(): Promise<string | null> {
-  const first = await prisma.student.findFirst({
-    where: { status: "ENROLLED" },
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
-
-  return first?.id ?? null;
-}
-
 export async function findStudentDashboardData(
   studentId: string
 ): Promise<StudentDashboardMetrics> {

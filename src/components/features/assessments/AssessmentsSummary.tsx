@@ -1,7 +1,5 @@
-"use client";
-
 import StatCard from "@/components/ui/stats/StatCard";
-import type { AssessmentSummary } from "@/types/assessments";
+import type { AssessmentSummary } from "@/types/staff-assessments";
 import {
   HiOutlineClipboardList,
   HiOutlineDocumentText,

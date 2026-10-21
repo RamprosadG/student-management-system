@@ -66,6 +66,19 @@ export async function findStudents(filters: StudentFilterParams) {
   return { items, pagination };
 }
 
+/**
+ * Fallback student for every student-scoped page while nobody is impersonated.
+ */
+export async function findFirstEnrolledStudentId(): Promise<string | null> {
+  const first = await prisma.student.findFirst({
+    where: { status: "ENROLLED" },
+    orderBy: { createdAt: "asc" },
+    select: { id: true },
+  });
+
+  return first?.id ?? null;
+}
+
 export async function findStudentOptions() {
   return prisma.student.findMany({
     select: {

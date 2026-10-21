@@ -1,19 +1,14 @@
-"use client";
-
-import Button from "@/components/ui/buttons/Button";
+import StudentAssessmentsRefreshButton from "./StudentAssessmentsRefreshButton";
 import type { StudentInfo } from "@/types/student-assessments";
-import { HiRefresh } from "react-icons/hi";
 
 interface StudentAssessmentsHeaderProps {
   studentInfo: StudentInfo | null;
-  isLoading: boolean;
-  onRefresh: () => void;
+  isLoading?: boolean;
 }
 
 export function StudentAssessmentsHeader({
   studentInfo,
-  isLoading,
-  onRefresh,
+  isLoading = false,
 }: StudentAssessmentsHeaderProps) {
   return (
     <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-50/70 via-white to-blue-50/40 p-6 shadow-xs">
@@ -38,15 +33,7 @@ export function StudentAssessmentsHeader({
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <Button
-            variant="secondary-outline"
-            size="md"
-            icon={<HiRefresh className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />}
-            onClick={onRefresh}
-            disabled={isLoading}
-          >
-            Refresh Assessment
-          </Button>
+          <StudentAssessmentsRefreshButton isLoading={isLoading} />
         </div>
       </div>
     </div>

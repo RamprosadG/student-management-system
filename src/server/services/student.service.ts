@@ -4,6 +4,7 @@ import {
   updateStudentById,
   getReferenceData,
   findStudentOptions,
+  findFirstEnrolledStudentId,
 } from "@/server/repositories/student.repository";
 import { StudentFilterParams } from "@/server/types/student";
 import {
@@ -18,6 +19,18 @@ export async function listStudents(filters: StudentFilterParams) {
 
 export async function listStudentOptions() {
   return findStudentOptions();
+}
+
+/**
+ * Roles are simulated client-side, so an unset selection falls back to the
+ * first enrolled student instead of failing the page.
+ */
+export async function resolveStudentId(
+  studentId?: string | null
+): Promise<string | null> {
+  if (studentId) return studentId;
+
+  return await findFirstEnrolledStudentId();
 }
 
 export async function enrolStudent(input: CreateStudentInput) {

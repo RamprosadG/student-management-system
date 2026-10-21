@@ -1,14 +1,10 @@
-"use client";
-
-import Button from "@/components/ui/buttons/Button";
-import { HiRefresh, HiPlus } from "react-icons/hi";
+import type { ReactNode } from "react";
 
 interface AssessmentsHeaderProps {
-  onRefresh: () => void;
-  onCreate: () => void;
+  actions: ReactNode;
 }
 
-export function AssessmentsHeader({ onRefresh, onCreate }: AssessmentsHeaderProps) {
+export function AssessmentsHeader({ actions }: AssessmentsHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 pb-5">
       <div>
@@ -19,24 +15,7 @@ export function AssessmentsHeader({ onRefresh, onCreate }: AssessmentsHeaderProp
           Create module assessments, manage deadlines, and inspect student delivery timestamps.
         </p>
       </div>
-      <div className="flex items-center gap-3">
-        <Button
-          variant="secondary"
-          size="md"
-          icon={<HiRefresh className="w-4 h-4" />}
-          onClick={onRefresh}
-        >
-          Refresh
-        </Button>
-        <Button
-          variant="primary"
-          size="md"
-          icon={<HiPlus className="w-4 h-4" />}
-          onClick={onCreate}
-        >
-          Create Assessment
-        </Button>
-      </div>
+      <div className="flex items-center gap-3">{actions}</div>
     </div>
   );
 }
