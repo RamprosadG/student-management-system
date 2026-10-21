@@ -118,16 +118,33 @@ Create a `.env` file in the project root based on `.env.example`:
 
 ## 4. Demo Seed Dataset
 
-Running `npx tsx prisma/seed.ts` loads a complete demo environment with diverse test cases:
+Running `npx tsx prisma/seed.ts` loads a complete demo environment with diverse test cases: **3 programmes** (Computer Science, Business Administration, Data Science & AI), **7 modules**, **12 students** (8 Enrolled, 2 Deferred, 1 Withdrawn, 1 Completed), **12 fee accounts** with 12 receipted payments, **11 assessments** (7 past deadlines, 4 upcoming), and **13 submissions** across 15 file versions.
+
+### Students, Fees & Grading Scenarios
 
 | Student Name | Student ID | Programme | Status | Tuition Fee State | Submissions & Grading |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Alex Rivera** | `SMS-2025-0001` | BSc Computer Science | `ENROLLED` | **Overdue** ($4,000 balance, due Oct 2025) | CS101 CW1 submitted **Late by 3h 15m** (v2); Graded 68% (Merit), **WITHHELD by Registry** |
-| **Sophia Chen** | `SMS-2025-0002` | BSc Computer Science | `ENROLLED` | **Paid in Full** ($9,000 paid in 2 receipts) | CS101 CW1: On-time (85% Distinction, Published); CS102 Portfolio: On-time (92% Distinction, Published) |
-| **Marcus Adebayo** | `SMS-2025-0003` | BA Business Admin | `ENROLLED` | **Overdue** ($5,500 balance, due Sept 2025) | BUS101 Case Study: Submitted On-Time, **Awaiting Grading (Ungraded)** |
-| **Elena Rostova** | `SMS-2025-0004` | BA Business Admin | `DEFERRED` | Partial ($7,500 due Jan 2026) | Enrolment deferred; no active submissions |
-| **Jordan Taylor** | `SMS-2025-0005` | BSc Computer Science | `WITHDRAWN` | Invoiced ($9,000) | Withdrawn record preserved for audit tracking |
-| **Priya Patel** | `SMS-2025-0006` | BSc Computer Science | `COMPLETED` | **Paid in Full** ($9,000) | Graduated cohort alumnus record |
+| **Alex Rivera** | `SMS-2025-0001` | BSc Computer Science | `ENROLLED` | **Overdue** ($4,000 balance, due Oct 2025) | CS101 CW1: **Late** resubmission (v2), 68% Merit, **WITHHELD by Registry**; CS102 Portfolio: On-time, 45% Pass, Published |
+| **Sophia Chen** | `SMS-2025-0002` | BSc Computer Science | `ENROLLED` | **Paid in Full** ($9,000 in 2 receipts) | CS101 CW1: On-time (85% Distinction, Published); CS102 Portfolio: On-time (92% Distinction, Published) |
+| **Marcus Adebayo** | `SMS-2025-0003` | BA Business Admin | `ENROLLED` | **Overdue** ($5,500 balance, due Sept 2025) | BUS101 Case Study: On-time, **Awaiting Grading (Ungraded)** |
+| **Elena Rostova** | `SMS-2025-0004` | BA Business Admin | `DEFERRED` | **Overdue** ($5,000 balance of $7,500, due Jan 2026) | BUS102 Midterm: On-time, **Awaiting Grading (Ungraded)** |
+| **Jordan Taylor** | `SMS-2025-0005` | BSc Computer Science | `WITHDRAWN` | **Overdue** ($9,000 unpaid, due Nov 2025) | Withdrawn record preserved for audit tracking; no submissions |
+| **Priya Patel** | `SMS-2025-0006` | BSc Computer Science | `COMPLETED` | **Paid in Full** ($9,000) | Graduated cohort alumnus; CS101 CW1: On-time (78% Distinction, Published) |
+| **Liam O'Connor** | `SMS-2025-0007` | BSc Computer Science | `ENROLLED` | **Overdue** ($6,000 balance of $9,000 in 2 receipts, due Dec 2025) | CS101 CW1: **Late** single submission, 70% Distinction (boundary), **WITHHELD** |
+| **Aisha Khan** | `SMS-2025-0008` | BSc Data Science & AI | `ENROLLED` | **Partial** ($4,750 of $9,500 paid, due Feb 2026) | DS101 Coursework: On-time, **Awaiting Grading (Ungraded)** |
+| **Diego Fernandez** | `SMS-2025-0009` | BA Business Admin | `ENROLLED` | **Partial** ($7,500 invoiced, nothing paid, due Apr 2026 — no receipts) | BUS101 Case Study: **Late by 1 day**, 40% Pass (boundary), Published |
+| **Grace Kim** | `SMS-2025-0010` | BSc Computer Science | `ENROLLED` | **Paid in Full** ($9,000 settled early) | CS101 CW1: 2 on-time versions (91% Distinction, Published) |
+| **Noah Williams** | `SMS-2025-0011` | BSc Data Science & AI | `ENROLLED` | **Overdue** ($3,500 balance of $9,500, due Aug 2025) | DS101 Coursework: On-time, 38% Fail, **WITHHELD** |
+| **Fatima Hassan** | `SMS-2025-0012` | BA Business Admin | `DEFERRED` | **Partial** ($6,000 balance of $7,500, due Jun 2026) | BUS101 Case Study: On-time, 61% Merit, **WITHHELD** |
+
+**Fee coverage:** 3 Paid · 6 Overdue · 3 Partial (including one Partial account with zero payments).
+
+### Assessment & Submission Coverage
+
+- **11 assessments**: 7 with past deadlines (submission closed; grading workflows) and 4 upcoming (Nov 2026 – Jan 2027) spread across all three programmes, so every demo student has visible upcoming deadlines.
+- **13 submissions**: 6 Published, 4 Withheld, 3 Ungraded — so the grading ledger exercises every publish/withhold/awaiting state.
+- **All four classifications appear**: Distinction (85/92/91/78/70), Merit (68/61), Pass (45/40), Fail (38) — including exact boundary grades at 70 (Distinction threshold) and 40 (Pass threshold).
+- **Late & multi-version cases**: 3 late submissions (Alex, Liam, Diego) and 2 version histories (Alex v1→v2, Grace v1→v2).
 
 ---
 

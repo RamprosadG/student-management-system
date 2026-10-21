@@ -144,7 +144,38 @@ async function main() {
     },
   });
 
-  // 4. Students (Diverse Enrolment Statuses & Profiles: 6 Students)
+  const ds101 = await prisma.module.upsert({
+    where: {
+      programmeId_code: {
+        programmeId: bscDataScience.id,
+        code: "DS101",
+      },
+    },
+    update: {},
+    create: {
+      programmeId: bscDataScience.id,
+      code: "DS101",
+      title: "Statistical Learning Foundations",
+    },
+  });
+
+  const ds102 = await prisma.module.upsert({
+    where: {
+      programmeId_code: {
+        programmeId: bscDataScience.id,
+        code: "DS102",
+      },
+    },
+    update: {},
+    create: {
+      programmeId: bscDataScience.id,
+      code: "DS102",
+      title: "Big Data Pipeline Engineering",
+    },
+  });
+
+  // 4. Students (12: 8 Enrolled, 2 Deferred, 1 Withdrawn, 1 Completed)
+  // Fee scenarios are spread so PAID / OVERDUE / PARTIAL filters all have rows.
   const studentsData = [
     {
       studentId: "SMS-2025-0001",
@@ -188,7 +219,7 @@ async function main() {
       academicYearId: ay2025.id,
       status: EnrolmentStatus.DEFERRED,
       feeAmount: 7500.0,
-      feeDueDate: new Date("2026-01-15"),
+      feeDueDate: new Date("2026-01-15"), // Past due
     },
     {
       studentId: "SMS-2025-0005",
@@ -199,7 +230,7 @@ async function main() {
       academicYearId: ay2025.id,
       status: EnrolmentStatus.WITHDRAWN,
       feeAmount: 9000.0,
-      feeDueDate: new Date("2025-11-30"),
+      feeDueDate: new Date("2025-11-30"), // Past due, never paid
     },
     {
       studentId: "SMS-2025-0006",
@@ -210,11 +241,82 @@ async function main() {
       academicYearId: ay2025.id,
       status: EnrolmentStatus.COMPLETED,
       feeAmount: 9000.0,
-      feeDueDate: new Date("2025-06-30"),
+      feeDueDate: new Date("2025-06-30"), // Past due, fully settled
+    },
+    {
+      studentId: "SMS-2025-0007",
+      fullName: "Liam O'Connor",
+      email: "liam.oconnor@university.ac.uk",
+      dob: new Date("2002-12-03"),
+      programmeId: bscCs.id,
+      academicYearId: ay2025.id,
+      status: EnrolmentStatus.ENROLLED,
+      feeAmount: 9000.0,
+      feeDueDate: new Date("2025-12-01"), // Past due
+    },
+    {
+      studentId: "SMS-2025-0008",
+      fullName: "Aisha Khan",
+      email: "aisha.khan@university.ac.uk",
+      dob: new Date("2003-01-25"),
+      programmeId: bscDataScience.id,
+      academicYearId: ay2025.id,
+      status: EnrolmentStatus.ENROLLED,
+      feeAmount: 9500.0,
+      feeDueDate: new Date("2026-02-15"), // Future due
+    },
+    {
+      studentId: "SMS-2025-0009",
+      fullName: "Diego Fernandez",
+      email: "diego.fernandez@university.ac.uk",
+      dob: new Date("2002-06-08"),
+      programmeId: baBusiness.id,
+      academicYearId: ay2025.id,
+      status: EnrolmentStatus.ENROLLED,
+      feeAmount: 7500.0,
+      feeDueDate: new Date("2026-04-10"), // Future due, nothing paid yet
+    },
+    {
+      studentId: "SMS-2025-0010",
+      fullName: "Grace Kim",
+      email: "grace.kim@university.ac.uk",
+      dob: new Date("2001-10-17"),
+      programmeId: bscCs.id,
+      academicYearId: ay2025.id,
+      status: EnrolmentStatus.ENROLLED,
+      feeAmount: 9000.0,
+      feeDueDate: new Date("2026-05-20"), // Future due, settled early
+    },
+    {
+      studentId: "SMS-2025-0011",
+      fullName: "Noah Williams",
+      email: "noah.williams@university.ac.uk",
+      dob: new Date("2000-03-22"),
+      programmeId: bscDataScience.id,
+      academicYearId: ay2025.id,
+      status: EnrolmentStatus.ENROLLED,
+      feeAmount: 9500.0,
+      feeDueDate: new Date("2025-08-15"), // Long past due
+    },
+    {
+      studentId: "SMS-2025-0012",
+      fullName: "Fatima Hassan",
+      email: "fatima.hassan@university.ac.uk",
+      dob: new Date("2002-08-30"),
+      programmeId: baBusiness.id,
+      academicYearId: ay2025.id,
+      status: EnrolmentStatus.DEFERRED,
+      feeAmount: 7500.0,
+      feeDueDate: new Date("2026-06-01"), // Future due
     },
   ];
 
-  const createdStudents = [];
+  const createdStudents: Array<
+    Awaited<ReturnType<typeof prisma.student.upsert>> & {
+      feeId: string;
+      feeDueDate: Date;
+    }
+  > = [];
   for (const s of studentsData) {
     const student = await prisma.student.upsert({
       where: { email: s.email },
@@ -250,7 +352,7 @@ async function main() {
   }
 
   // 5. Fee Payments (Demonstrating Paid, Partial, and Overdue Accounts)
-  // Alex Rivera (SMS-2025-0001): Partially paid ($5,000 paid out of $9,000, due 2025-10-15 => OVERDUE)
+  // Alex Rivera (SMS-2025-0001): Partially paid ($5,000 / $9,000, due 2025-10-15 => OVERDUE)
   await prisma.payment.upsert({
     where: { referenceNumber: "TXN-RIV-001" },
     update: {},
@@ -262,7 +364,7 @@ async function main() {
     },
   });
 
-  // Sophia Chen (SMS-2025-0002): Fully paid ($9,000 paid in 2 installments => PAID)
+  // Sophia Chen (SMS-2025-0002): Fully paid in 2 installments ($4,500 + $4,500 => PAID, 2 receipts)
   await prisma.payment.upsert({
     where: { referenceNumber: "TXN-CHEN-001" },
     update: {},
@@ -284,7 +386,7 @@ async function main() {
     },
   });
 
-  // Marcus Adebayo (SMS-2025-0003): Partial paid ($2,000 paid out of $7,500, due 2025-09-30 => OVERDUE $5,500)
+  // Marcus Adebayo (SMS-2025-0003): Partially paid ($2,000 / $7,500, due 2025-09-30 => OVERDUE)
   await prisma.payment.upsert({
     where: { referenceNumber: "TXN-ADE-001" },
     update: {},
@@ -296,7 +398,22 @@ async function main() {
     },
   });
 
-  // Priya Patel (SMS-2025-0006): Completed student fully settled
+  // Elena Rostova (SMS-2025-0004): Partially paid ($2,500 / $7,500, due 2026-01-15 => OVERDUE)
+  await prisma.payment.upsert({
+    where: { referenceNumber: "TXN-ROS-001" },
+    update: {},
+    create: {
+      studentFeeId: createdStudents[3].feeId,
+      amount: 2500.0,
+      referenceNumber: "TXN-ROS-001",
+      paidAt: new Date("2025-12-20"),
+    },
+  });
+
+  // Jordan Taylor (SMS-2025-0005): Withdrawn, never paid (due 2025-11-30 => OVERDUE full balance)
+  // (no payments)
+
+  // Priya Patel (SMS-2025-0006): Completed student fully settled ($9,000 => PAID)
   await prisma.payment.upsert({
     where: { referenceNumber: "TXN-PATEL-001" },
     update: {},
@@ -308,8 +425,81 @@ async function main() {
     },
   });
 
-  // 6. Assessments
-  // CS101 Assessment: Full Stack Architecture Specification (Past deadline to test late submission)
+  // Liam O'Connor (SMS-2025-0007): Partially paid in 2 installments ($1,000 + $2,000 / $9,000, due 2025-12-01 => OVERDUE, 2 receipts)
+  await prisma.payment.upsert({
+    where: { referenceNumber: "TXN-OCON-001" },
+    update: {},
+    create: {
+      studentFeeId: createdStudents[6].feeId,
+      amount: 1000.0,
+      referenceNumber: "TXN-OCON-001",
+      paidAt: new Date("2025-10-05"),
+    },
+  });
+  await prisma.payment.upsert({
+    where: { referenceNumber: "TXN-OCON-002" },
+    update: {},
+    create: {
+      studentFeeId: createdStudents[6].feeId,
+      amount: 2000.0,
+      referenceNumber: "TXN-OCON-002",
+      paidAt: new Date("2025-11-10"),
+    },
+  });
+
+  // Aisha Khan (SMS-2025-0008): Half paid ($4,750 / $9,500, due 2026-02-15 => PARTIAL)
+  await prisma.payment.upsert({
+    where: { referenceNumber: "TXN-KHAN-001" },
+    update: {},
+    create: {
+      studentFeeId: createdStudents[7].feeId,
+      amount: 4750.0,
+      referenceNumber: "TXN-KHAN-001",
+      paidAt: new Date("2026-01-20"),
+    },
+  });
+
+  // Diego Fernandez (SMS-2025-0009): Nothing paid yet, future due date (due 2026-04-10 => PARTIAL, no receipts)
+  // (no payments)
+
+  // Grace Kim (SMS-2025-0010): Settled early in one payment ($9,000 => PAID)
+  await prisma.payment.upsert({
+    where: { referenceNumber: "TXN-KIM-001" },
+    update: {},
+    create: {
+      studentFeeId: createdStudents[9].feeId,
+      amount: 9000.0,
+      referenceNumber: "TXN-KIM-001",
+      paidAt: new Date("2025-11-25"),
+    },
+  });
+
+  // Noah Williams (SMS-2025-0011): Mostly paid ($6,000 / $9,500, due 2025-08-15 => OVERDUE)
+  await prisma.payment.upsert({
+    where: { referenceNumber: "TXN-WILL-001" },
+    update: {},
+    create: {
+      studentFeeId: createdStudents[10].feeId,
+      amount: 6000.0,
+      referenceNumber: "TXN-WILL-001",
+      paidAt: new Date("2025-07-01"),
+    },
+  });
+
+  // Fatima Hassan (SMS-2025-0012): Small installment ($1,500 / $7,500, due 2026-06-01 => PARTIAL)
+  await prisma.payment.upsert({
+    where: { referenceNumber: "TXN-HASS-001" },
+    update: {},
+    create: {
+      studentFeeId: createdStudents[11].feeId,
+      amount: 1500.0,
+      referenceNumber: "TXN-HASS-001",
+      paidAt: new Date("2026-02-28"),
+    },
+  });
+
+  // 6. Assessments (7 past deadlines + 4 upcoming, spread across all three programmes)
+  // Past deadline submissions stay gradeable; future ones drive the student deadline panels.
   const asm1 = await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000001" },
     update: {},
@@ -321,7 +511,6 @@ async function main() {
     },
   });
 
-  // CS102 Assessment: Relational Schema & Normalization Portfolio
   const asm2 = await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000002" },
     update: {},
@@ -333,7 +522,6 @@ async function main() {
     },
   });
 
-  // CS103 Assessment: Upcoming Deadline
   const asm3 = await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000003" },
     update: {},
@@ -345,7 +533,6 @@ async function main() {
     },
   });
 
-  // BUS101 Assessment: Management Strategy
   const asm4 = await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000004" },
     update: {},
@@ -357,213 +544,388 @@ async function main() {
     },
   });
 
+  const asm5 = await prisma.assessment.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000005" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000005",
+      moduleId: cs101.id,
+      title: "Coursework 2: REST API Design & Integration Testing",
+      deadline: new Date("2026-06-30T23:59:00Z"),
+    },
+  });
+
+  const asm6 = await prisma.assessment.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000006" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000006",
+      moduleId: bus102.id,
+      title: "Midterm: Financial Accounting & Reporting",
+      deadline: new Date("2026-08-20T17:00:00Z"),
+    },
+  });
+
+  const asm7 = await prisma.assessment.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000007" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000007",
+      moduleId: ds101.id,
+      title: "Coursework: Regression & Classification Models",
+      deadline: new Date("2026-09-25T23:59:00Z"),
+    },
+  });
+
+  const asm8 = await prisma.assessment.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000008" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000008",
+      moduleId: cs103.id,
+      title: "Group Project: Microservices Capstone",
+      deadline: new Date("2026-11-15T23:59:00Z"),
+    },
+  });
+
+  const asm9 = await prisma.assessment.upsert({
+    where: { id: "00000000-0000-0000-0000-000000000009" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-000000000009",
+      moduleId: ds102.id,
+      title: "Report: Big Data Pipeline Engineering",
+      deadline: new Date("2026-12-10T23:59:00Z"),
+    },
+  });
+
+  const asm10 = await prisma.assessment.upsert({
+    where: { id: "00000000-0000-0000-0000-00000000000a" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-00000000000a",
+      moduleId: bus102.id,
+      title: "Analysis: Corporate Financial Statements",
+      deadline: new Date("2027-01-15T17:00:00Z"),
+    },
+  });
+
+  const asm11 = await prisma.assessment.upsert({
+    where: { id: "00000000-0000-0000-0000-00000000000b" },
+    update: {},
+    create: {
+      id: "00000000-0000-0000-0000-00000000000b",
+      moduleId: cs102.id,
+      title: "Coursework: Distributed Query Optimization",
+      deadline: new Date("2026-11-28T23:59:00Z"),
+    },
+  });
+
   // 7. Submissions, Versions, and Graded Results
-  // Case A: Sophia Chen submitted On-Time (Grade 85 -> Distinction, Published)
-  const subSophia = await prisma.submission.upsert({
-    where: {
-      studentId_assessmentId: {
-        studentId: createdStudents[1].id,
-        assessmentId: asm1.id,
+  // Helper keeps the 13 cases below terse; every case is idempotent via natural keys.
+  async function upsertSubmission(
+    studentIndex: number,
+    assessmentId: string,
+    versions: Array<{
+      versionNumber: number;
+      fileName: string;
+      storageKey: string;
+      mimeType: string;
+      fileSize: number;
+      submittedAt: Date;
+    }>,
+    result?: { grade: number; isPublished: boolean; gradedAt: Date }
+  ) {
+    const submission = await prisma.submission.upsert({
+      where: {
+        studentId_assessmentId: {
+          studentId: createdStudents[studentIndex].id,
+          assessmentId,
+        },
       },
-    },
-    update: {},
-    create: {
-      studentId: createdStudents[1].id,
-      assessmentId: asm1.id,
-    },
-  });
+      update: {},
+      create: {
+        studentId: createdStudents[studentIndex].id,
+        assessmentId,
+      },
+    });
 
-  await prisma.submissionVersion.upsert({
-    where: {
-      submissionId_versionNumber: {
-        submissionId: subSophia.id,
+    for (const v of versions) {
+      await prisma.submissionVersion.upsert({
+        where: {
+          submissionId_versionNumber: {
+            submissionId: submission.id,
+            versionNumber: v.versionNumber,
+          },
+        },
+        update: {},
+        create: {
+          submissionId: submission.id,
+          ...v,
+        },
+      });
+    }
+
+    if (result) {
+      await prisma.assessmentResult.upsert({
+        where: { submissionId: submission.id },
+        update: {
+          grade: result.grade,
+          isPublished: result.isPublished,
+        },
+        create: {
+          submissionId: submission.id,
+          grade: result.grade,
+          isPublished: result.isPublished,
+          gradedAt: result.gradedAt,
+        },
+      });
+    }
+  }
+
+  const PDF = "application/pdf";
+  const DOCX =
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+  // --- CS101 CW1 (asm1, deadline 2025-11-20) ---
+
+  // Sophia Chen: On-time, single version, 85 Distinction, PUBLISHED
+  await upsertSubmission(
+    1,
+    asm1.id,
+    [
+      {
         versionNumber: 1,
+        fileName: "Sophia_Chen_CS101_CW1.pdf",
+        storageKey: "/uploads/submissions/seed_sophia_cs101.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 350,
+        submittedAt: new Date("2025-11-18T14:30:00Z"),
       },
-    },
-    update: {},
-    create: {
-      submissionId: subSophia.id,
-      versionNumber: 1,
-      fileName: "Sophia_Chen_CS101_CW1.pdf",
-      storageKey: "/uploads/submissions/seed_sophia_cs101.pdf",
-      mimeType: "application/pdf",
-      fileSize: 1024 * 350,
-      submittedAt: new Date("2025-11-18T14:30:00Z"), // On time
-    },
-  });
+    ],
+    { grade: 85.0, isPublished: true, gradedAt: new Date("2025-11-25") }
+  );
 
-  await prisma.assessmentResult.upsert({
-    where: { submissionId: subSophia.id },
-    update: {
-      grade: 85.0,
-      isPublished: true,
-    },
-    create: {
-      submissionId: subSophia.id,
-      grade: 85.0,
-      isPublished: true,
-      gradedAt: new Date("2025-11-25"),
-    },
-  });
-
-  // Case B: Alex Rivera submitted LATE with 2 versions (Grade 68 -> Merit, WITHHELD from student view)
-  const subAlex = await prisma.submission.upsert({
-    where: {
-      studentId_assessmentId: {
-        studentId: createdStudents[0].id,
-        assessmentId: asm1.id,
-      },
-    },
-    update: {},
-    create: {
-      studentId: createdStudents[0].id,
-      assessmentId: asm1.id,
-    },
-  });
-
-  // Version 1: Submitted before deadline
-  await prisma.submissionVersion.upsert({
-    where: {
-      submissionId_versionNumber: {
-        submissionId: subAlex.id,
+  // Alex Rivera: 2 versions (v1 on-time, v2 resubmitted 3h late), 68 Merit, WITHHELD
+  await upsertSubmission(
+    0,
+    asm1.id,
+    [
+      {
         versionNumber: 1,
+        fileName: "Alex_Rivera_Draft_CS101.docx",
+        storageKey: "/uploads/submissions/seed_alex_cs101_v1.docx",
+        mimeType: DOCX,
+        fileSize: 1024 * 120,
+        submittedAt: new Date("2025-11-20T21:00:00Z"),
       },
-    },
-    update: {},
-    create: {
-      submissionId: subAlex.id,
-      versionNumber: 1,
-      fileName: "Alex_Rivera_Draft_CS101.docx",
-      storageKey: "/uploads/submissions/seed_alex_cs101_v1.docx",
-      mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      fileSize: 1024 * 120,
-      submittedAt: new Date("2025-11-20T21:00:00Z"),
-    },
-  });
-
-  // Version 2: Resubmitted 3 hours past deadline
-  await prisma.submissionVersion.upsert({
-    where: {
-      submissionId_versionNumber: {
-        submissionId: subAlex.id,
+      {
         versionNumber: 2,
+        fileName: "Alex_Rivera_Final_CS101.pdf",
+        storageKey: "/uploads/submissions/seed_alex_cs101_v2.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 450,
+        submittedAt: new Date("2025-11-21T03:15:00Z"), // Late by 3h 16m
       },
-    },
-    update: {},
-    create: {
-      submissionId: subAlex.id,
-      versionNumber: 2,
-      fileName: "Alex_Rivera_Final_CS101.pdf",
-      storageKey: "/uploads/submissions/seed_alex_cs101_v2.pdf",
-      mimeType: "application/pdf",
-      fileSize: 1024 * 450,
-      submittedAt: new Date("2025-11-21T03:15:00Z"), // Late by 3h 16m
-    },
-  });
+    ],
+    { grade: 68.0, isPublished: false, gradedAt: new Date("2025-11-26") }
+  );
 
-  // Staff graded with 68% (Merit), but WITHHELD for registry moderation
-  await prisma.assessmentResult.upsert({
-    where: { submissionId: subAlex.id },
-    update: {
-      grade: 68.0,
-      isPublished: false, // Withheld test case
-    },
-    create: {
-      submissionId: subAlex.id,
-      grade: 68.0,
-      isPublished: false, // Withheld test case
-      gradedAt: new Date("2025-11-26"),
-    },
-  });
-
-  // Case C: Sophia Chen CS102 - Graded 92% Distinction (Published)
-  const subSophia2 = await prisma.submission.upsert({
-    where: {
-      studentId_assessmentId: {
-        studentId: createdStudents[1].id,
-        assessmentId: asm2.id,
-      },
-    },
-    update: {},
-    create: {
-      studentId: createdStudents[1].id,
-      assessmentId: asm2.id,
-    },
-  });
-
-  await prisma.submissionVersion.upsert({
-    where: {
-      submissionId_versionNumber: {
-        submissionId: subSophia2.id,
+  // Liam O'Connor: Single version submitted AFTER the deadline, 70 Distinction (boundary), WITHHELD
+  await upsertSubmission(
+    6,
+    asm1.id,
+    [
+      {
         versionNumber: 1,
+        fileName: "Liam_OConnor_CS101_CW1.pdf",
+        storageKey: "/uploads/submissions/seed_liam_cs101.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 280,
+        submittedAt: new Date("2025-11-21T09:00:00Z"), // Late by 9h
       },
-    },
-    update: {},
-    create: {
-      submissionId: subSophia2.id,
-      versionNumber: 1,
-      fileName: "Sophia_Chen_CS102_PostgreSQL.pdf",
-      storageKey: "/uploads/submissions/seed_sophia_cs102.pdf",
-      mimeType: "application/pdf",
-      fileSize: 1024 * 600,
-      submittedAt: new Date("2025-12-09T16:00:00Z"),
-    },
-  });
+    ],
+    { grade: 70.0, isPublished: false, gradedAt: new Date("2025-11-28") }
+  );
 
-  await prisma.assessmentResult.upsert({
-    where: { submissionId: subSophia2.id },
-    update: {
-      grade: 92.0,
-      isPublished: true,
-    },
-    create: {
-      submissionId: subSophia2.id,
-      grade: 92.0,
-      isPublished: true,
-      gradedAt: new Date("2025-12-14"),
-    },
-  });
-
-  // Case D: Marcus Adebayo BUS101 - Submitted, Awaiting Grading (Ungraded)
-  const subMarcus = await prisma.submission.upsert({
-    where: {
-      studentId_assessmentId: {
-        studentId: createdStudents[2].id,
-        assessmentId: asm4.id,
-      },
-    },
-    update: {},
-    create: {
-      studentId: createdStudents[2].id,
-      assessmentId: asm4.id,
-    },
-  });
-
-  await prisma.submissionVersion.upsert({
-    where: {
-      submissionId_versionNumber: {
-        submissionId: subMarcus.id,
+  // Grace Kim: 2 versions, both on-time (draft + final), 91 Distinction, PUBLISHED
+  await upsertSubmission(
+    9,
+    asm1.id,
+    [
+      {
         versionNumber: 1,
+        fileName: "Grace_Kim_CS101_Draft.docx",
+        storageKey: "/uploads/submissions/seed_grace_cs101_v1.docx",
+        mimeType: DOCX,
+        fileSize: 1024 * 150,
+        submittedAt: new Date("2025-11-19T10:00:00Z"),
       },
-    },
-    update: {},
-    create: {
-      submissionId: subMarcus.id,
+      {
+        versionNumber: 2,
+        fileName: "Grace_Kim_CS101_Final.pdf",
+        storageKey: "/uploads/submissions/seed_grace_cs101_v2.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 390,
+        submittedAt: new Date("2025-11-20T20:00:00Z"),
+      },
+    ],
+    { grade: 91.0, isPublished: true, gradedAt: new Date("2025-11-27") }
+  );
+
+  // Priya Patel (completed student): On-time, 78 Distinction, PUBLISHED
+  await upsertSubmission(
+    5,
+    asm1.id,
+    [
+      {
+        versionNumber: 1,
+        fileName: "Priya_Patel_CS101_CW1.pdf",
+        storageKey: "/uploads/submissions/seed_priya_cs101.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 410,
+        submittedAt: new Date("2025-11-19T16:45:00Z"),
+      },
+    ],
+    { grade: 78.0, isPublished: true, gradedAt: new Date("2025-11-24") }
+  );
+
+  // --- CS102 Portfolio (asm2, deadline 2025-12-10) ---
+
+  // Sophia Chen: On-time, 92 Distinction, PUBLISHED
+  await upsertSubmission(
+    1,
+    asm2.id,
+    [
+      {
+        versionNumber: 1,
+        fileName: "Sophia_Chen_CS102_PostgreSQL.pdf",
+        storageKey: "/uploads/submissions/seed_sophia_cs102.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 600,
+        submittedAt: new Date("2025-12-09T16:00:00Z"),
+      },
+    ],
+    { grade: 92.0, isPublished: true, gradedAt: new Date("2025-12-14") }
+  );
+
+  // Alex Rivera: On-time, 45 Pass, PUBLISHED
+  await upsertSubmission(
+    0,
+    asm2.id,
+    [
+      {
+        versionNumber: 1,
+        fileName: "Alex_Rivera_CS102_Portfolio.pdf",
+        storageKey: "/uploads/submissions/seed_alex_cs102.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 500,
+        submittedAt: new Date("2025-12-08T11:30:00Z"),
+      },
+    ],
+    { grade: 45.0, isPublished: true, gradedAt: new Date("2025-12-15") }
+  );
+
+  // --- BUS101 Case Study (asm4, deadline 2025-11-30) ---
+
+  // Marcus Adebayo: On-time, Awaiting Grading (UNGRADED)
+  await upsertSubmission(2, asm4.id, [
+    {
       versionNumber: 1,
       fileName: "Marcus_Adebayo_BUS101_CaseStudy.docx",
       storageKey: "/uploads/submissions/seed_marcus_bus101.docx",
-      mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      mimeType: DOCX,
       fileSize: 1024 * 210,
       submittedAt: new Date("2025-11-29T10:00:00Z"),
     },
-  });
+  ]);
+
+  // Diego Fernandez: Submitted 1 day LATE, 40 Pass (boundary), PUBLISHED
+  await upsertSubmission(
+    8,
+    asm4.id,
+    [
+      {
+        versionNumber: 1,
+        fileName: "Diego_Fernandez_BUS101_CaseStudy.pdf",
+        storageKey: "/uploads/submissions/seed_diego_bus101.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 260,
+        submittedAt: new Date("2025-12-01T18:00:00Z"), // Late by 1 day
+      },
+    ],
+    { grade: 40.0, isPublished: true, gradedAt: new Date("2025-12-05") }
+  );
+
+  // Fatima Hassan: On-time, 61 Merit, WITHHELD
+  await upsertSubmission(
+    11,
+    asm4.id,
+    [
+      {
+        versionNumber: 1,
+        fileName: "Fatima_Hassan_BUS101_CaseStudy.pdf",
+        storageKey: "/uploads/submissions/seed_fatima_bus101.pdf",
+        mimeType: PDF,
+        fileSize: 1024 * 230,
+        submittedAt: new Date("2025-11-28T09:30:00Z"),
+      },
+    ],
+    { grade: 61.0, isPublished: false, gradedAt: new Date("2025-12-03") }
+  );
+
+  // --- BUS102 Midterm (asm6, deadline 2026-08-20) ---
+
+  // Elena Rostova (deferred): On-time, Awaiting Grading (UNGRADED)
+  await upsertSubmission(3, asm6.id, [
+    {
+      versionNumber: 1,
+      fileName: "Elena_Rostova_BUS102_Midterm.docx",
+      storageKey: "/uploads/submissions/seed_elena_bus102.docx",
+      mimeType: DOCX,
+      fileSize: 1024 * 180,
+      submittedAt: new Date("2026-08-19T14:00:00Z"),
+    },
+  ]);
+
+  // --- DS101 Coursework (asm7, deadline 2026-09-25) ---
+
+  // Aisha Khan: On-time, Awaiting Grading (UNGRADED)
+  await upsertSubmission(7, asm7.id, [
+    {
+      versionNumber: 1,
+      fileName: "Aisha_Khan_DS101_Models.pdf",
+      storageKey: "/uploads/submissions/seed_aisha_ds101.pdf",
+      mimeType: PDF,
+      fileSize: 1024 * 320,
+      submittedAt: new Date("2026-09-24T08:15:00Z"),
+    },
+  ]);
+
+  // Noah Williams: On-time, 38 Fail, WITHHELD
+  await upsertSubmission(
+    10,
+    asm7.id,
+    [
+      {
+        versionNumber: 1,
+        fileName: "Noah_Williams_DS101_Models.docx",
+        storageKey: "/uploads/submissions/seed_noah_ds101.docx",
+        mimeType: DOCX,
+        fileSize: 1024 * 140,
+        submittedAt: new Date("2026-09-23T19:45:00Z"),
+      },
+    ],
+    { grade: 38.0, isPublished: false, gradedAt: new Date("2026-09-28") }
+  );
 
   console.log("-----------------------------------------------------------------");
   console.log("Demo dataset seeded successfully!");
-  console.log(`Programmes created: 3 (BSc Computer Science, BA Business Admin, BSc Data Science)`);
-  console.log(`Students enrolled: ${createdStudents.length} across diverse statuses (Enrolled, Deferred, Withdrawn, Completed)`);
-  console.log(`Financial scenarios: Paid (Sophia), Overdue (Alex & Marcus), Completed (Priya)`);
-  console.log(`Submissions & Grades: On-time (Sophia), Late resubmission (Alex), Published & Withheld marks, and Ungraded (Marcus)`);
+  console.log("Programmes: 3 (BSc Computer Science, BA Business Admin, BSc Data Science & AI)");
+  console.log(`Students: ${createdStudents.length} (8 Enrolled, 2 Deferred, 1 Withdrawn, 1 Completed)`);
+  console.log("Fees: 12 accounts -> 3 PAID, 6 OVERDUE, 3 PARTIAL (incl. 1 with zero payments)");
+  console.log("Assessments: 11 (7 past deadlines, 4 upcoming across CS/BUS/DS)");
+  console.log("Submissions: 13 -> 6 published, 4 withheld, 3 ungraded; late, multi-version, and boundary grades (70/40) included");
   console.log("-----------------------------------------------------------------");
 }
 
