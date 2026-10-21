@@ -1,5 +1,5 @@
-import { getStaffDashboardMetrics } from "@/server/services/staff-dashboard.service";
-import type { StaffDashboardData } from "@/types/staff-dashboard";
+import { getStaffDashboardMetrics } from "@/server/services/dashboard.service";
+import type { StaffDashboardData } from "@/types/dashboard";
 import { StaffDashboardView } from "./StaffDashboardView";
 
 const emptyDashboardData: StaffDashboardData = {

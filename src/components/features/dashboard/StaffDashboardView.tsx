@@ -3,7 +3,7 @@ import { DashboardKpis } from "./DashboardKpis";
 import { StaffOverdueAccountsSection } from "./StaffOverdueAccountsSection";
 import { RecentSubmissionsPanel } from "./RecentSubmissionsPanel";
 import { UpcomingDeadlinesPanel } from "./UpcomingDeadlinesPanel";
-import type { StaffDashboardData } from "@/types/staff-dashboard";
+import type { StaffDashboardData } from "@/types/dashboard";
 
 interface StaffDashboardViewProps {
   data: StaffDashboardData;

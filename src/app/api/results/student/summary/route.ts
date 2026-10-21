@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getStudentMarksheetStats } from "@/server/services/student-marksheet.service";
+import { getStudentMarksheetStats } from "@/server/services/result.service";
 
 export async function GET(request: NextRequest) {
   try {

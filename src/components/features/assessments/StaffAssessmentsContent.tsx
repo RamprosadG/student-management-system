@@ -2,12 +2,12 @@ import { connection } from "next/server";
 import {
   getStaffAssessmentSummary,
   getStaffAssessments,
-} from "@/server/services/staff-assessment.service";
+} from "@/server/services/assessment.service";
 import { listModules } from "@/server/services/module.service";
 import type {
   StaffAssessmentsData,
   StaffAssessmentsFilters,
-} from "@/types/staff-assessments";
+} from "@/types/assessments";
 import { StaffAssessmentsView } from "./StaffAssessmentsView";
 
 const PAGE_SIZE = 5;

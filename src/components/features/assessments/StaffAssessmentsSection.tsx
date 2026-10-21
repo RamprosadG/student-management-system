@@ -11,7 +11,7 @@ import type {
   AssessmentItem,
   ModuleData,
   StaffAssessmentsFilters,
-} from "@/types/staff-assessments";
+} from "@/types/assessments";
 import type { PaginationMeta } from "@/types/pagination";
 
 interface StaffAssessmentsSectionProps {

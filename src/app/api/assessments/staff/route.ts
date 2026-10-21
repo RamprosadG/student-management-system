@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getStaffAssessments } from "@/server/services/staff-assessment.service";
+import { getStaffAssessments } from "@/server/services/assessment.service";
 import { parsePagination } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {

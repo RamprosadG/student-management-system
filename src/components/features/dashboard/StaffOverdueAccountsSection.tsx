@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Modal from "@/components/ui/modals/Modal";
 import { RecordPaymentForm, FeeAccountItem } from "@/features/fees/RecordPaymentForm";
 import { OverdueAccountsPanel } from "./OverdueAccountsPanel";
-import type { PriorityOverdueStudent } from "@/types/staff-dashboard";
+import type { PriorityOverdueStudent } from "@/types/dashboard";
 
 interface StaffOverdueAccountsSectionProps {
   students: PriorityOverdueStudent[];

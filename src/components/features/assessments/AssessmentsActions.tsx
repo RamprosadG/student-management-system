@@ -6,7 +6,7 @@ import Button from "@/components/ui/buttons/Button";
 import Modal from "@/components/ui/modals/Modal";
 import { CreateAssessmentForm } from "@/features/assessments/CreateAssessmentForm";
 import { HiRefresh, HiPlus } from "react-icons/hi";
-import type { ModuleData } from "@/types/staff-assessments";
+import type { ModuleData } from "@/types/assessments";
 
 interface AssessmentsActionsProps {
   modules: ModuleData[];

@@ -2,9 +2,9 @@ import { cookies } from "next/headers";
 import {
   getStudentMarksheetStats,
   getStudentMarksheet,
-} from "@/server/services/student-marksheet.service";
+} from "@/server/services/result.service";
 import { STUDENT_SELECTION_COOKIE } from "@/lib/student-selection";
-import type { StudentMarksheetData } from "@/types/student-marksheet";
+import type { StudentMarksheetData } from "@/types/results";
 import { StudentMarksheetView } from "./StudentMarksheetView";
 
 const emptyData: StudentMarksheetData = {

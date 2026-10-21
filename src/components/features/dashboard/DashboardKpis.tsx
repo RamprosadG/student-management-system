@@ -1,6 +1,6 @@
 import StatCard from "@/components/ui/stats/StatCard";
 import { formatCurrency } from "@/lib/utils";
-import type { StaffDashboardKpis as StaffDashboardKpisData } from "@/types/staff-dashboard";
+import type { StaffDashboardKpis as StaffDashboardKpisData } from "@/types/dashboard";
 import {
   HiOutlineAcademicCap,
   HiOutlineCreditCard,

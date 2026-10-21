@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { getStudentDashboardMetrics } from "@/server/services/student-dashboard.service";
+import { getStudentDashboardMetrics } from "@/server/services/dashboard.service";
 import { STUDENT_SELECTION_COOKIE } from "@/lib/student-selection";
-import type { StudentDashboardData } from "@/types/student-dashboard";
+import type { StudentDashboardData } from "@/types/dashboard";
 import { StudentDashboardView } from "./StudentDashboardView";
 
 const emptyDashboardData: StudentDashboardData = {

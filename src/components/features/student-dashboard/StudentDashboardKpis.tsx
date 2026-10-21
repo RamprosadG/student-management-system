@@ -3,7 +3,7 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import type {
   StudentAcademicProgress,
   StudentFinancialSummary,
-} from "@/types/student-dashboard";
+} from "@/types/dashboard";
 import {
   HiOutlineAcademicCap,
   HiOutlineCreditCard,

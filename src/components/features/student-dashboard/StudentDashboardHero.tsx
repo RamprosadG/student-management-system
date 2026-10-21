@@ -1,6 +1,6 @@
 import RefreshDashboardButton from "@/components/shared/RefreshDashboardButton";
 import Badge from "@/components/ui/badges/Badge";
-import type { StudentDashboardStudent } from "@/types/student-dashboard";
+import type { StudentDashboardStudent } from "@/types/dashboard";
 
 interface StudentDashboardHeroProps {
   student: StudentDashboardStudent | null;

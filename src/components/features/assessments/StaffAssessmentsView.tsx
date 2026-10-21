@@ -2,7 +2,7 @@ import { AssessmentsActions } from "./AssessmentsActions";
 import { AssessmentsHeader } from "./AssessmentsHeader";
 import { AssessmentsSummary } from "./AssessmentsSummary";
 import { StaffAssessmentsSection } from "./StaffAssessmentsSection";
-import type { StaffAssessmentsData } from "@/types/staff-assessments";
+import type { StaffAssessmentsData } from "@/types/assessments";
 
 interface StaffAssessmentsViewProps {
   data: StaffAssessmentsData;

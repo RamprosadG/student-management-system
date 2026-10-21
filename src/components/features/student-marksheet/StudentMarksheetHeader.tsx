@@ -1,5 +1,5 @@
 import StudentMarksheetRefreshButton from "./StudentMarksheetRefreshButton";
-import type { StudentMarksheetStudent } from "@/types/student-marksheet";
+import type { StudentMarksheetStudent } from "@/types/results";
 
 interface StudentMarksheetHeaderProps {
   student: StudentMarksheetStudent | null | undefined;

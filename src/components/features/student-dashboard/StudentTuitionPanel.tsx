@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Badge from "@/components/ui/badges/Badge";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import type { StudentFinancialSummary } from "@/types/student-dashboard";
+import type { StudentFinancialSummary } from "@/types/dashboard";
 import {
   HiOutlineDocumentReport,
   HiOutlineArrowRight,

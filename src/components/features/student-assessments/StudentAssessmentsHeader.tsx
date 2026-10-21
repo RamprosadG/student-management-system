@@ -1,5 +1,5 @@
 import StudentAssessmentsRefreshButton from "./StudentAssessmentsRefreshButton";
-import type { StudentInfo } from "@/types/student-assessments";
+import type { StudentInfo } from "@/types/assessments";
 
 interface StudentAssessmentsHeaderProps {
   studentInfo: StudentInfo | null;

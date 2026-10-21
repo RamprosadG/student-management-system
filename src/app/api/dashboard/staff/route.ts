@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getStaffDashboardMetrics } from "@/server/services/staff-dashboard.service";
+import { getStaffDashboardMetrics } from "@/server/services/dashboard.service";
 
 export async function GET() {
   try {

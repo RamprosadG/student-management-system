@@ -1,10 +1,20 @@
 import { connection } from "next/server";
 import {
+  findStaffDashboardData,
   emptyStudentDashboardMetrics,
   findStudentDashboardData,
-} from "@/server/repositories/student-dashboard.repository";
+} from "@/server/repositories/dashboard.repository";
+import {
+  StaffDashboardMetrics,
+  StudentDashboardMetrics,
+} from "@/server/types/dashboard";
 import { resolveStudentId } from "@/server/services/student.service";
-import { StudentDashboardMetrics } from "@/server/types/student-dashboard";
+
+export async function getStaffDashboardMetrics(): Promise<StaffDashboardMetrics> {
+  // Dashboard metrics are live aggregates, so they must never be prerendered.
+  await connection();
+  return await findStaffDashboardData();
+}
 
 export async function getStudentDashboardMetrics(
   studentId?: string | null

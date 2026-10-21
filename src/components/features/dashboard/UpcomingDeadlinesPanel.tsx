@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Badge from "@/components/ui/badges/Badge";
 import { formatDate } from "@/lib/utils";
-import type { UpcomingDeadline } from "@/types/staff-dashboard";
+import type { UpcomingDeadline } from "@/types/dashboard";
 import { HiOutlineClock, HiOutlineArrowRight } from "react-icons/hi";
 
 interface UpcomingDeadlinesPanelProps {

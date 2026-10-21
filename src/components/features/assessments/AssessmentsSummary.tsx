@@ -1,5 +1,5 @@
 import StatCard from "@/components/ui/stats/StatCard";
-import type { AssessmentSummary } from "@/types/staff-assessments";
+import type { AssessmentSummary } from "@/types/assessments";
 import {
   HiOutlineClipboardList,
   HiOutlineDocumentText,

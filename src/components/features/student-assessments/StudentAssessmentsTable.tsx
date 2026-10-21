@@ -4,7 +4,7 @@ import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { formatDateTime } from "@/lib/utils";
-import type { StudentAssessmentItem } from "@/types/student-assessments";
+import type { StudentAssessmentItem } from "@/types/assessments";
 import {
   HiOutlineUpload,
   HiOutlineClock,

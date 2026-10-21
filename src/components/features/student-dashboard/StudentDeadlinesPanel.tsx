@@ -3,7 +3,7 @@ import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { TableActionLink } from "@/components/ui/buttons/TableActionButton";
 import { formatDate } from "@/lib/utils";
-import type { UpcomingDeadlineItem } from "@/types/student-dashboard";
+import type { UpcomingDeadlineItem } from "@/types/dashboard";
 import {
   HiOutlineExclamationCircle,
   HiOutlineArrowRight,

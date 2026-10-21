@@ -1,7 +1,7 @@
 import { ResultsHeader } from "./ResultsHeader";
 import { ResultsSummary } from "./ResultsSummary";
 import { StaffResultsSection } from "./StaffResultsSection";
-import type { StaffResultsData } from "@/types/staff-results";
+import type { StaffResultsData } from "@/types/results";
 
 interface StaffResultsViewProps {
   data: StaffResultsData;

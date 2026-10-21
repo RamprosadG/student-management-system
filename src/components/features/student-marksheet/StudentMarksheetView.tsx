@@ -2,7 +2,7 @@ import { StudentMarksheetHeader } from "./StudentMarksheetHeader";
 import { StudentMarksheetKpis } from "./StudentMarksheetKpis";
 import { StudentMarksheetPolicyBanner } from "./StudentMarksheetPolicyBanner";
 import { StudentMarksheetTable } from "./StudentMarksheetTable";
-import type { StudentMarksheetData } from "@/types/student-marksheet";
+import type { StudentMarksheetData } from "@/types/results";
 
 interface StudentMarksheetViewProps {
   data: StudentMarksheetData;

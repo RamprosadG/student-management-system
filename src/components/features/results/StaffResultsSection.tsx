@@ -12,7 +12,7 @@ import type {
   StaffGradingItem,
   StaffResultsFilters,
   ModuleItem,
-} from "@/types/staff-results";
+} from "@/types/results";
 import type { PaginationMeta } from "@/types/pagination";
 
 interface StaffResultsSectionProps {

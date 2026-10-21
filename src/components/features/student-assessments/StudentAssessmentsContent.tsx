@@ -2,9 +2,9 @@ import { cookies } from "next/headers";
 import {
   getStudentAssessmentSummary,
   getStudentAssessments,
-} from "@/server/services/student-assessment.service";
+} from "@/server/services/assessment.service";
 import { STUDENT_SELECTION_COOKIE } from "@/lib/student-selection";
-import type { StudentAssessmentsData } from "@/types/student-assessments";
+import type { StudentAssessmentsData } from "@/types/assessments";
 import { StudentAssessmentsView } from "./StudentAssessmentsView";
 
 const emptyData: StudentAssessmentsData = {

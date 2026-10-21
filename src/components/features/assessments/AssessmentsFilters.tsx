@@ -2,7 +2,7 @@
 
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
-import type { ModuleData } from "@/types/staff-assessments";
+import type { ModuleData } from "@/types/assessments";
 
 interface AssessmentsFiltersProps {
   search: string;

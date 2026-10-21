@@ -2,7 +2,7 @@
 
 import SearchInput from "@/components/ui/inputs/SearchInput";
 import Dropdown from "@/components/ui/dropdowns/Dropdown";
-import type { ModuleItem, PublishFilter } from "@/types/staff-results";
+import type { ModuleItem, PublishFilter } from "@/types/results";
 
 interface ResultsFiltersProps {
   search: string;

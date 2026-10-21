@@ -1,7 +1,7 @@
 import { StudentAssessmentsHeader } from "./StudentAssessmentsHeader";
 import { StudentAssessmentsKpis } from "./StudentAssessmentsKpis";
 import { StudentAssessmentsSection } from "./StudentAssessmentsSection";
-import type { StudentAssessmentsData } from "@/types/student-assessments";
+import type { StudentAssessmentsData } from "@/types/assessments";
 
 interface StudentAssessmentsViewProps {
   data: StudentAssessmentsData;

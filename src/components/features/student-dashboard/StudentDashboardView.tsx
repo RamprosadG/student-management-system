@@ -2,7 +2,7 @@ import { StudentDashboardHero } from "./StudentDashboardHero";
 import { StudentDashboardKpis } from "./StudentDashboardKpis";
 import { StudentDeadlinesPanel } from "./StudentDeadlinesPanel";
 import { StudentTuitionPanel } from "./StudentTuitionPanel";
-import type { StudentDashboardData } from "@/types/student-dashboard";
+import type { StudentDashboardData } from "@/types/dashboard";
 
 interface StudentDashboardViewProps {
   data: StudentDashboardData;

@@ -5,7 +5,7 @@ import Badge from "@/components/ui/badges/Badge";
 import DataTable, { Column } from "@/components/ui/tables/DataTable";
 import { TableActionButton } from "@/components/ui/buttons/TableActionButton";
 import { formatCurrency, formatDate } from "@/lib/utils";
-import type { PriorityOverdueStudent } from "@/types/staff-dashboard";
+import type { PriorityOverdueStudent } from "@/types/dashboard";
 import { HiOutlineExclamationCircle, HiOutlineArrowRight } from "react-icons/hi";
 import { MdPayment } from "react-icons/md";
 import type { FeeAccountItem } from "@/features/fees/RecordPaymentForm";

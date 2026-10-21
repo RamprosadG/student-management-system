@@ -1,5 +1,5 @@
 import StatCard from "@/components/ui/stats/StatCard";
-import type { StudentMarksheetStats } from "@/types/student-marksheet";
+import type { StudentMarksheetStats } from "@/types/results";
 import {
   HiOutlineDocumentReport,
   HiOutlineAcademicCap,

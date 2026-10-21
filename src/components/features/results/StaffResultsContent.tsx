@@ -2,13 +2,13 @@ import { connection } from "next/server";
 import {
   getStaffResultSummary,
   getStaffResults,
-} from "@/server/services/staff-result.service";
+} from "@/server/services/result.service";
 import { listModules } from "@/server/services/module.service";
 import type {
   PublishFilter,
   StaffResultsData,
   StaffResultsFilters,
-} from "@/types/staff-results";
+} from "@/types/results";
 import { StaffResultsView } from "./StaffResultsView";
 
 const PAGE_SIZE = 5;

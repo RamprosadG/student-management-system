@@ -11,7 +11,7 @@ import type {
   StudentAssessmentsFilters as FilterState,
   StudentAssessmentItem,
   StudentInfo,
-} from "@/types/student-assessments";
+} from "@/types/assessments";
 
 interface StudentAssessmentsSectionProps {
   student: StudentInfo | null;
