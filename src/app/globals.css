@@ -7,6 +7,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --sms-nav-height: 4rem;
+}
+
+/* The student navbar stacks its controls into two rows on mobile. One variable
+   feeds both the bar height and the main offset so they cannot drift apart. */
+@media not (min-width: 40rem) {
+  .nav-stacked {
+    --sms-nav-height: 92px;
+    /* Natural width of the role-switcher pill, which mobile leaves untouched.
+       The student selector is pinned to it so the two stacked rows align. */
+    --sms-nav-pill-width: 189px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

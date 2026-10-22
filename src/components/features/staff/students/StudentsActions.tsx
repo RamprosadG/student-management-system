@@ -24,6 +24,7 @@ export function StudentsActions({ meta }: StudentsActionsProps) {
       <Button
         variant="secondary"
         size="md"
+        className="max-sm:text-xs max-sm:px-2 max-sm:gap-1.5"
         icon={<HiRefresh className="w-4 h-4" />}
         onClick={refresh}
         disabled={isPending}
@@ -33,6 +34,7 @@ export function StudentsActions({ meta }: StudentsActionsProps) {
       <Button
         variant="primary"
         size="md"
+        className="max-sm:text-xs max-sm:px-2 max-sm:gap-1.5"
         icon={<HiPlus className="w-4 h-4" />}
         onClick={() => setIsEnrolModalOpen(true)}
       >

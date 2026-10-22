@@ -14,11 +14,11 @@ interface FeesSummaryProps {
 
 export function FeesSummary({ summary }: FeesSummaryProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-sm:grid-cols-2">
       <StatCard
         title="Total Invoiced"
         value={formatCurrency(summary.totalInvoiced)}
-        subtitle="All assigned programme fees"
+        subtitle="Programme fees"
         icon={<HiOutlineCash className="w-6 h-6" />}
         iconBgColor="bg-indigo-100"
         iconColor="text-indigo-600"
@@ -29,7 +29,7 @@ export function FeesSummary({ summary }: FeesSummaryProps) {
       <StatCard
         title="Total Collected"
         value={formatCurrency(summary.totalCollected)}
-        subtitle="Total verified payments"
+        subtitle="Verified payments"
         icon={<HiOutlineCreditCard className="w-6 h-6" />}
         iconBgColor="bg-emerald-100"
         iconColor="text-emerald-600"
@@ -38,9 +38,9 @@ export function FeesSummary({ summary }: FeesSummaryProps) {
       />
 
       <StatCard
-        title="Outstanding Balance"
+        title="Outstanding"
         value={formatCurrency(summary.totalOutstanding)}
-        subtitle="Pending student receivables"
+        subtitle="Due from students"
         icon={<HiOutlineClock className="w-6 h-6" />}
         iconBgColor="bg-amber-100"
         iconColor="text-amber-600"
@@ -49,9 +49,9 @@ export function FeesSummary({ summary }: FeesSummaryProps) {
       />
 
       <StatCard
-        title="Overdue Accounts"
+        title="Overdue"
         value={summary.overdueCount}
-        subtitle="Past due date with balance"
+        subtitle="Past due balance"
         icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
         iconBgColor="bg-rose-100"
         iconColor="text-rose-600"

@@ -20,11 +20,11 @@ export function StudentAssessmentsKpis({
   overdueCount,
 }: StudentAssessmentsKpisProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-sm:grid-cols-2">
       <StatCard
         title="Total Assigned"
         value={totalAssessments}
-        subtitle="In your enrolled programme"
+        subtitle="In your programme"
         icon={<HiOutlineClipboardList className="w-6 h-6" />}
         iconBgColor="bg-indigo-100"
         iconColor="text-indigo-600"
@@ -35,7 +35,7 @@ export function StudentAssessmentsKpis({
       <StatCard
         title="Submitted"
         value={submittedCount}
-        subtitle="Assessments handed in"
+        subtitle="Handed in"
         icon={<HiOutlineCheckCircle className="w-6 h-6" />}
         iconBgColor="bg-emerald-100"
         iconColor="text-emerald-600"
@@ -46,7 +46,7 @@ export function StudentAssessmentsKpis({
       <StatCard
         title="Pending Action"
         value={pendingCount}
-        subtitle="Awaiting your submission"
+        subtitle="Not submitted"
         icon={<HiOutlineClock className="w-6 h-6" />}
         iconBgColor="bg-amber-100"
         iconColor="text-amber-600"
@@ -57,7 +57,7 @@ export function StudentAssessmentsKpis({
       <StatCard
         title="Overdue"
         value={overdueCount}
-        subtitle="Past deadline & unsubmitted"
+        subtitle="Past deadline"
         icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
         iconBgColor="bg-rose-100"
         iconColor="text-rose-600"

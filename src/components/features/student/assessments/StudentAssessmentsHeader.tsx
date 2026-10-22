@@ -22,17 +22,17 @@ export function StudentAssessmentsHeader({
               {studentInfo?.studentId || "SMS-STUDENT"}
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-1 max-sm:text-lg">
             Assessment Submissions
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-sm:hidden">
             {studentInfo
               ? `${studentInfo.fullName} • ${studentInfo.programme.name} (${studentInfo.academicYear.name})`
               : "Submit assignments, inspect version history, and upload revisions before deadlines."}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-3 shrink-0 max-sm:hidden">
           <StudentAssessmentsRefreshButton isLoading={isLoading} />
         </div>
       </div>

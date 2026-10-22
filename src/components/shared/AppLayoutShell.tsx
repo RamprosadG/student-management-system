@@ -2,11 +2,16 @@
 
 import { Sidebar } from "@/components/shared/Sidebar";
 import { Navbar } from "@/components/shared/Navbar";
+import { useRole } from "./RoleContext";
 import Footer from "./Footer";
 
 export function AppLayoutShell({ children }: { children: React.ReactNode }) {
+  const { role } = useRole();
+
   return (
-    <div className="w-full min-h-screen flex relative bg-white">
+    <div
+      className={`w-full min-h-screen flex relative bg-white${role === "student" ? " nav-stacked" : ""}`}
+    >
       {/* 1. Left Sidebar (Fixed width w-64 on desktop) */}
       <Sidebar />
 
@@ -15,8 +20,8 @@ export function AppLayoutShell({ children }: { children: React.ReactNode }) {
         {/* Fixed Top Header */}
         <Navbar />
 
-        {/* Scrollable Main Viewport (pt-16 offsets fixed h-16 header) */}
-        <main className="flex-1 flex flex-col pt-16">
+        {/* Scrollable Main Viewport (offset by --sms-nav-height, the height of the fixed header) */}
+        <main className="flex-1 flex flex-col pt-[var(--sms-nav-height)]">
           <div className="flex-1 p-6 md:p-8 w-full">{children}</div>
           <Footer />
         </main>

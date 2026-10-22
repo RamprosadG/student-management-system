@@ -37,17 +37,17 @@ export function StudentDashboardHero({
               </Badge>
             )}
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-1 max-sm:text-lg">
             Welcome back, {student?.fullName || "Student"}!
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-sm:hidden">
             {student
               ? `${student.programme.name} (${student.programme.code}) • Academic Year ${student.academicYear.name}`
               : "Your personal academic overview, fee status, and upcoming deadlines."}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-3 shrink-0 max-sm:hidden">
           <RefreshDashboardButton isLoading={isLoading} />
         </div>
       </div>

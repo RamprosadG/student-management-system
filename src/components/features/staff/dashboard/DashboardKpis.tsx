@@ -14,11 +14,11 @@ interface DashboardKpisProps {
 
 export function DashboardKpis({ kpis }: DashboardKpisProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-sm:grid-cols-2">
       <StatCard
-        title="Enrolled Students"
+        title="Students"
         value={kpis.enrolledStudents}
-        subtitle={`Total records: ${kpis.totalStudents}`}
+        subtitle="Total records"
         icon={<HiOutlineAcademicCap className="w-6 h-6" />}
         iconBgColor="bg-indigo-100"
         iconColor="text-indigo-600"
@@ -27,9 +27,9 @@ export function DashboardKpis({ kpis }: DashboardKpisProps) {
       />
 
       <StatCard
-        title="Outstanding Fees"
+        title="Outstanding"
         value={formatCurrency(kpis.totalOutstandingBalance)}
-        subtitle="Real-time uncollected tuition"
+        subtitle="Uncollected tuition"
         icon={<HiOutlineCreditCard className="w-6 h-6" />}
         iconBgColor="bg-amber-100"
         iconColor="text-amber-600"
@@ -38,9 +38,9 @@ export function DashboardKpis({ kpis }: DashboardKpisProps) {
       />
 
       <StatCard
-        title="Overdue Accounts"
+        title="Overdue"
         value={kpis.overdueAccountsCount}
-        subtitle="Past due date & unpaid"
+        subtitle="Past due, unpaid"
         icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
         iconBgColor="bg-rose-100"
         iconColor="text-rose-600"
@@ -49,9 +49,9 @@ export function DashboardKpis({ kpis }: DashboardKpisProps) {
       />
 
       <StatCard
-        title="Pending Evaluations"
+        title="Ungraded"
         value={kpis.pendingGradingCount}
-        subtitle={`Across ${kpis.totalAssessments} assessments`}
+        subtitle={`Of ${kpis.totalAssessments} assessments`}
         icon={<HiOutlineDocumentReport className="w-6 h-6" />}
         iconBgColor="bg-emerald-100"
         iconColor="text-emerald-600"

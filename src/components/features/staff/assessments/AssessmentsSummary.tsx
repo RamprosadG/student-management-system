@@ -12,11 +12,11 @@ interface AssessmentsSummaryProps {
 
 export function AssessmentsSummary({ summary }: AssessmentsSummaryProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-sm:grid-cols-2">
       <StatCard
-        title="Total Assessments"
+        title="Assessments"
         value={summary.totalAssessments}
-        subtitle="Across all curriculum modules"
+        subtitle="All modules"
         icon={<HiOutlineClipboardList className="w-6 h-6" />}
         iconBgColor="bg-indigo-100"
         iconColor="text-indigo-600"
@@ -25,9 +25,9 @@ export function AssessmentsSummary({ summary }: AssessmentsSummaryProps) {
       />
 
       <StatCard
-        title="Total Submissions"
+        title="Submissions"
         value={summary.totalSubmissions}
-        subtitle="Student uploads received"
+        subtitle="Uploads received"
         icon={<HiOutlineDocumentText className="w-6 h-6" />}
         iconBgColor="bg-emerald-100"
         iconColor="text-emerald-600"
@@ -36,14 +36,15 @@ export function AssessmentsSummary({ summary }: AssessmentsSummaryProps) {
       />
 
       <StatCard
-        title="Late Submissions"
+        title="Late"
         value={summary.totalLateSubmissions}
-        subtitle="Past assessment deadline"
+        subtitle="Past deadline"
         icon={<HiOutlineExclamationCircle className="w-6 h-6" />}
         iconBgColor="bg-rose-100"
         iconColor="text-rose-600"
         bgColor="bg-rose-50/50"
         borderColor="border-rose-200"
+        className="max-sm:col-span-2"
       />
     </div>
   );

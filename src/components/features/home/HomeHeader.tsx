@@ -7,11 +7,11 @@ export function HomeHeader() {
             Administration
           </p>
 
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl max-sm:text-lg">
             Registry Management System
           </h1>
 
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 max-sm:hidden">
             Access registry workflows, manage student records, and review
             academic information from one central location.
           </p>

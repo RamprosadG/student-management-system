@@ -13,15 +13,15 @@ export function DashboardHeader({ isLoading = false }: DashboardHeaderProps) {
             Registry Command Center
           </span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1 max-sm:text-lg">
           Registry Administrative Dashboard
         </h1>
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-gray-500 max-sm:hidden">
           Real-time financial status, urgent overdue accounts, grading progress, and curriculum submissions.
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 max-sm:hidden">
         <RefreshDashboardButton isLoading={isLoading} />
       </div>
     </div>

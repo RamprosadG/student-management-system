@@ -20,7 +20,7 @@ interface StudentDashboardKpisProps {
 export function StudentDashboardKpis({ finance, academic }: StudentDashboardKpisProps) {
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-sm:grid-cols-2">
         <StatCard
           title="Tuition Balance"
           value={formatCurrency(finance.balance)}
@@ -63,9 +63,9 @@ export function StudentDashboardKpis({ finance, academic }: StudentDashboardKpis
         />
 
         <StatCard
-          title="Assessments Handed In"
+          title="Handed In"
           value={`${academic.submittedCount} / ${academic.totalAssigned}`}
-          subtitle={`${academic.pendingCount} pending submission`}
+          subtitle={`${academic.pendingCount} pending`}
           icon={<HiOutlineClipboardList className="w-6 h-6" />}
           iconBgColor="bg-indigo-100"
           iconColor="text-indigo-600"
@@ -74,13 +74,13 @@ export function StudentDashboardKpis({ finance, academic }: StudentDashboardKpis
         />
 
         <StatCard
-          title="Published Grade Average"
+          title="Grade Average"
           value={
             academic.averageGrade !== null
               ? `${academic.averageGrade}%`
               : "Pending"
           }
-          subtitle={`${academic.publishedCount} results released`}
+          subtitle={`${academic.publishedCount} released`}
           icon={<HiOutlineAcademicCap className="w-6 h-6" />}
           iconBgColor="bg-blue-100"
           iconColor="text-blue-600"
@@ -89,9 +89,9 @@ export function StudentDashboardKpis({ finance, academic }: StudentDashboardKpis
         />
 
         <StatCard
-          title="Academic Standing"
+          title="Standing"
           value={academic.overallClassification || "In Progress"}
-          subtitle="Based on published marks"
+          subtitle="Published marks"
           icon={<HiOutlineDocumentReport className="w-6 h-6" />}
           iconBgColor="bg-purple-100"
           iconColor="text-purple-600"

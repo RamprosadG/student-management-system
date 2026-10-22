@@ -18,6 +18,7 @@ export function Navbar() {
   } = useRole();
 
   const isStaff = role === "staff";
+  const stackNavOnMobile = !isStaff;
 
   const handleRoleSwitch = (newRole: "staff" | "student") => {
     if (newRole === role) return;
@@ -36,7 +37,7 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 z-30 bg-white shadow-md hover:shadow-lg left-0 right-0 transition-all duration-300">
-      <div className="flex items-center h-16 lg:pl-64">
+      <div className="flex items-center h-[var(--sms-nav-height)] lg:pl-64">
         <div className="flex items-center justify-between w-full px-4 lg:px-6">
           {/* Left Section: Mobile Hamburger (No route title displayed) */}
           <div className="flex items-center">
@@ -50,14 +51,14 @@ export function Navbar() {
           </div>
 
           {/* Right Section: Student Selector & Role Switcher */}
-          <div className="flex items-center gap-3 ml-auto">
+          <div className={`flex items-center gap-3 ml-auto max-sm:min-w-0 max-sm:flex-1${stackNavOnMobile ? " max-sm:flex-col max-sm:items-end" : " max-sm:justify-end"}`}>
             {!isStaff && (
-              <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-2 text-xs max-sm:min-w-0 max-sm:w-[var(--sms-nav-pill-width)] max-sm:order-last">
                 <span className="hidden sm:inline text-gray-500 font-medium shrink-0">
                   Student:
                 </span>
 
-                <div className="w-[180px] sm:w-[220px]">
+                <div className="w-[180px] sm:w-[220px] max-sm:min-w-0 max-sm:flex-1">
                   <Dropdown
                     aria-label="Select student"
                     value={selectedStudentId || ""}
@@ -84,7 +85,7 @@ export function Navbar() {
             )}
 
             {/* Role Switcher Pill */}
-            <div className="flex items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5 text-xs font-medium">
+            <div className="flex items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5 text-xs font-medium max-sm:shrink-0">
               <button
                 type="button"
                 onClick={() => handleRoleSwitch("staff")}

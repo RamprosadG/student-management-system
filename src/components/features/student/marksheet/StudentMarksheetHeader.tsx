@@ -22,17 +22,17 @@ export function StudentMarksheetHeader({
               {student?.studentId || "SMS-STUDENT"}
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-1 max-sm:text-lg">
             Academic Transcript & Results
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-sm:hidden">
             {student
               ? `${student.fullName} • ${student.programme.name} (${student.academicYear.name})`
               : "Official published grades and classifications certified by the Registry."}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-3 shrink-0 max-sm:hidden">
           <StudentMarksheetRefreshButton isLoading={isLoading} />
         </div>
       </div>

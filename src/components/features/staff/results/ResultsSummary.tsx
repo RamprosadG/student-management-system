@@ -20,11 +20,11 @@ export function ResultsSummary({
   withheldCount,
 }: ResultsSummaryProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-sm:grid-cols-2">
       <StatCard
-        title="Total Submissions"
+        title="Submissions"
         value={totalSubmissions}
-        subtitle="Work submitted by students"
+        subtitle="Student uploads"
         icon={<HiOutlineDocumentReport className="w-6 h-6" />}
         iconBgColor="bg-indigo-100"
         iconColor="text-indigo-600"
@@ -33,7 +33,7 @@ export function ResultsSummary({
       />
 
       <StatCard
-        title="Evaluated / Graded"
+        title="Graded"
         value={gradedCount}
         subtitle={`${totalSubmissions - gradedCount} awaiting score`}
         icon={<HiOutlineCheckCircle className="w-6 h-6" />}
@@ -44,9 +44,9 @@ export function ResultsSummary({
       />
 
       <StatCard
-        title="Published to Students"
+        title="Published"
         value={publishedCount}
-        subtitle="Live on student marksheet"
+        subtitle="On marksheets"
         icon={<HiOutlineEye className="w-6 h-6" />}
         iconBgColor="bg-blue-100"
         iconColor="text-blue-600"
@@ -57,7 +57,7 @@ export function ResultsSummary({
       <StatCard
         title="Withheld / Draft"
         value={withheldCount}
-        subtitle="Internal review only"
+        subtitle="Internal only"
         icon={<HiOutlineEyeOff className="w-6 h-6" />}
         iconBgColor="bg-amber-100"
         iconColor="text-amber-600"
