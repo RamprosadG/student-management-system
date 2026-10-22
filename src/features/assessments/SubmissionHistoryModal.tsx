@@ -141,8 +141,8 @@ export function SubmissionHistoryModal({
         />
       </div>
 
-      <div className="flex justify-end pt-2">
-        <Button variant="primary" onClick={onClose}>
+      <div className="flex w-full pt-2">
+        <Button variant="secondary" className="w-full" onClick={onClose}>
           Close
         </Button>
       </div>

@@ -282,10 +282,11 @@ export function SubmitAssessmentModal({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+      <div className="flex items-center gap-3 pt-3 border-t border-gray-100 w-full">
         <Button
           type="button"
-          variant="secondary-outline"
+          variant="secondary"
+          className="flex-1"
           onClick={onClose}
           disabled={isSubmitting}
         >
@@ -294,6 +295,7 @@ export function SubmitAssessmentModal({
         <Button
           type="submit"
           variant="primary"
+          className="flex-1"
           isLoading={isSubmitting}
           disabled={!selectedFile || isSubmitting}
         >

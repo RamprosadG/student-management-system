@@ -244,7 +244,7 @@ export function SubmissionInspectorModal({
 
       {/* Modal Footer */}
       <div className="pt-4 border-t border-gray-100 flex justify-end w-full">
-        <Button variant="secondary" className="w-full sm:w-auto" onClick={onClose}>
+        <Button variant="secondary" className="w-full" onClick={onClose}>
           Close Inspector
         </Button>
       </div>
