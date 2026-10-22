@@ -12,6 +12,7 @@ A production-grade, full-stack Student Management System focused on the core **R
 5. [Edge Cases & Product Decisions](#5-edge-cases--product-decisions)
 6. [How AI Was Used During the Build](#6-how-ai-was-used-during-the-build)
 7. [Architecture & Technology Stack](#7-architecture--technology-stack)
+8. [API Surface](#8-api-surface)
 
 ---
 
@@ -38,10 +39,10 @@ The application models the four daily operational workflows of a Higher Educatio
 
 4. **Marksheet & Academic Results (`/results` & `/marksheet`)**:
    - Staff grade submissions on a numeric scale (0–100) with automatic classification:
-     - $\ge 70$: **Distinction**
-     - $\ge 60$: **Merit**
-     - $\ge 40$: **Pass**
-     - $< 40$: **Fail**
+     - ≥ 70: **Distinction**
+     - ≥ 60: **Merit**
+     - ≥ 40: **Pass**
+     - < 40: **Fail**
    - **Zero-Leak Policy**: Per-student **Publish / Withhold** toggle. Students only see certified, published results; withheld or un-graded submissions display a discreet administrative notice.
 
 5. **Registry Dashboards (`/dashboard` & `/student-dashboard`)**:
@@ -53,7 +54,7 @@ The application models the four daily operational workflows of a Higher Educatio
 ## 2. How to Run Locally
 
 ### Prerequisites
-- **Node.js**: `v20.x` or `v18.18.0+`
+- **Node.js**: `20.9.0` or later (Next.js 16 minimum; Node.js 18 is no longer supported)
 - **PostgreSQL**: Local server or cloud PostgreSQL database (e.g. Supabase, Neon, or local Postgres)
 - **npm** (v9+)
 
@@ -112,7 +113,7 @@ Create a `.env` file in the project root based on `.env.example`:
 
 | Variable | Description | Example |
 | :--- | :--- | :--- |
-| `DATABASE_URL` | PostgreSQL connection string used by Prisma ORM with `@prisma/adapter-pg` driver | `postgresql://postgres:password@localhost:5432/sms_db?schema=public` |
+| `DATABASE_URL` | PostgreSQL connection string used by Prisma ORM with `@prisma/adapter-pg` driver | `postgres://postgres:password@localhost:5432/student_management_system?schema=public` |
 | `NODE_ENV` | Application runtime environment (`development` for local work) | `development` |
 
 ---
@@ -132,13 +133,13 @@ Running `npx tsx prisma/seed.ts` loads a complete demo environment with diverse 
 | **Jordan Taylor** | `SMS-2025-0005` | BSc Computer Science | `WITHDRAWN` | **Overdue** ($9,000 unpaid, due Nov 2025) | Withdrawn record preserved for audit tracking; no submissions |
 | **Priya Patel** | `SMS-2025-0006` | BSc Computer Science | `COMPLETED` | **Paid in Full** ($9,000) | Graduated cohort alumnus; CS101 CW1: On-time (78% Distinction, Published) |
 | **Liam O'Connor** | `SMS-2025-0007` | BSc Computer Science | `ENROLLED` | **Overdue** ($6,000 balance of $9,000 in 2 receipts, due Dec 2025) | CS101 CW1: **Late** single submission, 70% Distinction (boundary), **WITHHELD** |
-| **Aisha Khan** | `SMS-2025-0008` | BSc Data Science & AI | `ENROLLED` | **Partial** ($4,750 of $9,500 paid, due Feb 2026) | DS101 Coursework: On-time, **Awaiting Grading (Ungraded)** |
-| **Diego Fernandez** | `SMS-2025-0009` | BA Business Admin | `ENROLLED` | **Partial** ($7,500 invoiced, nothing paid, due Apr 2026 — no receipts) | BUS101 Case Study: **Late by 1 day**, 40% Pass (boundary), Published |
+| **Aisha Khan** | `SMS-2025-0008` | BSc Data Science & AI | `ENROLLED` | **Overdue** ($4,750 balance of $9,500, due Feb 2026) | DS101 Coursework: On-time, **Awaiting Grading (Ungraded)** |
+| **Diego Fernandez** | `SMS-2025-0009` | BA Business Admin | `ENROLLED` | **Overdue** ($7,500 unpaid, due Apr 2026 — no receipts) | BUS101 Case Study: **Late by 1 day**, 40% Pass (boundary), Published |
 | **Grace Kim** | `SMS-2025-0010` | BSc Computer Science | `ENROLLED` | **Paid in Full** ($9,000 settled early) | CS101 CW1: 2 on-time versions (91% Distinction, Published) |
 | **Noah Williams** | `SMS-2025-0011` | BSc Data Science & AI | `ENROLLED` | **Overdue** ($3,500 balance of $9,500, due Aug 2025) | DS101 Coursework: On-time, 38% Fail, **WITHHELD** |
-| **Fatima Hassan** | `SMS-2025-0012` | BA Business Admin | `DEFERRED` | **Partial** ($6,000 balance of $7,500, due Jun 2026) | BUS101 Case Study: On-time, 61% Merit, **WITHHELD** |
+| **Fatima Hassan** | `SMS-2025-0012` | BA Business Admin | `DEFERRED` | **Overdue** ($6,000 balance of $7,500, due Jun 2026) | BUS101 Case Study: On-time, 61% Merit, **WITHHELD** |
 
-**Fee coverage:** 3 Paid · 6 Overdue · 3 Partial (including one Partial account with zero payments).
+**Fee coverage:** 3 Paid in Full · 9 Overdue (7 with partial receipts, 2 with none) as of Oct 2026. Overdue status is derived at query time from `dueDate < now && balance > 0`, so these counts shift as the demo due dates pass.
 
 ### Assessment & Submission Coverage
 
@@ -169,7 +170,7 @@ Running `npx tsx prisma/seed.ts` loads a complete demo environment with diverse 
    - Student queries execute through strict filtering: if `isPublished === false` or un-evaluated, student marksheets and dashboards display a discreet notice ("Withheld by Registry") without leaking scores.
 
 5. **Smart Role Switcher & Impersonation**:
-   - Includes a persistent top navigation role switcher (`Staff View` $\leftrightarrow$ `Student View`).
+   - Includes a persistent top navigation role switcher (`Staff View` ↔ `Student View`).
    - In Student View, a dropdown allows instantaneous switching between any student in the database to test different cohort standings, overdue states, and transcripts without authenticating.
 
 ---
@@ -206,27 +207,73 @@ src/
 ├── app/
 │   ├── (staff)/             # Staff portal: /dashboard, /students, /fees, /assessments, /results
 │   ├── (student)/           # Student portal: /student-dashboard, /student-assessments, /marksheet
-│   ├── api/                 # Next.js API Route Handlers (RESTful CRUD)
-│   ├── layout.tsx           # Global app layout shell with persistent sidebar
+│   ├── api/                 # Route handlers: role-scoped list/summary reads plus mutations
+│   ├── layout.tsx           # Root shell — RoleProvider, Sidebar, Navbar
 │   └── page.tsx             # Public landing directory
-├── features/                # Domain feature slices (forms, modals, inspectors)
+├── components/
+│   ├── features/            # Server-rendered page sections, one folder per portal area
+│   │   ├── home/
+│   │   ├── staff/           # dashboard / students / fees / assessments / results
+│   │   └── student/         # dashboard / assessments / marksheet
+│   ├── shared/              # Navbar, Sidebar, and RoleContext (simulated role + student impersonation)
+│   └── ui/                  # Primitives: buttons, inputs, dropdowns, modals, tables, badges, stats, pagination, alerts
+├── features/                # Client islands: enrol/edit forms, record-payment, grade-entry, submission modals
 │   ├── students/
 │   ├── fees/
 │   ├── assessments/
 │   └── results/
 ├── server/
-│   ├── services/            # Business workflows & cross-entity orchestration
-│   ├── repositories/        # Prisma data access queries
-│   └── policies/            # Role and publication visibility rules
-├── components/
-│   ├── ui/                  # Reusable UI primitives (buttons, inputs, tables, badges, modals, stats)
-│   └── shared/              # Persistent shell, Sidebar, Navbar, and RoleContext
-└── lib/
-    ├── prisma.ts            # PrismaClient singleton with @prisma/adapter-pg
-    ├── utils.ts             # Currency, date, and string formatting
-    └── validations/         # Zod schemas for input validation
+│   ├── services/            # Business workflows, pagination and KPI aggregation
+│   ├── repositories/        # Prisma data access; role visibility filtering lives here
+│   └── types/               # Server payload and filter interfaces per domain
+├── types/                   # Client-facing view-model types per feature
+├── lib/
+│   ├── prisma.ts            # PrismaClient singleton with @prisma/adapter-pg
+│   ├── student-selection.ts # Reads/writes the sms_selected_student cookie
+│   ├── utils.ts             # Currency, date, and string formatting
+│   └── validations/         # Zod schemas for input validation
+└── generated/prisma/        # Generated Prisma client (gitignored — run `npx prisma generate`)
 ```
 
-- **Frontend**: Next.js 16 (App Router), React 19, Tailwind CSS v4, `react-icons`
-- **Backend**: Next.js Route Handlers, Zod Validation, Node.js File System Uploads
+- **Frontend**: Next.js 16 (App Router, Turbopack, Partial Prerendering), React 19, Tailwind CSS v4, `react-icons`
+- **Backend**: Next.js Route Handlers, Zod v4 validation, Node.js `fs/promises` uploads
 - **Database**: PostgreSQL with Prisma ORM 7 (`@prisma/adapter-pg`)
+- **Quality gates**: `npm run lint` (eslint-config-next core-web-vitals + TypeScript), `npx tsc --noEmit`, `npm run build`
+
+### Rendering & Data Flow
+- Every portal page is a **Server Component** that calls its service directly and streams through `<Suspense>`; filters, search and page state live in URL search params, so only filter bars, pagination, modals and row actions are client islands.
+- Each ledger pairs a **list endpoint** (`?search=&page=`, filtered and paginated in SQL via `where` + `count` + `skip`/`take`) with an **unfiltered summary endpoint** for the KPI cards, so the cards never move with the table filters.
+- There is no authentication layer. Roles are simulated in `RoleContext`, and the staff/student data boundary is enforced in the repository that serves the role (student reads exclude unpublished results).
+- Uploaded submission files are written to `public/uploads/submissions` (gitignored); only the storage key is persisted.
+
+---
+
+## 8. API Surface
+
+All handlers return `{ success, message?, data? }` and validate input with the Zod schemas in `src/lib/validations`.
+
+| Method | Endpoint | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/api/students/staff` | Paginated registry rows, filtered by search/programme/status |
+| `GET` | `/api/students/staff/summary` | Unfiltered enrolment KPI counts |
+| `POST` | `/api/students` | Enrol a student (auto-assigns the programme fee) |
+| `PATCH` | `/api/students` | Update a student record |
+| `GET` | `/api/students/options` | Student directory for the navbar impersonation dropdown |
+| `GET` | `/api/fees/staff` | Paginated fee ledger, filtered by search and `Paid`/`Partial`/`Overdue` status |
+| `GET` | `/api/fees/staff/summary` | Unfiltered fee KPI totals |
+| `POST` | `/api/payments` | Record an idempotent payment transaction |
+| `GET` | `/api/assessments/staff` | Paginated submission ledger, filtered by search/module/publish state |
+| `GET` | `/api/assessments/staff/summary` | Unfiltered assessment KPI counts |
+| `GET` | `/api/assessments/student` | Assessments assigned to the impersonated student |
+| `GET` | `/api/assessments/student/summary` | Unfiltered student KPI counts |
+| `POST` | `/api/assessments` | Create an assessment for a module |
+| `POST` | `/api/submissions` | Multipart upload (`.pdf`/`.docx`, 10MB) with version increment |
+| `GET` | `/api/results/staff` | Paginated grade ledger, filtered by search/module/publish state |
+| `GET` | `/api/results/staff/summary` | Unfiltered results KPI totals |
+| `GET` | `/api/results/student` | Certified marksheet rows for the impersonated student |
+| `GET` | `/api/results/student/summary` | Programme-scoped published average and counts |
+| `POST` | `/api/results` | Record a 0–100 grade |
+| `PATCH` | `/api/results` | Publish or withhold a result |
+| `GET` | `/api/dashboard/staff` | Staff dashboard panels (KPIs, overdue accounts, recent submissions, deadlines) |
+| `GET` | `/api/dashboard/student` | Student dashboard panels (balance, submission progress, GPA, timetable) |
+| `GET` | `/api/modules` | Module directory for the create-assessment selector |

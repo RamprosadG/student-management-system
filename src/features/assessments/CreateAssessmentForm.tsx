@@ -88,8 +88,10 @@ export function CreateAssessmentForm({
         `Assessment "${title}" has been successfully published.`
       );
       onSuccess();
-    } catch (err: any) {
-      showErrorAlert(err.message || "Failed to create assessment");
+    } catch (err) {
+      showErrorAlert(
+        err instanceof Error ? err.message : "Failed to create assessment"
+      );
     } finally {
       setIsSubmitting(false);
     }

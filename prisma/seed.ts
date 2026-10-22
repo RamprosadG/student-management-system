@@ -57,7 +57,7 @@ async function main() {
     },
   });
 
-  const ay2026 = await prisma.academicYear.upsert({
+  await prisma.academicYear.upsert({
     where: { name: "2026/2027" },
     update: {},
     create: {
@@ -522,7 +522,7 @@ async function main() {
     },
   });
 
-  const asm3 = await prisma.assessment.upsert({
+  await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000003" },
     update: {},
     create: {
@@ -544,7 +544,7 @@ async function main() {
     },
   });
 
-  const asm5 = await prisma.assessment.upsert({
+  await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000005" },
     update: {},
     create: {
@@ -577,7 +577,7 @@ async function main() {
     },
   });
 
-  const asm8 = await prisma.assessment.upsert({
+  await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000008" },
     update: {},
     create: {
@@ -588,7 +588,7 @@ async function main() {
     },
   });
 
-  const asm9 = await prisma.assessment.upsert({
+  await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-000000000009" },
     update: {},
     create: {
@@ -599,7 +599,7 @@ async function main() {
     },
   });
 
-  const asm10 = await prisma.assessment.upsert({
+  await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-00000000000a" },
     update: {},
     create: {
@@ -610,7 +610,7 @@ async function main() {
     },
   });
 
-  const asm11 = await prisma.assessment.upsert({
+  await prisma.assessment.upsert({
     where: { id: "00000000-0000-0000-0000-00000000000b" },
     update: {},
     create: {

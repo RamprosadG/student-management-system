@@ -42,6 +42,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
 
   useEffect(() => {
     if (value !== internalValue) {
+      // Server-rendered pages push the query into the URL, so an external value
+      // change must re-seed the local input text.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInternalValue(value);
     }
   }, [value]);

@@ -1,6 +1,6 @@
 # Implementation Plan: Student Management System (Registry Module)
 
-This document tracks the step-by-step implementation of the Student Management System. Each phase follows a **UI Layout First $\rightarrow$ Real API & Database Integration $\rightarrow$ Verification & Commit** pattern.
+This document tracks the step-by-step implementation of the Student Management System. Each phase follows a **UI Layout First → Real API & Database Integration → Verification & Commit** pattern.
 
 ---
 
@@ -14,20 +14,21 @@ This document tracks the step-by-step implementation of the Student Management S
 - [x] **Step 5: Marksheet & Results (Staff Grading & Student View)** *(Completed)*
 - [x] **Step 6: Registry Staff & Student Dashboards** *(Completed)*
 - [x] **Step 7: Final Polish, Full Demo Seed & Documentation** *(Completed)*
+- [x] **Step 8: Role-Scoped Server Rendering, Modular Structure & Mobile Polish** *(Completed)*
 
 ---
 
 ## 🛠️ Detailed Step Breakdown
 
 ### Step 0: Base Seed & Global UI Shell
-**Goal**: Establish app layout shell, navigation bar, role switcher (`Staff View` $\leftrightarrow$ `Student View`), and baseline reference data in PostgreSQL.
+**Goal**: Establish app layout shell, navigation bar, role switcher (`Staff View` ↔ `Student View`), and baseline reference data in PostgreSQL.
 
 - [x] **0.1 Baseline Database Seed**:
   - [x] Create `prisma/seed.ts` with initial Programmes (e.g. *BSc Computer Science*, *BA Business Administration*) and Academic Years (*2025/2026*).
   - [x] Add `"prisma": { "seed": "tsx prisma/seed.ts" }` in `package.json` and `prisma.config.ts`.
   - [x] Run seed and verify PostgreSQL data (`npx prisma db seed`).
 - [x] **0.2 Shared UI Layout & Navigation**:
-  - [x] Create `src/components/shared/RoleContext.tsx` with role state (`staff` $\leftrightarrow$ `student`), selected student impersonator, and mobile sidebar state.
+  - [x] Create `src/components/shared/RoleContext.tsx` with role state (`staff` ↔ `student`), selected student impersonator, and mobile sidebar state.
   - [x] Create persistent desktop sidebar and mobile slide-in drawer in `src/components/shared/Sidebar.tsx` using `react-icons` with clean active/hover indicators.
   - [x] Create top header in `src/components/shared/Navbar.tsx` featuring mobile hamburger button, student selector, and role switcher with **Standard A (Smart Redirection)**.
   - [x] Configure `src/app/layout.tsx` with dual-pane layout (`Sidebar` + `Navbar` + `main`).
@@ -47,10 +48,11 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Create repository functions in `src/server/repositories/student.repository.ts`.
   - [x] Implement auto-generated unique Student ID service (`SMS-YYYY-XXXX`) with transaction safety in `src/server/services/student.service.ts`.
   - [x] Create Route Handlers:
-    - `GET /api/students`: Filter by search term (name/ID), programme, and enrolment status.
+    - `GET /api/students/staff`: Filter by search term (name/ID), programme, and enrolment status. *(Originally `GET /api/students`; split in Step 8.)*
+    - `GET /api/students/staff/summary`: Unfiltered enrolment KPI counts for the stat cards. *(Added in Step 8.)*
     - `POST /api/students`: Validate input, generate ID, create student, and auto-assign programme fee.
 - [x] **1.2 UI Layer (`src/app/(staff)/students/page.tsx`)**:
-  - [x] Replicate reusable UI components from `spend-smart-frontend`: `Button`, `Input`, `SearchInput`, `Dropdown`, `Badge`, `DataTable`, `Modal`, and `Alerts`.
+  - [x] Build the reusable UI primitives shared by every portal page: `Button`, `Input`, `SearchInput`, `Dropdown`, `Badge`, `DataTable`, `Modal`, and `Alerts`.
   - [x] Interactive Student Directory Table (ID, Full Name, Email, Programme, Academic Year, Status badge).
   - [x] Debounced search bar + Programme & Status filter dropdowns.
   - [x] "Enrol New Student" modal/drawer with real-time validation and error handling.
@@ -58,7 +60,7 @@ This document tracks the step-by-step implementation of the Student Management S
 - [x] **1.3 Verification & Commit**:
   - [x] Enrol new students, test filters, verify auto-generated ID format and database records.
   - [x] Verify status transition and student record updates via `PATCH /api/students`.
-  - [ ] *(Pending user commit)* Commit message: `feat(students): implement student enrolment page, api, and status management`
+  - [x] *(Committed)* Commit message: `feat(students): implement student enrolment page, api, and status management`
 
 ---
 
@@ -69,7 +71,8 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Create fee & payment schemas in `src/lib/validations/fee.ts`.
   - [x] Implement repository & service logic in `src/server/repositories/fee.repository.ts` and `src/server/services/fee.service.ts`.
   - [x] Create Route Handlers:
-    - `GET /api/fees`: Return students with fee amount, sum of payments, and outstanding balance.
+    - `GET /api/fees/staff`: Return students with fee amount, sum of payments, and outstanding balance. *(Originally `GET /api/fees`; split in Step 8.)*
+    - `GET /api/fees/staff/summary`: Unfiltered invoiced, collected, outstanding and overdue KPI totals. *(Added in Step 8.)*
     - `POST /api/payments`: Record transaction with unique reference validation and idempotent checks.
 - [x] **2.2 UI Layer (`src/app/(staff)/fees/page.tsx`)**:
   - [x] Financial KPI cards: Total Invoiced, Total Collected, Outstanding Balance, Overdue Count using `StatCard`.
@@ -78,7 +81,7 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Itemized transaction receipt history modal.
 - [x] **2.3 Verification & Commit**:
   - [x] Record payments, verify balance updates, test overdue status calculation (`dueDate < now && balance > 0`).
-  - [ ] *(Pending user commit)* Commit message: `feat(fees): implement fee tracking, payment recording, and balance calculations`
+  - [x] *(Committed)* Commit message: `feat(fees): implement fee tracking, payment recording, and balance calculations`
 
 ---
 
@@ -89,7 +92,8 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Create assessment validation schema in `src/lib/validations/assessment.ts`.
   - [x] Create repository & service logic in `src/server/repositories/assessment.repository.ts` and `src/server/services/assessment.service.ts`.
   - [x] Create Route Handlers:
-    - `GET /api/assessments`: Fetch assessments grouped by module with submission counts.
+    - `GET /api/assessments/staff`: Fetch assessments grouped by module with submission counts. *(Originally `GET /api/assessments`; split in Step 8.)*
+    - `GET /api/assessments/staff/summary`: Unfiltered assessment KPI counts. *(Added in Step 8.)*
     - `POST /api/assessments`: Create assessment with title, module, and deadline.
 - [x] **3.2 UI Layer (`src/app/(staff)/assessments/page.tsx`)**:
   - [x] Assessment directory cards with deadline indicators and module tags.
@@ -99,7 +103,7 @@ This document tracks the step-by-step implementation of the Student Management S
     - 🔴 *Late submission* with elapsed time (e.g. "Late by 2h 15m").
 - [x] **3.3 Verification & Commit**:
   - [x] Create assessments, test API routes, verify database records.
-  - [ ] *(Pending user commit)* Commit message: `feat(assessments): implement staff assessment creation and submission inspection`
+  - [x] *(Committed)* Commit message: `feat(assessments): implement staff assessment creation and submission inspection`
 
 ---
 
@@ -111,7 +115,7 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Implement file upload handling with versioning (`SubmissionVersion` relation).
   - [x] Auto-calculate `isLate` by comparing `submittedAt > assessment.deadline`.
   - [x] Create Route Handlers:
-    - `GET /api/submissions`: Retrieve current student's submissions and versions.
+    - `GET /api/assessments/student` + `GET /api/assessments/student/summary`: Retrieve the impersonated student's assignments, submission state and KPI counts. *(Replaces the original `GET /api/submissions` read; see Step 8.)*
     - `POST /api/submissions`: Handle multipart upload, increment version number, save record.
 - [x] **4.2 UI Layer (`src/app/(student)/student-assessments/page.tsx`)**:
   - [x] Student assessment list filtered to their enrolled programme modules.
@@ -120,7 +124,7 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Visual alert banner if uploading past the deadline.
 - [x] **4.3 Verification & Commit**:
   - [x] Test on-time upload, test resubmission (version increments), test post-deadline upload and verify late badge.
-  - [ ] *(Pending user commit)* Commit message: `feat(submissions): implement student assessment submission dropzone with versioning and late detection`
+  - [x] *(Committed)* Commit message: `feat(submissions): implement student assessment submission dropzone with versioning and late detection`
 
 ---
 
@@ -130,14 +134,15 @@ This document tracks the step-by-step implementation of the Student Management S
 - [x] **5.1 Backend / API Layer**:
   - [x] Create grading schema in `src/lib/validations/result.ts`.
   - [x] Implement grading repository & service in `src/server/services/result.service.ts` with classification rules:
-    - $\ge 70$: **Distinction**
-    - $\ge 60$: **Merit**
-    - $\ge 40$: **Pass**
-    - $< 40$: **Fail**
+    - ≥ 70: **Distinction**
+    - ≥ 60: **Merit**
+    - ≥ 40: **Pass**
+    - < 40: **Fail**
   - [x] Create Route Handlers:
     - `POST /api/results`: Save/update score, classification, and `isPublished` toggle.
     - `PATCH /api/results`: Quick toggle publication status.
-    - `GET /api/results`: Staff view gets all; Student view gets **only published** results.
+    - `GET /api/results/staff` + `/summary`: Grading ledger and unfiltered KPI totals. *(Originally `GET /api/results`; split in Step 8.)*
+    - `GET /api/results/student` + `/summary`: **Only published** marksheet rows and the programme-scoped certified average. *(Added in Step 8.)*
 - [x] **5.2 Staff UI (`src/app/(staff)/results/page.tsx`)**:
   - [x] Grade entry table with instant classification pill preview.
   - [x] Per-student **Publish / Withhold** toggle button with visual status indicators.
@@ -146,7 +151,7 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Explicit placeholder/notice for unpublished or withheld grades (zero leak of draft grades).
 - [x] **5.4 Verification & Commit**:
   - [x] Enter grades, test all classification thresholds, test withhold/publish toggle and verify student visibility.
-  - [ ] *(Pending user commit)* Commit message: `feat(results): implement grading sheet, auto-classification, and student marksheet with publish controls`
+  - [x] *(Committed)* Commit message: `feat(results): implement grading sheet, auto-classification, and student marksheet with publish controls`
 
 ---
 
@@ -156,14 +161,14 @@ This document tracks the step-by-step implementation of the Student Management S
 #### Part 6A: Registry Staff Dashboard *(Completed)*
 - [x] **6A.1 Data Aggregation Layer**:
   - [x] Implement dashboard service aggregating counts, outstanding debts, and pending grades.
-  - [x] Create Route Handler `GET /api/dashboard`.
+  - [x] Create Route Handler `GET /api/dashboard`. *(Now `GET /api/dashboard/staff`; see Step 8.)*
 - [x] **6A.2 Staff UI Layer (`src/app/(staff)/dashboard/page.tsx`)**:
   - [x] KPI cards: Total Enrolled Students, Total Outstanding Fees, Overdue Accounts, Pending Grading count.
   - [x] Priority Alert Panel: High-visibility list of overdue students with quick "Record Payment" action.
   - [x] Recent activity feeds: Recent submissions (highlighting late ones) and upcoming deadlines.
 - [x] **6A.3 Verification & Commit**:
   - [x] Verify live numbers match actual database records.
-  - [ ] *(Pending user commit)* Commit message: `feat(dashboard): implement registry staff dashboard with real-time KPI metrics and alerts`
+  - [x] *(Committed)* Commit message: `feat(dashboard): implement registry staff dashboard with real-time KPI metrics and alerts`
 
 #### Part 6B: Student Portal Dashboard (`src/app/(student)/student-dashboard/page.tsx`) *(Completed)*
 **Goal**: Personalized student cockpit summarizing enrolment standing, fee balance & payment history, upcoming deadlines, and published academic progress.
@@ -189,7 +194,7 @@ This document tracks the step-by-step implementation of the Student Management S
 - [x] **6B.3 Verification**:
   - [x] Verify instant hydration when switching students via the student selector dropdown in the navigation header.
   - [x] Verify zero leak of unpublished grades or other students' private fee data.
-  - [ ] *(Pending user commit)* Commit message: `feat(dashboard): implement student portal dashboard with tuition ledger, deadlines, and progress KPIs`
+  - [x] *(Committed)* Delivered together with the staff dashboard in `7e6ce0c`: `feat(dashboard): implement staff and student dashboards with real-time KPIs and alerts`
 
 ---
 
@@ -207,5 +212,32 @@ This document tracks the step-by-step implementation of the Student Management S
   - [x] Clear documentation on AI usage and prompt-engineering strategies during the build.
   - [x] Walkthrough of product decisions and edge case handling (overdue fees, late submissions, withheld grades).
 - [x] **7.3 Build & Codebase Verification**:
-  - [x] Run `npm run build` and ensure clean output with zero errors across all 19 routes.
-  - [ ] *(Pending user commit)* Commit message: `docs: update readme with full workflow guides, edge case analysis, and demo seed data`
+  - [x] Run `npm run build` and ensure clean output with zero errors (Step 8 re-verified this across all 31 routes: 21 dynamic API handlers, 8 partial-prerender portal pages, plus the static landing and not-found pages).
+  - [x] *(Committed)* Commit message: `docs: update readme with full workflow guides, edge case analysis, and demo seed data`
+
+---
+
+### Step 8: Role-Scoped Server Rendering, Modular Structure & Mobile Polish
+**Goal**: Move every portal ledger from client-side fetching to server rendering, enforce the staff/student split where the query is built, keep the data access rules performance-safe, and make the portal usable on phones — without touching any existing styling.
+
+- [x] **8.1 Payload & Type Layering**:
+  - [x] Extract `src/server/types` for per-domain payload and filter interfaces, mirroring the client `src/types` convention.
+  - [x] Move pagination helpers out of server types into `src/lib/utils`.
+  - [x] Split the component tree into `components/features/{home,staff,student}` roots, one folder per portal area.
+- [x] **8.2 Role-Scoped Reads & Endpoints**:
+  - [x] Dashboard, assessments, results, fees and students each expose a staff (and where relevant a student) list endpoint plus a separate summary endpoint for the KPI cards.
+  - [x] Summary queries ignore every list filter; list queries push search, module, publication and status predicates into the Prisma `where` and paginate with `count` + `skip`/`take` instead of loading all rows.
+  - [x] Merge the short-lived role-split modules back into one repository/service/type file per domain.
+  - [x] Mirror the impersonated student into the readable `sms_selected_student` cookie so the server render follows the Navbar dropdown.
+- [x] **8.3 Server-Rendered Pages**:
+  - [x] Portal `page.tsx` files render as Server Components that call their service directly and stream through `<Suspense>`.
+  - [x] Search, filter and page state move into URL search params; only filter bars, pagination, modals and row actions stay client islands.
+  - [x] Await `connection()` before any URL read so no ledger is served from a prerendered snapshot — all 8 app routes build as partial prerenders (`◐`).
+- [x] **8.4 Mobile Responsiveness** *(styles frozen; every class change is additive and `max-sm:`-scoped)*:
+  - [x] KPI grids collapse to two full-width columns on phones, with smaller StatCard typography.
+  - [x] Page headers shrink their title, hide the subtitle, and drop lone refresh buttons below `sm`.
+  - [x] Paired action buttons (e.g. Enrol Student + Refresh) share one full-width row on mobile.
+  - [x] Student-portal navbar stacks the role pill and student selector into two equal-width rows pinned to `--sms-nav-pill-width`.
+- [x] **8.5 Quality Gates**:
+  - [x] `npx tsc --noEmit` clean, `npm run build` clean with all 8 app routes `◐`.
+  - [x] `npm run lint` at zero errors: `any`-typed catch blocks replaced with `ZodError`/`Error` narrowing, unused seed variables and imports removed, and the four deliberate SSR/hydration effects documented at their `eslint-disable` sites.

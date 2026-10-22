@@ -89,8 +89,10 @@ export function CreateStudentForm({
 
       showSuccessAlert(data.message || "Student enrolled successfully");
       onSuccess();
-    } catch (err: any) {
-      showErrorAlert(err.message || "Something went wrong");
+    } catch (err) {
+      showErrorAlert(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
     } finally {
       setIsSubmitting(false);
     }

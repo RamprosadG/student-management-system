@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
 import { submitAssessmentWork } from "@/server/services/submission.service";
 import { CreateSubmissionSchema } from "@/lib/validations/submission";
 import { writeFile, mkdir } from "fs/promises";
@@ -54,9 +55,9 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
-    if (error.name === "ZodError") {
-      const firstError = error.errors?.[0]?.message || "Validation failed";
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.issues[0]?.message || "Validation failed";
       return NextResponse.json(
         { success: false, message: firstError },
         { status: 400 }
@@ -64,7 +65,11 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to submit assessment" },
+      {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to submit assessment",
+      },
       { status: 400 }
     );
   }

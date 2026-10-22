@@ -83,8 +83,10 @@ export function UpdateStudentForm({
 
       showSuccessAlert(data.message || "Student record updated");
       onSuccess();
-    } catch (err: any) {
-      showErrorAlert(err.message || "Failed to update student");
+    } catch (err) {
+      showErrorAlert(
+        err instanceof Error ? err.message : "Failed to update student"
+      );
     } finally {
       setIsSubmitting(false);
     }

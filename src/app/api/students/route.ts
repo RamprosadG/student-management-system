@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
 import {
   enrolStudent,
   updateStudent,
@@ -23,9 +24,9 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
-    if (error.name === "ZodError") {
-      const firstError = error.errors?.[0]?.message || "Validation failed";
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.issues[0]?.message || "Validation failed";
       return NextResponse.json(
         { success: false, message: firstError },
         { status: 400 }
@@ -33,7 +34,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to enrol student" },
+      {
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to enrol student",
+      },
       { status: 400 }
     );
   }
@@ -59,9 +63,9 @@ export async function PATCH(request: NextRequest) {
       message: "Student record updated successfully",
       data: updated,
     });
-  } catch (error: any) {
-    if (error.name === "ZodError") {
-      const firstError = error.errors?.[0]?.message || "Validation failed";
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.issues[0]?.message || "Validation failed";
       return NextResponse.json(
         { success: false, message: firstError },
         { status: 400 }
@@ -71,7 +75,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        message: error.message || "Failed to update student",
+        message: error instanceof Error ? error.message : "Failed to update student",
       },
       { status: 400 }
     );

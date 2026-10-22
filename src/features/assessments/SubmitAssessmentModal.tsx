@@ -41,7 +41,7 @@ interface AssessmentTarget {
 interface SubmitAssessmentModalProps {
   assessment: AssessmentTarget;
   studentId: string;
-  studentName: string;
+  studentName?: string;
   onSuccess: () => void;
   onClose: () => void;
 }
@@ -49,7 +49,6 @@ interface SubmitAssessmentModalProps {
 export function SubmitAssessmentModal({
   assessment,
   studentId,
-  studentName,
   onSuccess,
   onClose,
 }: SubmitAssessmentModalProps) {
@@ -149,9 +148,11 @@ export function SubmitAssessmentModal({
 
       showSuccessAlert(data.message || "Assessment submitted successfully");
       onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Failed to upload submission");
-      showErrorAlert(err.message || "Failed to upload submission");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to upload submission";
+      setError(message);
+      showErrorAlert(message);
     } finally {
       setIsSubmitting(false);
     }

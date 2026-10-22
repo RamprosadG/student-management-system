@@ -25,6 +25,13 @@ export interface StudentOption {
   programmeName: string;
 }
 
+type StudentOptionPayload = {
+  id: string;
+  studentId: string;
+  fullName: string;
+  programme?: { name?: string | null } | null;
+};
+
 interface RoleContextType {
   role: Role;
   setRole: (role: Role) => void;
@@ -48,6 +55,9 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [collapsed, setCollapsed] = useState<boolean>(false);
 
+  // Role, selected student and sidebar state come from browser storage and the
+  // URL, which only exist after hydration — seeding them during render mismatches SSR.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const pathRole = roleFromPathname(pathname);
@@ -78,9 +88,12 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
     const fetchStudents = async () => {
       try {
         const res = await fetch("/api/students/options");
-        const json = await res.json();
+        const json = (await res.json()) as {
+          success?: boolean;
+          data?: StudentOptionPayload[];
+        };
         if (json.success && Array.isArray(json.data)) {
-          const list: StudentOption[] = json.data.map((s: any) => ({
+          const list: StudentOption[] = json.data.map((s) => ({
             id: s.id,
             studentId: s.studentId,
             fullName: s.fullName,
@@ -122,6 +135,7 @@ export function RoleProvider({ children }: { children: React.ReactNode }) {
       return pathRole;
     });
   }, [pathname]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const setRole = (newRole: Role) => {
     setRoleState(newRole);

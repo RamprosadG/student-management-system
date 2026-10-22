@@ -30,12 +30,16 @@ export function RecordPaymentForm({
   const [amount, setAmount] = useState<string>(
     feeAccount.balance > 0 ? String(feeAccount.balance) : ""
   );
+  // The form only mounts inside a client modal, so the reference number and
+  // today's date are seeded once per open instead of during a server render.
+  /* eslint-disable react-hooks/purity */
   const [referenceNumber, setReferenceNumber] = useState<string>(
     `PAY-${Date.now().toString().slice(-6)}`
   );
   const [paidAt, setPaidAt] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
+  /* eslint-enable react-hooks/purity */
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -87,8 +91,10 @@ export function RecordPaymentForm({
 
       showSuccessAlert(data.message || "Payment recorded successfully");
       onSuccess();
-    } catch (err: any) {
-      showErrorAlert(err.message || "Something went wrong");
+    } catch (err) {
+      showErrorAlert(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
     } finally {
       setIsSubmitting(false);
     }

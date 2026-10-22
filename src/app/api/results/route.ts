@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
 import {
   recordAssessmentGrade,
   toggleResultPublication,
@@ -23,9 +24,9 @@ export async function POST(request: NextRequest) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
-    if (error.name === "ZodError") {
-      const firstError = error.errors?.[0]?.message || "Validation failed";
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.issues[0]?.message || "Validation failed";
       return NextResponse.json(
         { success: false, message: firstError },
         { status: 400 }
@@ -33,7 +34,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to record grade" },
+      {
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to record grade",
+      },
       { status: 400 }
     );
   }
@@ -53,9 +57,9 @@ export async function PATCH(request: NextRequest) {
         : "Result withheld from student view",
       data: updated,
     });
-  } catch (error: any) {
-    if (error.name === "ZodError") {
-      const firstError = error.errors?.[0]?.message || "Validation failed";
+  } catch (error) {
+    if (error instanceof ZodError) {
+      const firstError = error.issues[0]?.message || "Validation failed";
       return NextResponse.json(
         { success: false, message: firstError },
         { status: 400 }
@@ -63,7 +67,12 @@ export async function PATCH(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: error.message || "Failed to toggle result publication" },
+      {
+        success: false,
+        message: error instanceof Error
+          ? error.message
+          : "Failed to toggle result publication",
+      },
       { status: 400 }
     );
   }

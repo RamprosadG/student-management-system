@@ -28,10 +28,10 @@ src/
 ├── app/
 │   ├── (staff)/             # Route group for staff portal pages (dashboard, students, fees, assessments, results)
 │   ├── (student)/           # Route group for student portal pages (dashboard, assessments, marksheet)
-│   ├── api/                 # Route handlers: students, fees, payments, assessments, submissions, results
+│   ├── api/                 # Route handlers: role-scoped list/summary reads plus mutations per domain
 │   ├── layout.tsx           # Root layout
 │   └── page.tsx             # Public landing page
-├── features/                # Domain-specific client/server UI slices & state
+├── features/                # Client islands: enrol/edit forms, record-payment, grade-entry and submission modals
 │   ├── students/
 │   ├── fees/
 │   ├── assessments/
@@ -41,10 +41,16 @@ src/
 │   ├── repositories/        # Database interaction and Prisma query wrappers
 │   └── types/               # Per-domain payload and filter interfaces (mirrors src/types)
 ├── components/
+│   ├── features/            # Server-rendered page sections, split by portal
+│   │   ├── home/            # Landing page sections
+│   │   ├── staff/           # dashboard, students, fees, assessments, results
+│   │   └── student/         # dashboard, assessments, marksheet
 │   ├── ui/                  # Generic, reusable UI primitives (buttons, inputs, dialogs, etc.)
 │   └── shared/              # Shared composite components (navbar, sidebar, tables, status badges)
+├── types/                   # Client-facing view-model types, one module per feature
 └── lib/
     ├── prisma.ts            # Prisma client singleton (MUST import PrismaClient from '@/generated/prisma/client')
+    ├── student-selection.ts # sms_selected_student cookie read/write helpers
     ├── utils.ts             # Generic helper utilities (cn, formatting)
     └── validations/         # Request and form validation schemas (Zod/TypeBox)
 ```
@@ -64,9 +70,12 @@ src/
 - **Route Groups**: Place staff routes in `src/app/(staff)/` and student routes in `src/app/(student)/`. Do not expose internal roles in the URL path.
 - **Server Actions & Route Handlers**: Validate all inputs using schemas from `src/lib/validations/` before querying or mutating data.
 - **Layered Backend**: Route handlers (`src/app/api/...`) should delegate business logic to `src/server/services/` and database operations to `src/server/repositories/`.
+- **Server-Rendered Ledgers**: Portal `page.tsx` files are Server Components that call their service directly and stream through `<Suspense>`. Search, filter and page state live in URL search params — never in client component state — so only the filter bar, pagination and modals remain client islands.
+- **List vs. KPI Queries**: Each ledger pairs a list endpoint (`/api/<domain>/staff`) with an unfiltered summary endpoint (`/api/<domain>/staff/summary`) for the KPI cards; filters must never be applied to the summary. Push search and filter predicates into the Prisma `where` and paginate with `count` + `skip`/`take` — do not load every row and filter in memory.
 - **Result Visibility**: There is no `src/server/policies/` layer and no authentication — the app simulates roles client-side via `RoleContext`. The staff/student data boundary is enforced where the query is built: student-facing repositories filter unpublished grades (`AssessmentResult.isPublished === false`) out of their results, as in `findStudentMarksheet()`. Keep new visibility rules in the repository that serves the role, not in the UI.
 
 ### 3. Code Quality & Verification
 - **Preserve Existing Structures**: Do not delete existing directories or unrelated files when adding new features.
 - **Type Safety**: Maintain strict TypeScript typing. Avoid `any`. Use models exported from `@/generated/prisma/client`.
-- **Verification**: Run `npm run build` after major structural or schema modifications to ensure zero TypeScript or build errors.
+- **Lint**: `npm run lint` must stay at zero errors. The only accepted warnings are the two intentional `react-hooks/exhaustive-deps` deviations in `RoleContext.tsx` and `SearchInput.tsx`; use a reasoned `eslint-disable` rather than restructuring an effect when the effect exists to avoid an SSR/hydration mismatch.
+- **Verification**: Run `npm run build` after major structural or schema modifications to ensure zero TypeScript or build errors. All eight app routes must stay partial prerenders (`◐`); a route that reads `request.url` must await `connection()` first so it is never served from a prerendered snapshot.

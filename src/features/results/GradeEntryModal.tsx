@@ -9,7 +9,7 @@ import {
   getGradeClassification,
   Classification,
 } from "@/lib/validations/result";
-import { HiOutlineAcademicCap, HiOutlineExclamationCircle } from "react-icons/hi";
+import { HiOutlineAcademicCap } from "react-icons/hi";
 
 interface GradeEntrySubmission {
   submissionId: string;
@@ -76,9 +76,11 @@ export function GradeEntryModal({
 
       showSuccessAlert(data.message || "Grade recorded successfully");
       onSuccess();
-    } catch (err: any) {
-      setError(err.message || "Failed to save grade");
-      showErrorAlert(err.message || "Failed to save grade");
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to save grade";
+      setError(message);
+      showErrorAlert(message);
     } finally {
       setIsSubmitting(false);
     }
